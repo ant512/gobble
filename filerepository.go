@@ -19,6 +19,28 @@ func (f *FileRepository) SetPostDirectory(s string) {
 	f.postDirectory = s
 }
 
+func (f *FileRepository) FetchNewestPost() (*BlogPost, error) {
+	dirname := f.postDirectory + string(filepath.Separator)
+
+	files, err := ioutil.ReadDir(dirname)
+
+	var newestPost *BlogPost = nil
+
+	for i := range files {
+
+		post, err := f.FetchPost(files[i].Name())
+
+		if err != nil {
+			return nil, err
+		}
+
+		// TODO: Compare dates.  If newer, remember
+		newestPost = post
+	}
+
+	return newestPost, err
+}
+
 func (f *FileRepository) FetchAllPosts() ([]*BlogPost, error) {
 
 	dirname := f.postDirectory + string(filepath.Separator)
