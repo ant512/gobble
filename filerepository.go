@@ -3,18 +3,53 @@ package main
 import (
 	"github.com/russross/blackfriday"
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 )
 
 type FileRepository struct {
-	
+	postDirectory string
 }
 
-func (f* FileRepository) FetchPost(id string) (*BlogPost, error) {
+func (f *FileRepository) PostDirectory() string {
+	return f.postDirectory
+}
+
+func (f *FileRepository) SetPostDirectory(s string) {
+	f.postDirectory = s
+}
+
+func (f *FileRepository) FetchAllPosts() ([]*BlogPost, error) {
+
+	dirname := f.postDirectory + string(filepath.Separator)
+
+	files, err := ioutil.ReadDir(dirname)
+
+	posts := []*BlogPost{}
+
+	for i := range files {
+
+		post, err := f.FetchPost(files[i].Name())
+
+		if err != nil {
+			return nil, err
+		}
+
+		posts = append(posts, post)
+	}
+
+
+
+	return posts, err
+}
+
+func (f *FileRepository) FetchPost(filename string) (*BlogPost, error) {
 
 	post := new(BlogPost)
 
-	file, err := ioutil.ReadFile(id + ".md")
+	dirname := f.postDirectory + string(filepath.Separator)
+
+	file, err := ioutil.ReadFile(dirname + filename)
 
 	if err != nil {
 		return post, err
@@ -45,7 +80,8 @@ func (f* FileRepository) extractHeader(text string, post *BlogPost) string {
 			components := strings.Split(lines[i], ":")
 
 			header := strings.ToLower(strings.Trim(components[0], " "))
-			data := strings.Trim(components[1], " ")
+			separatorIndex := strings.Index(lines[i], ":") + 1
+			data := strings.Trim(lines[i][separatorIndex:], " ")
 
 			switch header {
 				case "title":
