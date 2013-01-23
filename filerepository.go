@@ -127,7 +127,7 @@ func (f *FileRepository) FetchPost(filename string) (*BlogPost, error) {
 	file = []byte(f.extractHeader(string(file), post))
 
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
-	extensions := 0
+	extensions := blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
 
 	renderer := blackfriday.HtmlRenderer(htmlFlags, post.Title(), "")
 
