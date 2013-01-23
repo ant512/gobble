@@ -1,9 +1,11 @@
 package main
 
 import (
+	"github.com/bmizerany/pat"
 	"text/template"
 	"net/http"
 	"log"
+	"fmt"
 )
 
 func home(w http.ResponseWriter, req *http.Request) {
@@ -22,8 +24,17 @@ func home(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, post)
 }
 
+func tags(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, req.URL.Query().Get(":tag"))
+}
+
 func main() {
-	http.HandleFunc("/", home)
+
+	m := pat.New()
+	m.Get("/tags/:tag", http.HandlerFunc(tags))
+	m.Get("/", http.HandlerFunc(home))
+
+	http.Handle("/", m)
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("img"))))
 	http.ListenAndServe(":8080", nil)
