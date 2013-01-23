@@ -18,13 +18,13 @@
 	                                        <article class="blogpostSingle">
 	                                                <header class="blogpostHeader">
 	                                                        <h1>{{.Title}}</h1>
-	                                                        <p>Posted on {{.PublishDate}}</p>
+	                                                        <p>Posted on {{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
 	                                                </header>
 	                                                <div class="blogpostContent">
 	                                                        {{.Body}}
 	                                                </div>
 	                                                <footer>
-	                                                        {{.Tags}}
+	                                                        {{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
 	                                                </footer>
 	                                        </article>
 	                                </div>
