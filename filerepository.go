@@ -86,13 +86,19 @@ func (f *FileRepository) FetchNewestPost() (*BlogPost, error) {
 	return newestPost, err
 }
 
-func (f *FileRepository) FetchAllPosts() ([]*BlogPost, error) {
+func (f *FileRepository) FetchPostsInRange(start, end int) (BlogPosts, error) {
+	posts, err := f.FetchAllPosts()
+
+	return posts[start:end], err
+}
+
+func (f *FileRepository) FetchAllPosts() (BlogPosts, error) {
 
 	dirname := f.postDirectory + string(filepath.Separator)
 
 	files, err := ioutil.ReadDir(dirname)
 
-	posts := []*BlogPost{}
+	posts := BlogPosts{}
 
 	for i := range files {
 
@@ -104,6 +110,8 @@ func (f *FileRepository) FetchAllPosts() ([]*BlogPost, error) {
 
 		posts = append(posts, post)
 	}
+
+	sort.Sort(posts)
 
 	return posts, err
 }

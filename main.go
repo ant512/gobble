@@ -12,7 +12,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 	repo := FileRepository{}
 	repo.SetPostDirectory("./posts")
 
-	posts, err := repo.FetchAllPosts()
+	posts, err := repo.FetchPostsInRange(0, 10)
 
 	if err != nil {
 		log.Println("Could not load post")
