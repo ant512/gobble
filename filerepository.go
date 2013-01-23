@@ -7,10 +7,52 @@ import (
 	"strings"
 	"time"
 	"strconv"
+	"sort"
 )
 
 type FileRepository struct {
 	postDirectory string
+}
+
+func (f *FileRepository) FetchAllTags() ([]string, error) {
+	posts, err := f.FetchAllPosts()
+
+	// We're using a map to simulate a set
+	tagMap := make(map[string]bool)
+
+	for i := range posts {
+		for j := range posts[i].Tags() {
+			tagMap[posts[i].Tags()[j]] = true
+		}
+	}
+
+	tags := []string{}
+
+	for key := range tagMap {
+		tags = append(tags, key)
+	}
+
+	sort.Strings(tags)
+
+	return tags, err
+}
+
+func (f *FileRepository) FetchPostsWithTag(tag string) ([]*BlogPost, error) {
+	posts, err := f.FetchAllPosts()
+
+	if err != nil {
+		return nil, err
+	}
+
+	filteredPosts := []*BlogPost{}
+
+	for i := range posts {
+		if posts[i].ContainsTag(tag) {
+			filteredPosts = append(filteredPosts, posts[i])
+		}
+	}
+
+	return filteredPosts, err
 }
 
 func (f *FileRepository) PostDirectory() string {
@@ -62,8 +104,6 @@ func (f *FileRepository) FetchAllPosts() ([]*BlogPost, error) {
 
 		posts = append(posts, post)
 	}
-
-
 
 	return posts, err
 }

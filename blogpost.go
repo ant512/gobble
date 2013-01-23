@@ -42,3 +42,13 @@ func (b *BlogPost) SetBody(s string) {
 func (b *BlogPost) Body() string {
 	return b.body
 }
+
+func (b *BlogPost) ContainsTag(tag string) bool {
+	for i := range b.Tags() {
+		if b.Tags()[i] == tag {
+			return true
+		}
+	}
+
+	return false
+}
