@@ -1,10 +1,12 @@
 package main
 
 import (
+	"text/template"
+	"net/http"
 	"log"
 )
 
-func main() {
+func home(w http.ResponseWriter, req *http.Request) {
 
 	repo := FileRepository{}
 	repo.SetPostDirectory("./posts")
@@ -16,9 +18,14 @@ func main() {
 		return
 	}
 
-	log.Println(post.Title())
-	log.Println(post.PublishDate())
-	log.Println(post.Tags())
-	log.Println(post.Body())
+	t, _ := template.ParseFiles("./templates/home.html")
+	t.Execute(w, post)
+}
+
+func main() {
+	http.HandleFunc("/", home)
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
+	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("img"))))
+	http.ListenAndServe(":8080", nil)
 }
 

@@ -1,0 +1,18 @@
+syntax: glob
+
+bin
+obj
+build
+BuildLog.htm
+*.ncb
+*.o
+*.d
+*.suo
+*.trx
+*.user
+*.nds
+AgentRestart.dat
+.DS_Store
+*.pbxuser
+*.perspectivev3
+xcuserdata
