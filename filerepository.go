@@ -8,6 +8,7 @@ import (
 	"time"
 	"strconv"
 	"sort"
+	"errors"
 )
 
 type FileRepository struct {
@@ -37,6 +38,24 @@ func (f *FileRepository) FetchAllTags() ([]string, error) {
 	return tags, err
 }
 
+func (f *FileRepository) FetchPostWithMetadata(title string, year int, month int, day int) (*BlogPost, error) {
+	posts, err := f.FetchAllPosts()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range posts {
+		if posts[i].Title() == title && posts[i].PublishDate().Year() == year {
+			return posts[i], err
+		}
+	}
+
+	err = errors.New("Could not find post")
+
+	return nil, err
+}
+
 func (f *FileRepository) FetchPostsWithTag(tag string) ([]*BlogPost, error) {
 	posts, err := f.FetchAllPosts()
 
@@ -61,29 +80,6 @@ func (f *FileRepository) PostDirectory() string {
 
 func (f *FileRepository) SetPostDirectory(s string) {
 	f.postDirectory = s
-}
-
-func (f *FileRepository) FetchNewestPost() (*BlogPost, error) {
-	dirname := f.postDirectory + string(filepath.Separator)
-
-	files, err := ioutil.ReadDir(dirname)
-
-	var newestPost *BlogPost = nil
-
-	for i := range files {
-
-		post, err := f.FetchPost(files[i].Name())
-
-		if err != nil {
-			return nil, err
-		}
-
-		if newestPost == nil || post.PublishDate().After(newestPost.PublishDate()) {
-			newestPost = post
-		}
-	}
-
-	return newestPost, err
 }
 
 func (f *FileRepository) FetchPostsInRange(start, end int) (BlogPosts, error) {
