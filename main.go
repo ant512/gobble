@@ -13,7 +13,8 @@ func home(w http.ResponseWriter, req *http.Request) {
 	repo := FileRepository{}
 	repo.SetPostDirectory("./posts")
 
-	post, err := repo.FetchNewestPost()
+	//post, err := repo.FetchNewestPost()
+	posts, err := repo.FetchAllPosts()
 
 	if err != nil {
 		log.Println("Could not load post")
@@ -21,7 +22,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 	}
 
 	t, _ := template.ParseFiles("./templates/home.html")
-	t.Execute(w, post)
+	t.Execute(w, posts)
 }
 
 func tags(w http.ResponseWriter, req *http.Request) {
