@@ -1,8 +1,12 @@
 package main
 
+import (
+	"time"
+)
+
 type BlogPost struct {
 	title string
-	publishDate string
+	publishDate time.Time
 	tags []string
 	body string
 }
@@ -15,11 +19,11 @@ func (b *BlogPost) Title() string {
 	return b.title
 }
 
-func (b *BlogPost) SetPublishDate(s string) {
-	b.publishDate = s
+func (b *BlogPost) SetPublishDate(t time.Time) {
+	b.publishDate = t
 }
 
-func (b *BlogPost) PublishDate() string {
+func (b *BlogPost) PublishDate() time.Time {
 	return b.publishDate
 }
 

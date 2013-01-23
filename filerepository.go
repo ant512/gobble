@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	"strings"
+	"time"
+	"strconv"
 )
 
 type FileRepository struct {
@@ -34,8 +36,9 @@ func (f *FileRepository) FetchNewestPost() (*BlogPost, error) {
 			return nil, err
 		}
 
-		// TODO: Compare dates.  If newer, remember
-		newestPost = post
+		if newestPost == nil || post.PublishDate().After(newestPost.PublishDate()) {
+			newestPost = post
+		}
 	}
 
 	return newestPost, err
@@ -111,7 +114,7 @@ func (f* FileRepository) extractHeader(text string, post *BlogPost) string {
 				case "tags":
 					post.SetTags(strings.Split(data, ","))
 				case "date":
-					post.SetPublishDate(data)
+					post.SetPublishDate(stringToTime(data))
 				default:
 					continue
 			}
@@ -123,4 +126,47 @@ func (f* FileRepository) extractHeader(text string, post *BlogPost) string {
 	}
 
 	return text[headerSize:]
+}
+
+func stringToTime(s string) time.Time {
+
+	year, err := strconv.Atoi(s[:4])
+
+	if err != nil {
+		return time.Unix(0, 0)
+	}
+
+	month, err := strconv.Atoi(s[5:7])
+
+	if err != nil {
+		return time.Unix(0, 0)
+	}
+
+	day, err := strconv.Atoi(s[8:10])
+
+	if err != nil {
+		return time.Unix(0, 0)
+	}
+
+	hour, err := strconv.Atoi(s[11:13])
+
+	if err != nil {
+		return time.Unix(0, 0)
+	}
+
+	minute, err := strconv.Atoi(s[14:16])
+
+	if err != nil {
+		return time.Unix(0, 0)
+	}
+
+	seconds, err := strconv.Atoi(s[17:19])
+
+	if err != nil {
+		return time.Unix(0, 0)
+	}
+
+	location, err := time.LoadLocation("UTC")
+
+	return time.Date(year, time.Month(month), day, hour, minute, seconds, 0, location)
 }

@@ -28,4 +28,3 @@ func main() {
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("img"))))
 	http.ListenAndServe(":8080", nil)
 }
-
