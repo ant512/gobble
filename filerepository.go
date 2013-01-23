@@ -38,7 +38,7 @@ func (f *FileRepository) FetchAllTags() ([]string, error) {
 	return tags, err
 }
 
-func (f *FileRepository) FetchPostWithMetadata(title string, year int, month int, day int) (*BlogPost, error) {
+func (f *FileRepository) FetchPostWithUrl(url string) (*BlogPost, error) {
 	posts, err := f.FetchAllPosts()
 
 	if err != nil {
@@ -46,7 +46,7 @@ func (f *FileRepository) FetchPostWithMetadata(title string, year int, month int
 	}
 
 	for i := range posts {
-		if posts[i].Title() == title && posts[i].PublishDate().Year() == year {
+		if posts[i].Url() == url {
 			return posts[i], err
 		}
 	}
@@ -156,7 +156,15 @@ func (f* FileRepository) extractHeader(text string, post *BlogPost) string {
 				case "title":
 					post.SetTitle(data)
 				case "tags":
-					post.SetTags(strings.Split(data, ","))
+
+					tags := strings.Split(data, ",")
+
+					for j := range tags {
+						tags[j] = strings.Trim(tags[j], " ")
+						tags[j] = strings.Replace(tags[j], " ", "-", -1)
+					}
+
+					post.SetTags(tags)
 				case "date":
 					post.SetPublishDate(stringToTime(data))
 				default:

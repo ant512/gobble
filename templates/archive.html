@@ -19,7 +19,7 @@
 
 						<ul id="archive">
 							{{range .}}
-							<li><a href="/posts/{{printf "%04d" .PublishDate.Year}}/{{printf "%02d" .PublishDate.Month}}/{{printf "%02d" .PublishDate.Day}}/{{.Title}}">{{.Title}}</a> <span class="archiveTime">{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</span></li>
+							<li><a href="/posts/{{.Url}}">{{.Title}}</a> <span class="archiveTime">{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</span></li>
 							{{end}}
 						</ul>
 					</div>

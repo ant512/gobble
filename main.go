@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"log"
 	"strconv"
+	"fmt"
 )
 
 func home(w http.ResponseWriter, req *http.Request) {
@@ -98,10 +99,12 @@ func post(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	url := fmt.Sprintf("%04d/%02d/%02d/%s", year, month, day, title)
+
 	repo := FileRepository{}
 	repo.SetPostDirectory("./posts")
 
-	post, err := repo.FetchPostWithMetadata(title, year, month, day)
+	post, err := repo.FetchPostWithUrl(url)
 
 	if err != nil {
 		log.Println("Could not load post")
