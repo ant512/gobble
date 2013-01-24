@@ -77,6 +77,8 @@ func (b *BlogPost) Url() string {
 	title = strings.Replace(title, ",", "", -1)
 	title = strings.Replace(title, "#", "", -1)
 	title = strings.Replace(title, ":", "", -1)
+	title = strings.Replace(title, "\"", "", -1)
+	title = strings.Replace(title, "?", "", -1)
 
 	return fmt.Sprintf("%04d/%02d/%02d/%s", b.PublishDate().Year(), b.PublishDate().Month(), b.PublishDate().Day(), title)
 }
