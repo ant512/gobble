@@ -89,6 +89,10 @@ func (f *FileRepository) FetchPostsInRange(start, count int) (BlogPosts, error) 
 		count = len(posts) - start
 	}
 
+	log.Println(start)
+	log.Println(count)
+	log.Println(len(posts))
+
 	return posts[start:start + count + 1], err
 }
 
