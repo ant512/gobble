@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/bmizerany/pat"
-	"text/template"
-	"net/http"
-	"log"
-	"strconv"
 	"fmt"
+	"github.com/bmizerany/pat"
+	"log"
+	"net/http"
+	"strconv"
+	"text/template"
 )
 
 func home(w http.ResponseWriter, req *http.Request) {

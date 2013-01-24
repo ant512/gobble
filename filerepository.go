@@ -1,14 +1,14 @@
 package main
 
 import (
+	"errors"
 	"github.com/russross/blackfriday"
 	"io/ioutil"
 	"path/filepath"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
-	"sort"
-	"errors"
 )
 
 type FileRepository struct {
@@ -85,6 +85,10 @@ func (f *FileRepository) SetPostDirectory(s string) {
 func (f *FileRepository) FetchPostsInRange(start, end int) (BlogPosts, error) {
 	posts, err := f.FetchAllPosts()
 
+	if end > len(posts)-1 {
+		end = len(posts) - 1
+	}
+
 	return posts[start:end], err
 }
 
@@ -146,7 +150,7 @@ func (f *FileRepository) FetchPost(filename string) (*BlogPost, error) {
 	return post, nil
 }
 
-func (f* FileRepository) extractHeader(text string, post *BlogPost) string {
+func (f *FileRepository) extractHeader(text string, post *BlogPost) string {
 
 	lines := strings.Split(text, "\n")
 
@@ -161,28 +165,28 @@ func (f* FileRepository) extractHeader(text string, post *BlogPost) string {
 			data := strings.Trim(lines[i][separatorIndex:], " ")
 
 			switch header {
-				case "title":
-					post.SetTitle(data)
-				case "tags":
+			case "title":
+				post.SetTitle(data)
+			case "tags":
 
-					tags := strings.Split(data, ",")
+				tags := strings.Split(data, ",")
 
-					formattedTags := []string{}
+				formattedTags := []string{}
 
-					for j := range tags {
-						tags[j] = strings.Trim(tags[j], " ")
-						tags[j] = strings.Replace(tags[j], " ", "-", -1)
+				for j := range tags {
+					tags[j] = strings.Trim(tags[j], " ")
+					tags[j] = strings.Replace(tags[j], " ", "-", -1)
 
-						if tags[j] != "" {
-							formattedTags = append(formattedTags, tags[j])
-						}
+					if tags[j] != "" {
+						formattedTags = append(formattedTags, tags[j])
 					}
+				}
 
-					post.SetTags(formattedTags)
-				case "date":
-					post.SetPublishDate(stringToTime(data))
-				default:
-					continue
+				post.SetTags(formattedTags)
+			case "date":
+				post.SetPublishDate(stringToTime(data))
+			default:
+				continue
 			}
 
 			headerSize += len(lines[i]) + 1

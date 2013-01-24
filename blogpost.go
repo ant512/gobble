@@ -1,14 +1,14 @@
 package main
 
 import (
-	"time"
-	"strings"
 	"fmt"
+	"strings"
+	"time"
 )
 
 type BlogPosts []*BlogPost
 
-func (b BlogPosts) Len() int      {
+func (b BlogPosts) Len() int {
 	return len(b)
 }
 
@@ -22,12 +22,11 @@ func (b BlogPosts) Less(i, j int) bool {
 	return b[i].PublishDate().After(b[j].PublishDate())
 }
 
-
 type BlogPost struct {
-	title string
+	title       string
 	publishDate time.Time
-	tags []string
-	body string
+	tags        []string
+	body        string
 }
 
 func (b *BlogPost) SetTitle(s string) {
