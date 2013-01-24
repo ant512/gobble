@@ -115,12 +115,29 @@ func post(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, post)
 }
 
+func rss(w http.ResponseWriter, req *http.Request) {
+
+	repo := FileRepository{}
+	repo.SetPostDirectory("./posts")
+
+	posts, err := repo.FetchPostsInRange(0, 10)
+
+	if err != nil {
+		log.Println("Could not load post")
+		return
+	}
+
+	t, _ := template.ParseFiles("./templates/rss.html")
+	t.Execute(w, posts)
+}
+
 func main() {
 
 	m := pat.New()
 	m.Get("/tags/:tag", http.HandlerFunc(taggedPosts))
 	m.Get("/tags/", http.HandlerFunc(tags))
 	m.Get("/archive/", http.HandlerFunc(archive))
+	m.Get("/rss/", http.HandlerFunc(rss))
 	m.Get("/posts/:year/:month/:day/:title", http.HandlerFunc(post))
 	m.Get("/", http.HandlerFunc(home))
 
