@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"log"
 )
 
 type FileRepository struct {
@@ -89,10 +88,6 @@ func (f *FileRepository) FetchPostsInRange(start, count int) (BlogPosts, error) 
 	if start + count > len(posts) {
 		count = len(posts) - start
 	}
-
-	log.Println(start)
-	log.Println(count)
-	log.Println(len(posts))
 
 	return posts[start:start + count], err
 }
