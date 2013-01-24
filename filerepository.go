@@ -85,11 +85,11 @@ func (f *FileRepository) SetPostDirectory(s string) {
 func (f *FileRepository) FetchPostsInRange(start, count int) (BlogPosts, error) {
 	posts, err := f.FetchAllPosts()
 
-	if end > len(posts) {
-		end = len(posts)
+	if start + count > len(posts) {
+		count = len(posts) - start
 	}
 
-	return posts[start:end], err
+	return posts[start:start + count], err
 }
 
 func (f *FileRepository) FetchAllPosts() (BlogPosts, error) {
