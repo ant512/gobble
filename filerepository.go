@@ -89,7 +89,7 @@ func (f *FileRepository) FetchPostsInRange(start, count int) (BlogPosts, error) 
 		count = len(posts) - start
 	}
 
-	return posts[start:start + count], err
+	return posts[start:start + count + 1], err
 }
 
 func (f *FileRepository) FetchAllPosts() (BlogPosts, error) {
