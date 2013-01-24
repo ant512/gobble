@@ -98,6 +98,14 @@ func (f *FileRepository) FetchAllPosts() (BlogPosts, error) {
 
 	for i := range files {
 
+		if files[i].IsDir() {
+			continue
+		}
+
+		if filepath.Ext(files[i].Name()) != ".md" {
+			continue
+		}
+
 		post, err := f.FetchPost(files[i].Name())
 
 		if err != nil {
@@ -159,12 +167,18 @@ func (f* FileRepository) extractHeader(text string, post *BlogPost) string {
 
 					tags := strings.Split(data, ",")
 
+					formattedTags := []string{}
+
 					for j := range tags {
 						tags[j] = strings.Trim(tags[j], " ")
 						tags[j] = strings.Replace(tags[j], " ", "-", -1)
+
+						if tags[j] != "" {
+							formattedTags = append(formattedTags, tags[j])
+						}
 					}
 
-					post.SetTags(tags)
+					post.SetTags(formattedTags)
 				case "date":
 					post.SetPublishDate(stringToTime(data))
 				default:
