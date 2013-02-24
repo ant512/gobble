@@ -12,89 +12,67 @@ import (
 )
 
 type FileRepository struct {
-	postDirectory string
+	directory string
+	posts BlogPosts
+	tags []string
 }
 
-func (f *FileRepository) FetchAllTags() ([]string, error) {
-	posts, err := f.FetchAllPosts()
+func NewFileRepository(directory string) *FileRepository {
 
-	// We're using a map to simulate a set
-	tagMap := make(map[string]bool)
+	f := new(FileRepository)
+	f.directory = directory
+	f.posts, _ = f.fetchAllPosts()
+	f.tags = f.fetchAllTags()
 
-	for i := range posts {
-		for j := range posts[i].Tags() {
-			tagMap[strings.ToLower(posts[i].Tags()[j])] = true
+	return f
+}
+
+func (f *FileRepository) AllTags() []string {
+	return f.tags
+}
+
+func (f *FileRepository) AllPosts() BlogPosts {
+	return f.posts
+}
+
+func (f *FileRepository) PostWithUrl(url string) (*BlogPost, error) {
+
+	for i := range f.posts {
+		if f.posts[i].Url() == url {
+			return f.posts[i], nil
 		}
 	}
 
-	tags := []string{}
-
-	for key := range tagMap {
-		tags = append(tags, key)
-	}
-
-	sort.Strings(tags)
-
-	return tags, err
-}
-
-func (f *FileRepository) FetchPostWithUrl(url string) (*BlogPost, error) {
-	posts, err := f.FetchAllPosts()
-
-	if err != nil {
-		return nil, err
-	}
-
-	for i := range posts {
-		if posts[i].Url() == url {
-			return posts[i], err
-		}
-	}
-
-	err = errors.New("Could not find post")
+	err := errors.New("Could not find post")
 
 	return nil, err
 }
 
-func (f *FileRepository) FetchPostsWithTag(tag string) ([]*BlogPost, error) {
-	posts, err := f.FetchAllPosts()
+func (f *FileRepository) PostsWithTag(tag string) BlogPosts {
 
-	if err != nil {
-		return nil, err
-	}
+	filteredPosts := BlogPosts{}
 
-	filteredPosts := []*BlogPost{}
-
-	for i := range posts {
-		if posts[i].ContainsTag(tag) {
-			filteredPosts = append(filteredPosts, posts[i])
+	for i := range f.posts {
+		if f.posts[i].ContainsTag(tag) {
+			filteredPosts = append(filteredPosts, f.posts[i])
 		}
 	}
 
-	return filteredPosts, err
+	return filteredPosts
 }
 
-func (f *FileRepository) PostDirectory() string {
-	return f.postDirectory
-}
+func (f *FileRepository) PostsInRange(start, count int) BlogPosts {
 
-func (f *FileRepository) SetPostDirectory(s string) {
-	f.postDirectory = s
-}
-
-func (f *FileRepository) FetchPostsInRange(start, count int) (BlogPosts, error) {
-	posts, err := f.FetchAllPosts()
-
-	if start + count > len(posts) {
-		count = len(posts) - start
+	if start + count > len(f.posts) {
+		count = len(f.posts) - start
 	}
 
-	return posts[start:start + count], err
+	return f.posts[start:start + count]
 }
 
-func (f *FileRepository) FetchAllPosts() (BlogPosts, error) {
+func (f *FileRepository) fetchAllPosts() (BlogPosts, error) {
 
-	dirname := f.postDirectory + string(filepath.Separator)
+	dirname := f.directory + string(filepath.Separator)
 
 	files, err := ioutil.ReadDir(dirname)
 
@@ -110,7 +88,7 @@ func (f *FileRepository) FetchAllPosts() (BlogPosts, error) {
 			continue
 		}
 
-		post, err := f.FetchPost(files[i].Name())
+		post, err := f.fetchPost(files[i].Name())
 
 		if err != nil {
 			return nil, err
@@ -124,11 +102,33 @@ func (f *FileRepository) FetchAllPosts() (BlogPosts, error) {
 	return posts, err
 }
 
-func (f *FileRepository) FetchPost(filename string) (*BlogPost, error) {
+func (f *FileRepository) fetchAllTags() []string {
+
+	// We're using a map to simulate a set
+	tagMap := make(map[string]bool)
+
+	for i := range f.posts {
+		for j := range f.posts[i].Tags() {
+			tagMap[strings.ToLower(f.posts[i].Tags()[j])] = true
+		}
+	}
+
+	tags := []string{}
+
+	for key := range tagMap {
+		tags = append(tags, key)
+	}
+
+	sort.Strings(tags)
+
+	return tags
+}
+
+func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 
 	post := new(BlogPost)
 
-	dirname := f.postDirectory + string(filepath.Separator)
+	dirname := f.directory + string(filepath.Separator)
 
 	file, err := ioutil.ReadFile(dirname + filename)
 

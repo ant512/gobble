@@ -11,15 +11,7 @@ import (
 
 func home(w http.ResponseWriter, req *http.Request) {
 
-	repo := FileRepository{}
-	repo.SetPostDirectory("./posts")
-
-	posts, err := repo.FetchPostsInRange(0, 10)
-
-	if err != nil {
-		log.Println("Could not load post")
-		return
-	}
+	posts := repo.PostsInRange(0, 10)
 
 	t, _ := template.ParseFiles("./templates/home.html")
 	t.Execute(w, posts)
@@ -29,30 +21,15 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 
 	tag := req.URL.Query().Get(":tag")
 
-	repo := FileRepository{}
-	repo.SetPostDirectory("./posts")
-
-	posts, err := repo.FetchPostsWithTag(tag)
-
-	if err != nil {
-		log.Println("Could not load posts")
-		return
-	}
+	posts := repo.PostsWithTag(tag)
 
 	t, _ := template.ParseFiles("./templates/home.html")
 	t.Execute(w, posts)
 }
 
 func tags(w http.ResponseWriter, req *http.Request) {
-	repo := FileRepository{}
-	repo.SetPostDirectory("./posts")
 
-	tags, err := repo.FetchAllTags()
-
-	if err != nil {
-		log.Println("Could not load tags")
-		return
-	}
+	tags := repo.AllTags()
 
 	t, _ := template.ParseFiles("./templates/tags.html")
 	t.Execute(w, tags)
@@ -60,15 +37,7 @@ func tags(w http.ResponseWriter, req *http.Request) {
 
 func archive(w http.ResponseWriter, req *http.Request) {
 
-	repo := FileRepository{}
-	repo.SetPostDirectory("./posts")
-
-	posts, err := repo.FetchAllPosts()
-
-	if err != nil {
-		log.Println("Could not load archives")
-		return
-	}
+	posts := repo.AllPosts()
 
 	t, _ := template.ParseFiles("./templates/archive.html")
 	t.Execute(w, posts)
@@ -101,10 +70,7 @@ func post(w http.ResponseWriter, req *http.Request) {
 
 	url := fmt.Sprintf("%04d/%02d/%02d/%s", year, month, day, title)
 
-	repo := FileRepository{}
-	repo.SetPostDirectory("./posts")
-
-	post, err := repo.FetchPostWithUrl(url)
+	post, err := repo.PostWithUrl(url)
 
 	if err != nil {
 		log.Println("Could not load post")
@@ -117,21 +83,17 @@ func post(w http.ResponseWriter, req *http.Request) {
 
 func rss(w http.ResponseWriter, req *http.Request) {
 
-	repo := FileRepository{}
-	repo.SetPostDirectory("./posts")
-
-	posts, err := repo.FetchPostsInRange(0, 10)
-
-	if err != nil {
-		log.Println("Could not load post")
-		return
-	}
+	posts := repo.PostsInRange(0, 10)
 
 	t, _ := template.ParseFiles("./templates/rss.html")
 	t.Execute(w, posts)
 }
 
+var repo *FileRepository
+
 func main() {
+
+	repo = NewFileRepository("./posts")
 
 	m := pat.New()
 	m.Get("/tags/:tag", http.HandlerFunc(taggedPosts))
