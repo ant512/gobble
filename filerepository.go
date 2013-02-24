@@ -46,8 +46,8 @@ func (f *FileRepository) AllPosts() BlogPosts {
 
 func (f *FileRepository) PostWithUrl(url string) (*BlogPost, error) {
 
-	f.mutex.RLock()
-	defer f.mutex.RUnlock()
+	f.mutex.Lock()
+	defer f.mutex.Unlock()
 
 	for i := range f.posts {
 		if f.posts[i].Url() == url {
@@ -89,9 +89,6 @@ func (f *FileRepository) PostsInRange(start, count int) BlogPosts {
 }
 
 func (f *FileRepository) update() {
-
-	f.mutex.Lock()
-	defer f.mutex.Unlock()
 
 	for {
 		f.fetchAllPosts()
