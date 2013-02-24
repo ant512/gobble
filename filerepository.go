@@ -23,7 +23,7 @@ func (f *FileRepository) FetchAllTags() ([]string, error) {
 
 	for i := range posts {
 		for j := range posts[i].Tags() {
-			tagMap[posts[i].Tags()[j]] = true
+			tagMap[strings.ToLower(posts[i].Tags()[j])] = true
 		}
 	}
 
