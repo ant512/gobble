@@ -9,20 +9,29 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"sync"
 )
 
 type FileRepository struct {
 	directory string
 	posts BlogPosts
 	tags []string
+	lastUpdated time.Time
+	mutex sync.RWMutex
 }
 
 func NewFileRepository(directory string) *FileRepository {
 
 	f := new(FileRepository)
 	f.directory = directory
-	f.posts, _ = f.fetchAllPosts()
-	f.tags = f.fetchAllTags()
+
+	f.fetchAllPosts()
+	f.fetchAllTags()
+
+	f.lastUpdated = time.Now()
+
+	go f.update()
+
 
 	return f
 }
@@ -37,6 +46,9 @@ func (f *FileRepository) AllPosts() BlogPosts {
 
 func (f *FileRepository) PostWithUrl(url string) (*BlogPost, error) {
 
+	f.mutex.RLock()
+	defer f.mutex.RUnlock()
+
 	for i := range f.posts {
 		if f.posts[i].Url() == url {
 			return f.posts[i], nil
@@ -49,6 +61,9 @@ func (f *FileRepository) PostWithUrl(url string) (*BlogPost, error) {
 }
 
 func (f *FileRepository) PostsWithTag(tag string) BlogPosts {
+
+	f.mutex.RLock()
+	defer f.mutex.RUnlock()
 
 	filteredPosts := BlogPosts{}
 
@@ -63,6 +78,9 @@ func (f *FileRepository) PostsWithTag(tag string) BlogPosts {
 
 func (f *FileRepository) PostsInRange(start, count int) BlogPosts {
 
+	f.mutex.RLock()
+	defer f.mutex.RUnlock()
+
 	if start + count > len(f.posts) {
 		count = len(f.posts) - start
 	}
@@ -70,13 +88,30 @@ func (f *FileRepository) PostsInRange(start, count int) BlogPosts {
 	return f.posts[start:start + count]
 }
 
-func (f *FileRepository) fetchAllPosts() (BlogPosts, error) {
+func (f *FileRepository) update() {
+
+	f.mutex.Lock()
+	defer f.mutex.Unlock()
+
+	for {
+		f.fetchAllPosts()
+		f.fetchAllTags()
+		f.lastUpdated = time.Now()
+
+		time.Sleep(10 * time.Minute)
+	}
+}
+
+func (f *FileRepository) fetchAllPosts() error {
+
+	f.mutex.Lock()
+	defer f.mutex.Unlock()
 
 	dirname := f.directory + string(filepath.Separator)
 
 	files, err := ioutil.ReadDir(dirname)
 
-	posts := BlogPosts{}
+	f.posts = BlogPosts{}
 
 	for i := range files {
 
@@ -91,18 +126,21 @@ func (f *FileRepository) fetchAllPosts() (BlogPosts, error) {
 		post, err := f.fetchPost(files[i].Name())
 
 		if err != nil {
-			return nil, err
+			return err
 		}
 
-		posts = append(posts, post)
+		f.posts = append(f.posts, post)
 	}
 
-	sort.Sort(posts)
+	sort.Sort(f.posts)
 
-	return posts, err
+	return err
 }
 
-func (f *FileRepository) fetchAllTags() []string {
+func (f *FileRepository) fetchAllTags() {
+
+	f.mutex.Lock()
+	defer f.mutex.Unlock()
 
 	// We're using a map to simulate a set
 	tagMap := make(map[string]bool)
@@ -113,15 +151,13 @@ func (f *FileRepository) fetchAllTags() []string {
 		}
 	}
 
-	tags := []string{}
+	f.tags = []string{}
 
 	for key := range tagMap {
-		tags = append(tags, key)
+		f.tags = append(f.tags, key)
 	}
 
-	sort.Strings(tags)
-
-	return tags
+	sort.Strings(f.tags)
 }
 
 func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
