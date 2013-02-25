@@ -10,21 +10,62 @@ import (
 	"flag"
 )
 
+const postsPerPage = 10
+
+var repo *FileRepository
+var port *int64
+
 func home(w http.ResponseWriter, req *http.Request) {
 
 	term := req.URL.Query().Get("search")
-	page, err := strconv.ParseInt(req.URL.Query().Get("page"), 10, 32)
+	pageNumber, err := strconv.ParseInt(req.URL.Query().Get("page"), 10, 32)
 
 	if err != nil {
-		page = 0
+		pageNumber = 0
+	} else {
+
+		// We want to use 0-based page numbers internally, but expose them as
+		// 1-based.
+		pageNumber -= 1
+
+		if pageNumber < 0 {
+			pageNumber = 0
+		}
 	}
 
-	log.Println(term)
+	var previousURL string
+	var nextURL string
 
-	posts := repo.SearchPosts(term, int(page) * 10, 10)
+	posts, count := repo.SearchPosts(term, int(pageNumber) * postsPerPage, postsPerPage)
+
+	if pageNumber > 0 {
+		if len(term) > 0 {
+			previousURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber)
+		} else {
+			previousURL = fmt.Sprintf("/?page=%v", pageNumber)
+		}
+	}
+
+	if int(pageNumber) < count / postsPerPage {
+		if len(term) > 0 {
+			nextURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber + 2)
+		} else {
+			nextURL = fmt.Sprintf("/?page=%v", pageNumber + 2)
+		}
+	}
+
+	page := struct {
+		Posts BlogPosts
+		NextURL string
+		PreviousURL string
+	} {
+		posts,
+		nextURL,
+		previousURL,
+	}
 
 	t, _ := template.ParseFiles("./theme/templates/home.html")
-	t.Execute(w, posts)
+	t.Execute(w, page)
 }
 
 func taggedPosts(w http.ResponseWriter, req *http.Request) {
@@ -93,14 +134,11 @@ func post(w http.ResponseWriter, req *http.Request) {
 
 func rss(w http.ResponseWriter, req *http.Request) {
 
-	posts := repo.SearchPosts("", 0, 10)
+	posts, _ := repo.SearchPosts("", 0, 10)
 
 	t, _ := template.ParseFiles("./theme/templates/rss.html")
 	t.Execute(w, posts)
 }
-
-var repo *FileRepository
-var port *int64
 
 func main() {
 

@@ -16,6 +16,7 @@
 			<div id="content">
 				<div id="primary">
 					<div id="blogposts">
+						{{with .Posts}}
 						{{range .}}
 						<article class="blogpost">
 							<header class="blogpostHeader">
@@ -30,6 +31,16 @@
 							</footer>
 						</article>
 						{{end}}
+						{{end}}
+
+						<nav id="paging">
+							{{if .PreviousURL}}
+							<div class="previous"><a href="{{.PreviousURL}}">&larr; Older posts</a></div>
+							{{end}}
+							{{if .NextURL}}
+							<div class="next"><a href="{{.NextURL}}">Newer posts &rarr;</a></div>
+							{{end}}
+						</nav>
 					</div>
 				</div>
 				<div id="secondary">

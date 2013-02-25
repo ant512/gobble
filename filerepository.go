@@ -70,7 +70,7 @@ func (f *FileRepository) PostsWithTag(tag string) BlogPosts {
 	return filteredPosts
 }
 
-func (f *FileRepository) SearchPosts(term string, start int, count int) BlogPosts {
+func (f *FileRepository) SearchPosts(term string, start int, count int) (BlogPosts, int) {
 
 	f.mutex.RLock()
 	defer f.mutex.RUnlock()
@@ -88,14 +88,14 @@ func (f *FileRepository) SearchPosts(term string, start int, count int) BlogPost
 	}
 
 	if start > len(filteredPosts) {
-		return BlogPosts{}
+		return BlogPosts{}, 0
 	}
 
 	if start + count > len(filteredPosts) {
 		count = len(filteredPosts) - start
 	}
 
-	return filteredPosts[start:start + count]
+	return filteredPosts[start:start + count], len(filteredPosts)
 }
 
 func (f *FileRepository) update() {
