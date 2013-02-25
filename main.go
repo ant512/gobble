@@ -40,17 +40,17 @@ func home(w http.ResponseWriter, req *http.Request) {
 
 	if pageNumber > 0 {
 		if len(term) > 0 {
-			previousURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber)
+			nextURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber)
 		} else {
-			previousURL = fmt.Sprintf("/?page=%v", pageNumber)
+			nextURL = fmt.Sprintf("/?page=%v", pageNumber)
 		}
 	}
 
 	if int(pageNumber) < count / postsPerPage {
 		if len(term) > 0 {
-			nextURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber + 2)
+			previousURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber + 2)
 		} else {
-			nextURL = fmt.Sprintf("/?page=%v", pageNumber + 2)
+			previousURL = fmt.Sprintf("/?page=%v", pageNumber + 2)
 		}
 	}
 
