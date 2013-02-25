@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<rss version="2.0">
+
+        <channel>
+                <title>Simian Zombie</title>
+                <link>http://simianzombie.com</link>
+                <description>Adventures in Coding</description>
+                {{range .}}
+                <item>
+                        <title>{{.Title}}</title>
+                        <link>{{.Url}}</link>
+                        <description>{{.Body}}</description>
+                </item>
+                {{end}}
+        </channel>
+
+</rss>

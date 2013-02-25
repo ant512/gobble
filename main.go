@@ -14,7 +14,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 
 	posts := repo.PostsInRange(0, 10)
 
-	t, _ := template.ParseFiles("./templates/home.html")
+	t, _ := template.ParseFiles("./theme/templates/home.html")
 	t.Execute(w, posts)
 }
 
@@ -24,7 +24,7 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 
 	posts := repo.PostsWithTag(tag)
 
-	t, _ := template.ParseFiles("./templates/home.html")
+	t, _ := template.ParseFiles("./theme/templates/home.html")
 	t.Execute(w, posts)
 }
 
@@ -32,7 +32,7 @@ func tags(w http.ResponseWriter, req *http.Request) {
 
 	tags := repo.AllTags()
 
-	t, _ := template.ParseFiles("./templates/tags.html")
+	t, _ := template.ParseFiles("./theme/templates/tags.html")
 	t.Execute(w, tags)
 }
 
@@ -40,7 +40,7 @@ func archive(w http.ResponseWriter, req *http.Request) {
 
 	posts := repo.AllPosts()
 
-	t, _ := template.ParseFiles("./templates/archive.html")
+	t, _ := template.ParseFiles("./theme/templates/archive.html")
 	t.Execute(w, posts)
 }
 
@@ -78,7 +78,7 @@ func post(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	t, _ := template.ParseFiles("./templates/post.html")
+	t, _ := template.ParseFiles("./theme/templates/post.html")
 	t.Execute(w, post)
 }
 
@@ -86,17 +86,18 @@ func rss(w http.ResponseWriter, req *http.Request) {
 
 	posts := repo.PostsInRange(0, 10)
 
-	t, _ := template.ParseFiles("./templates/rss.html")
+	t, _ := template.ParseFiles("./theme/templates/rss.html")
 	t.Execute(w, posts)
 }
 
 var repo *FileRepository
+var port *int64
 
 func main() {
 
 	repo = NewFileRepository("./posts")
 
-	var port = flag.Int64("port", 8080, "port number")
+	port = flag.Int64("port", 8080, "port number")
 	flag.Parse()
 
 	m := pat.New()
@@ -108,8 +109,7 @@ func main() {
 	m.Get("/", http.HandlerFunc(home))
 
 	http.Handle("/", m)
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
-	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("img"))))
+	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir("theme"))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
 
 	http.ListenAndServe(":" + strconv.FormatInt(*port, 10), nil)
