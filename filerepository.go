@@ -10,13 +10,13 @@ import (
 	"strings"
 	"time"
 	"sync"
+	"log"
 )
 
 type FileRepository struct {
 	directory string
 	posts BlogPosts
 	tags []string
-	lastUpdated time.Time
 	mutex sync.RWMutex
 }
 
@@ -25,13 +25,7 @@ func NewFileRepository(directory string) *FileRepository {
 	f := new(FileRepository)
 	f.directory = directory
 
-	f.fetchAllPosts()
-	f.fetchAllTags()
-
-	f.lastUpdated = time.Now()
-
 	go f.update()
-
 
 	return f
 }
@@ -91,9 +85,14 @@ func (f *FileRepository) PostsInRange(start, count int) BlogPosts {
 func (f *FileRepository) update() {
 
 	for {
+
+		start := time.Now()
+
 		f.fetchAllPosts()
 		f.fetchAllTags()
-		f.lastUpdated = time.Now()
+
+		end := time.Now()
+		log.Printf("Cached %v posts in %v", len(f.posts), end.Sub(start))
 
 		time.Sleep(10 * time.Minute)
 	}
@@ -169,7 +168,7 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 		return post, err
 	}
 
-	file = []byte(f.extractHeader(string(file), post))
+	file = []byte(extractHeader(string(file), post))
 
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
 	extensions := blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
@@ -183,7 +182,7 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 	return post, nil
 }
 
-func (f *FileRepository) extractHeader(text string, post *BlogPost) string {
+func extractHeader(text string, post *BlogPost) string {
 
 	lines := strings.Split(text, "\n")
 

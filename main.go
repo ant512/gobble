@@ -100,6 +100,8 @@ func main() {
 	port = flag.Int64("port", 8080, "port number")
 	flag.Parse()
 
+	var version = "1.0"
+
 	m := pat.New()
 	m.Get("/tags/:tag", http.HandlerFunc(taggedPosts))
 	m.Get("/tags/", http.HandlerFunc(tags))
@@ -111,6 +113,13 @@ func main() {
 	http.Handle("/", m)
 	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir("theme"))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
+
+	fmt.Printf("Gobble Blogging Engine (version %v)\n", version)
+	fmt.Println("http://simianzombie.com")
+	fmt.Println("")
+	fmt.Println("Copyright (C) 2013 Antony Dzeryn")
+	fmt.Println("")
+	fmt.Printf("Listening on port %v\n", *port)
 
 	http.ListenAndServe(":" + strconv.FormatInt(*port, 10), nil)
 }
