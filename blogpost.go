@@ -71,6 +71,14 @@ func (b *BlogPost) ContainsTag(tag string) bool {
 	return false
 }
 
+func (b *BlogPost) ContainsTerm(term string) bool {
+	if b.ContainsTag(term) {
+		return true
+	}
+
+	return strings.Contains(b.body, term)
+}
+
 func (b *BlogPost) Url() string {
 	title := strings.ToLower(b.Title())
 	title = strings.Replace(title, " ", "-", -1)

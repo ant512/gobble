@@ -40,8 +40,8 @@ func (f *FileRepository) AllPosts() BlogPosts {
 
 func (f *FileRepository) PostWithUrl(url string) (*BlogPost, error) {
 
-	f.mutex.Lock()
-	defer f.mutex.Unlock()
+	f.mutex.RLock()
+	defer f.mutex.RUnlock()
 
 	for i := range f.posts {
 		if f.posts[i].Url() == url {
@@ -70,16 +70,32 @@ func (f *FileRepository) PostsWithTag(tag string) BlogPosts {
 	return filteredPosts
 }
 
-func (f *FileRepository) PostsInRange(start, count int) BlogPosts {
+func (f *FileRepository) SearchPosts(term string, start int, count int) BlogPosts {
 
 	f.mutex.RLock()
 	defer f.mutex.RUnlock()
 
-	if start + count > len(f.posts) {
-		count = len(f.posts) - start
+	filteredPosts := BlogPosts{}
+
+	if len(term) > 0 {
+		for i := range f.posts {
+			if f.posts[i].ContainsTerm(term) {
+				filteredPosts = append(filteredPosts, f.posts[i])
+			}
+		}
+	} else {
+		filteredPosts = f.posts
 	}
 
-	return f.posts[start:start + count]
+	if start > len(filteredPosts) {
+		return BlogPosts{}
+	}
+
+	if start + count > len(filteredPosts) {
+		count = len(filteredPosts) - start
+	}
+
+	return filteredPosts[start:start + count]
 }
 
 func (f *FileRepository) update() {

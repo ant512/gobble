@@ -12,7 +12,16 @@ import (
 
 func home(w http.ResponseWriter, req *http.Request) {
 
-	posts := repo.PostsInRange(0, 10)
+	term := req.URL.Query().Get("search")
+	page, err := strconv.ParseInt(req.URL.Query().Get("page"), 10, 32)
+
+	if err != nil {
+		page = 0
+	}
+
+	log.Println(term)
+
+	posts := repo.SearchPosts(term, int(page) * 10, 10)
 
 	t, _ := template.ParseFiles("./theme/templates/home.html")
 	t.Execute(w, posts)
@@ -84,7 +93,7 @@ func post(w http.ResponseWriter, req *http.Request) {
 
 func rss(w http.ResponseWriter, req *http.Request) {
 
-	posts := repo.PostsInRange(0, 10)
+	posts := repo.SearchPosts("", 0, 10)
 
 	t, _ := template.ParseFiles("./theme/templates/rss.html")
 	t.Execute(w, posts)

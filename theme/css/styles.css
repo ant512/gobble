@@ -220,3 +220,11 @@ h1 {
 	font-weight: bold;
 	line-height: 2.2em;
 }
+
+#searchForm {
+	padding-bottom: 20px;
+}
+
+.searchSubmit {
+	display: none;
+}
