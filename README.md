@@ -11,6 +11,11 @@ This is a simple blogging engine written in Go.  Its features are:
  - Python 3 script to convert from a WordPress export to Gobble format.
  - Posts are stored on the file system.
  - Posts and comments are written in Markdown.
+ - Simple search.
+ - Archives list.
+ - Paging.
+ - Tagging.
+ - RSS feed.
 
 
 Writing Posts
