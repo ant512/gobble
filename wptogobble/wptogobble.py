@@ -1,5 +1,5 @@
 # Converts XML documents exported from WordPress to individual Markdown files
-# for use with scriptogr.am.
+# for use with Gobble.
 #
 # The XML document should be placed in the same directory as this script and
 # be given the name "source.xml".  Output files will be created in a folder
@@ -12,7 +12,7 @@
 # dates are printed by the script so that the user can manually fix any issues
 # before re-running the script.
 #
-# Usage: python3 wptosgrm.py
+# Usage: python3 wptogobble.py
 
 import xml.etree.ElementTree as etree
 import cgi
