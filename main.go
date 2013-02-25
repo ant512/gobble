@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"text/template"
+	"flag"
 )
 
 func home(w http.ResponseWriter, req *http.Request) {
@@ -95,6 +96,9 @@ func main() {
 
 	repo = NewFileRepository("./posts")
 
+	var port = flag.Int64("port", 8080, "port number")
+	flag.Parse()
+
 	m := pat.New()
 	m.Get("/tags/:tag", http.HandlerFunc(taggedPosts))
 	m.Get("/tags/", http.HandlerFunc(tags))
@@ -108,5 +112,5 @@ func main() {
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("img"))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":" + strconv.FormatInt(*port, 10), nil)
 }
