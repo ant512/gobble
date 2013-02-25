@@ -96,12 +96,12 @@ run at system startup:
  - sudo nano gobble.conf
  - Insert the following text:
 
-description     "gobble web server"
+    description     "gobble web server"
 
-start on startup
+    start on startup
 
-chdir path_to_gobble/gobble
-exec ./gobble
+    chdir path_to_gobble/gobble
+    exec ./gobble
 
  - sudo service gobble start
 
@@ -125,12 +125,12 @@ Nginx
 Nginx can be used as a proxy to redirect traffic to the Gobble server.  Here's
 an example server block:
 
-server {
-        listen 80;
-        server_name example.com;
-        access_log /var/log/nginx/example.com.access.log;
-        location / {
+    server {
+            listen 80;
+            server_name example.com;
+            access_log /var/log/nginx/example.com.access.log;
+            location / {
                 proxy_pass http://127.0.0.1:8080;
-        }
-}
+            }
+    }
 
