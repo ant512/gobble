@@ -46,8 +46,6 @@ blockquote {
 
 #container {
 	background-color: White;
-	max-width: 1000px;
-	margin: 2em auto;
 	font: 15px "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	line-height: 1.625;
@@ -221,17 +219,16 @@ h1 {
 	overflow: hidden;
 	padding: 0 0 1.625em;
 	margin: auto;
+	width: 58.4%;
 }
 
 #paging .previous {
 	float: left;
-	width: 50%;
 }
 
 #paging .next {
 	float: right;
 	text-align: right;
-	width: 50%;
 }
 
 #paging a {
