@@ -12,23 +12,12 @@
 			<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
 		</header>
 		<div id="container">
-			<nav id="navigation">
-				<ul>
-					<li><a href="/archive">Archive</a></li>
-					<li><a href="/tags">Tags</a></li>
-					<li><a href="/rss">RSS Feed</a></li>
-				</ul>
-				<form method="get" id="searchForm" action="/">
-					<input type="text" name="search" id="search" placeholder="Search">
-					<input type="submit" value="Search" class="searchSubmit">
-				</form>
-			</nav>
 			{{with .Posts}}
 			{{range .}}
 			<article class="blogpost">
 				<header class="blogpostHeader">
 					<p>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
-					<h1>{{.Title}}</h1>
+					<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
 				</header>
 				<div class="blogpostContent">
 					{{.Body}}
@@ -47,6 +36,18 @@
 				{{if .NextURL}}
 				<div class="next"><a href="{{.NextURL}}">Newer posts &rarr;</a></div>
 				{{end}}
+			</nav>
+
+			<nav id="navigation">
+				<ul>
+					<li><a href="/archive">Archive</a></li>
+					<li><a href="/tags">Tags</a></li>
+					<li><a href="/rss">RSS Feed</a></li>
+				</ul>
+				<form method="get" id="searchForm" action="/">
+					<input type="text" name="search" id="search" placeholder="Search">
+					<input type="submit" value="Search" class="searchSubmit">
+				</form>
 			</nav>
 		</div>
 		<footer id="footer">

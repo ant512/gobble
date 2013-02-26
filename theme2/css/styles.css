@@ -37,11 +37,7 @@ blockquote {
 }
 
 #header {
-	border-top: 2px solid #BBB;
 	padding-bottom: 10px;
-	position: relative;
-	z-index: 9999;
-
 }
 
 #container {
@@ -77,6 +73,10 @@ blockquote {
 .blogpost header {
 	margin: auto;
 	width: 58.4%;
+}
+
+.blogpost header a {
+	color: black;
 }
 
 .blogpostContent {
@@ -164,22 +164,22 @@ h1 {
 #navigation {
 	font-size: 12px;
 	clear: both;
-	margin-right: 7.6%;
-	width: 18.8%;
+	width: 50%;
 	margin: auto;
 }
 
 #navigation ul {
 	margin: 0px;
-	padding: 0px;
+	padding: 10px;
 	font-weight: bold;
 	font-size: 14px;
+	text-align: center;
 }
 
 #navigation li {
 	list-style: none;
-	float: left;
-	padding: 5px;
+	display: inline;
+	padding: 10px;
 }
 
 #navigation h3 {

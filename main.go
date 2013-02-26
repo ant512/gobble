@@ -71,11 +71,46 @@ func home(w http.ResponseWriter, req *http.Request) {
 func taggedPosts(w http.ResponseWriter, req *http.Request) {
 
 	tag := req.URL.Query().Get(":tag")
+	pageNumber, err := strconv.ParseInt(req.URL.Query().Get(":page"), 10, 32)
 
-	posts := repo.PostsWithTag(tag)
+	if err != nil {
+		pageNumber = 0
+	} else {
+
+		// We want to use 0-based page numbers internally, but expose them as
+		// 1-based.
+		pageNumber -= 1
+
+		if pageNumber < 0 {
+			pageNumber = 0
+		}
+	}
+
+	var previousURL string
+	var nextURL string
+
+	posts, count := repo.PostsWithTag(tag, int(pageNumber) * postsPerPage, postsPerPage)
+
+	if pageNumber > 0 {
+		nextURL = fmt.Sprintf("/tags/%v/%v", tag, pageNumber)
+	}
+
+	if int(pageNumber) < count / postsPerPage {
+		previousURL = fmt.Sprintf("/tags/%v/%v", tag, pageNumber + 2)
+	}
+
+	page := struct {
+		Posts BlogPosts
+		NextURL string
+		PreviousURL string
+	} {
+		posts,
+		nextURL,
+		previousURL,
+	}
 
 	t, _ := template.ParseFiles("./theme/templates/home.html")
-	t.Execute(w, posts)
+	t.Execute(w, page)
 }
 
 func tags(w http.ResponseWriter, req *http.Request) {
@@ -150,6 +185,7 @@ func main() {
 	var version = "1.0"
 
 	m := pat.New()
+	m.Get("/tags/:tag/:page", http.HandlerFunc(taggedPosts))
 	m.Get("/tags/:tag", http.HandlerFunc(taggedPosts))
 	m.Get("/tags/", http.HandlerFunc(tags))
 	m.Get("/archive/", http.HandlerFunc(archive))
