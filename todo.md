@@ -6,4 +6,4 @@ Todo
  - Create/edit comments.
  - Use http://oscargodson.github.com/EpicEditor/ as the comment editor.
  - Tidy up all posts/comments.
- - Add site name to simianzombie theme.
+ - Make description in RSS feed configurable.

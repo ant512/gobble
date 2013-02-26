@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
 		<link rel="Stylesheet" href="/theme/css/styles.css">
 		<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss" />
-		<title></title>
+		<title>{{.SiteName}}: Archive</title>
 	</head>
 	<body>
 		<div id="container">
@@ -18,8 +18,10 @@
 						<h1>Archive</h1>
 
 						<ul id="archive">
+							{{with .Posts}}
 							{{range .}}
 							<li><a href="/posts/{{.Url}}">{{.Title}}</a> <span class="archiveTime">{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</span></li>
+							{{end}}
 							{{end}}
 						</ul>
 					</div>

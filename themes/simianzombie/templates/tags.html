@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
 		<link rel="Stylesheet" href="/theme/css/styles.css">
 		<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss" />
-		<title></title>
+		<title>{{.SiteName}}: Tags</title>
 	</head>
 	<body>
 		<div id="container">
@@ -18,8 +18,10 @@
 					<h1>Tags</h1>
 
 						<ul id="archive">
+							{{with .Tags}}
 							{{range .}}
 							<li><a href="/tags/{{.}}">{{.}}</a></li>
+							{{end}}
 							{{end}}
 						</ul>
 					</div>

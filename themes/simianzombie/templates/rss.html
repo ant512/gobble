@@ -2,15 +2,17 @@
 <rss version="2.0">
 
         <channel>
-                <title>Simian Zombie</title>
+                <title>{{.SiteName}}</title>
                 <link>http://simianzombie.com</link>
                 <description>Adventures in Coding</description>
+                {{with .Posts}}
                 {{range .}}
                 <item>
                         <title>{{.Title}}</title>
                         <link>{{.Url}}</link>
                         <description>{{.Body}}</description>
                 </item>
+                {{end}}
                 {{end}}
         </channel>
 
