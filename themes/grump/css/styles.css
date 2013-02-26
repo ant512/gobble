@@ -194,13 +194,31 @@ h1 {
 #footer {
 	clear: both;
 	background: #333333;
-	border-top: 1px solid #DDD;
+	
 	color: #666;
 	font-size: 0.8em;
 	line-height: 2.2em;
 	padding: 4em;
 	text-align: center;
 	font-weight: bold;
+}
+
+#footer a {
+	color: #888;
+
+	-webkit-transition: color 200ms;
+	-moz-transition: color 200ms;
+	-o-transition: color 200ms;
+	transition: color 200ms;
+}
+
+#footer a:hover {
+	color: white;
+
+	-webkit-transition: color 200ms;
+	-moz-transition: color 200ms;
+	-o-transition: color 200ms;
+	transition: color 200ms;
 }
 
 #archive {
@@ -237,6 +255,13 @@ h1 {
 #searchForm {
 	padding-bottom: 20px;
 	text-align: center;
+}
+
+#search {
+	padding-left: 20px;
+	background-image: url('../img/search.png');
+	background-repeat: no-repeat;
+	background-position: left;
 }
 
 .searchSubmit {
