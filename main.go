@@ -215,14 +215,15 @@ func rss(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, page)
 }
 
-func main() {
-
+func printInfo() {
 	fmt.Printf("Gobble Blogging Engine (version %v)\n", version)
 	fmt.Println("http://simianzombie.com")
 	fmt.Println("")
 	fmt.Println("Copyright (C) 2013 Antony Dzeryn")
 	fmt.Println("")
+}
 
+func loadConfig() {
 	configPath := flag.String("config", "./gobble.conf", "config file path")
 	flag.Parse()
 
@@ -248,7 +249,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not load posts from", config.PostPath)
 	}
+}
 
+func prepareHandler() {
 	repo = NewFileRepository(config.PostPath)
 
 	m := pat.New()
@@ -269,4 +272,10 @@ func main() {
 	fmt.Printf("Post data stored in \"%v\"\n", config.PostPath)
 
 	http.ListenAndServe(":" + strconv.FormatInt(config.Port, 10), nil)
+}
+
+func main() {
+	printInfo()
+	loadConfig()
+	prepareHandler()
 }
