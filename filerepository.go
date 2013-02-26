@@ -232,6 +232,7 @@ func extractHeader(text string, post *BlogPost) string {
 				for j := range tags {
 					tags[j] = strings.Trim(tags[j], " ")
 					tags[j] = strings.Replace(tags[j], " ", "-", -1)
+					tags[j] = strings.Replace(tags[j], "/", "-", -1)
 					tags[j] = strings.ToLower(tags[j])
 
 					if tags[j] != "" {
