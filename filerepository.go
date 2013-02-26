@@ -172,7 +172,7 @@ func (f *FileRepository) fetchAllTags() {
 	tags := []string{}
 
 	for key := range tagMap {
-		tags = append(f.tags, key)
+		tags = append(tags, key)
 	}
 
 	sort.Strings(tags)

@@ -36,20 +36,26 @@ blockquote {
 	margin: 0 3em;
 }
 
-#header {
-	padding-bottom: 10px;
+h1 {
+	clear: both;
+	color: #222;
+	font-size: 26px;
+	font-weight: bold;
+	line-height: 1.5em;
+	padding-bottom: .3em;
+	padding-top: 15px;
+	margin: 0px;
 }
 
-#container {
-	background-color: White;
+#posts {
 	font: 15px "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	line-height: 1.625;
 	color: #373737;
 }
 
-.blogpost {
-	border-bottom: 1px solid #DDD;
+#posts article {
+	border-bottom: 1px solid #ddd;
 	margin: 0 0 1.625em;
 	padding: 0 0 1.625em;
 	position: relative;
@@ -58,38 +64,40 @@ blockquote {
 	clear: both;
 }
 
-.blogpost header {
+#posts article header {
 	margin: auto;
 	width: 58.4%;
 }
 
-.blogpost header a {
+#posts article header a {
 	color: black;
 }
 
-.blogpost header a:hover {
+#posts article header a:hover {
 	color: #1982D1;
 }
 
-.blogpostContent {
+#posts article .content {
 	margin: auto;
 	width: 58.4%;
 }
 
-.blogpost img {
+#posts article .content img {
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
 }
 
-.blogpost h2 {
+#posts article h2 {
 	width: 58%;
 	margin: auto;
 	padding-top: 30px;
 	font-size: 1.2em;
 }
 
-.blogpost footer {
+#posts article footer {
+	text-align: center;
+	padding: 20px;
 	margin: auto;
 	width: 58.4%;
 	color: #666;
@@ -99,16 +107,8 @@ blockquote {
 	padding: 0px 0px 50px 0px;
 }
 
-.blogpost footer a {
+#posts article footer a {
 	font-weight: bold;
-}
-
-.tags {
-	text-align: center;
-	padding: 20px;
-}
-
-.tags a {
 	padding: 5px;
 	border: 1px solid white;
 	border-radius: 10px;
@@ -125,7 +125,7 @@ blockquote {
 	transition: border 200ms;
 }
 
-.tags a:hover {
+#posts article footer a:hover {
 	border: 1px solid #ddd;
 	border-radius: 10px;
 	background-color: #f6f6f6;
@@ -141,18 +141,12 @@ blockquote {
 	transition: border 200ms;
 }
 
-h1 {
-	clear: both;
-	color: #222;
-	font-size: 26px;
-	font-weight: bold;
-	line-height: 1.5em;
-	padding-bottom: .3em;
-	padding-top: 15px;
+#header {
 	margin: 0px;
+	padding: 0px;
 }
 
-.blogpostHeader p {
+#posts article header p {
 	color: #666;
 	clear: both;
 	font-size: 12px;
@@ -162,11 +156,11 @@ h1 {
 	text-align: right;
 }
 
-.blogpostContent h2 {
-	font-size: 100%;
+#posts article footer h2 {
+	font-size: 1em;
 }
 
-.blogpostComment {
+#posts article .comment {
 	margin: auto;
 	width: 55%;
 	padding: 10px 20px 10px 20px;
@@ -176,41 +170,8 @@ h1 {
 	background-color: #f6f6f6;
 }
 
-.blogpostComment h3 {
+#posts article .comment h3 {
 	font-size: 0.8em;
-}
-
-#navigation {
-	font-size: 12px;
-	clear: both;
-	width: 50%;
-	margin: auto;
-}
-
-#navigation ul {
-	margin: 0px;
-	padding: 10px;
-	font-weight: bold;
-	font-size: 14px;
-	text-align: center;
-}
-
-#navigation li {
-	list-style: none;
-	display: inline;
-	padding: 10px;
-}
-
-#navigation h3 {
-	color: #666;
-	font-size: 10px;
-	font-weight: 500;
-	letter-spacing: 0.1em;
-	line-height: 2.6em;
-	text-transform: uppercase;
-	margin: 0;
-	outline: 0;
-	padding: 0;
 }
 
 #footer {
@@ -240,6 +201,28 @@ h1 {
 	-moz-transition: color 200ms;
 	-o-transition: color 200ms;
 	transition: color 200ms;
+}
+
+#footer nav {
+	font-size: 12px;
+	clear: both;
+	width: 100%;
+	min-height: 55px;
+}
+
+#footer nav ul {
+	display: inline;
+	padding: 10px;
+	font-weight: bold;
+	font-size: 14px;
+	text-align: center;
+	width: 100%;
+}
+
+#footer nav li {
+	list-style: none;
+	display: inline;
+	padding: 10px;
 }
 
 #archive {
