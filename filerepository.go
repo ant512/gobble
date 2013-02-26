@@ -124,14 +124,11 @@ func (f *FileRepository) update() {
 
 func (f *FileRepository) fetchAllPosts() error {
 
-	f.mutex.Lock()
-	defer f.mutex.Unlock()
-
 	dirname := f.directory + string(filepath.Separator)
 
 	files, err := ioutil.ReadDir(dirname)
 
-	f.posts = BlogPosts{}
+	posts := BlogPosts{}
 
 	for i := range files {
 
@@ -149,18 +146,19 @@ func (f *FileRepository) fetchAllPosts() error {
 			return err
 		}
 
-		f.posts = append(f.posts, post)
+		posts = append(posts, post)
 	}
 
-	sort.Sort(f.posts)
+	sort.Sort(posts)
+
+	f.mutex.Lock()
+	f.posts = posts
+	f.mutex.Unlock()
 
 	return err
 }
 
 func (f *FileRepository) fetchAllTags() {
-
-	f.mutex.Lock()
-	defer f.mutex.Unlock()
 
 	// We're using a map to simulate a set
 	tagMap := make(map[string]bool)
@@ -171,13 +169,17 @@ func (f *FileRepository) fetchAllTags() {
 		}
 	}
 
-	f.tags = []string{}
+	tags := []string{}
 
 	for key := range tagMap {
-		f.tags = append(f.tags, key)
+		tags = append(f.tags, key)
 	}
 
-	sort.Strings(f.tags)
+	sort.Strings(tags)
+
+	f.mutex.Lock()
+	f.tags = tags
+	f.mutex.Unlock()
 }
 
 func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
