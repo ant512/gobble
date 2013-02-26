@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
+	Name string
 	Port int64
 	PostPath string
 	Theme string
@@ -21,6 +22,7 @@ func LoadConfig(filename string) (*Config, error) {
 	config := new(Config)
 
 	// Set up defaults
+	config.Name = "Gobble"
 	config.Port = 8080
 	config.PostPath = "./posts"
 	config.Theme = "simianzombie"

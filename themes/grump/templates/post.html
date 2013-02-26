@@ -5,7 +5,7 @@
 		<link rel="Stylesheet" href="/theme/css/styles.css">
 		<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss" />
 		<link href="/rainbow/themes/blackboard.css" rel="stylesheet" type="text/css" media="screen">
-		<title></title>
+		<title>{{.SiteName}}: {{.Post.Title}}</title>
 	</head>
 	<body>
 		<header id="header">
@@ -13,6 +13,7 @@
 		</header>
 		<div id="container">
 			<article class="blogpost">
+				{{with .Post}}
 				<header class="blogpostHeader">
 					<p>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
 					<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
@@ -23,6 +24,7 @@
 				<footer class="tags">
 					{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
 				</footer>
+				{{end}}
 			</article>
 
 			<nav id="navigation">

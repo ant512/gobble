@@ -62,10 +62,12 @@ func home(w http.ResponseWriter, req *http.Request) {
 		Posts BlogPosts
 		NextURL string
 		PreviousURL string
+		SiteName string
 	} {
 		posts,
 		nextURL,
 		previousURL,
+		config.Name,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/home.html")
@@ -107,10 +109,12 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 		Posts BlogPosts
 		NextURL string
 		PreviousURL string
+		SiteName string
 	} {
 		posts,
 		nextURL,
 		previousURL,
+		config.Name,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/home.html")
@@ -121,16 +125,32 @@ func tags(w http.ResponseWriter, req *http.Request) {
 
 	tags := repo.AllTags()
 
+	page := struct {
+		Tags []string
+		SiteName string
+	} {
+		tags,
+		config.Name,
+	}
+
 	t, _ := template.ParseFiles(themePath + "/templates/tags.html")
-	t.Execute(w, tags)
+	t.Execute(w, page)
 }
 
 func archive(w http.ResponseWriter, req *http.Request) {
 
 	posts := repo.AllPosts()
 
+	page := struct {
+		Posts BlogPosts
+		SiteName string
+	} {
+		posts,
+		config.Name,
+	}
+
 	t, _ := template.ParseFiles(themePath + "/templates/archive.html")
-	t.Execute(w, posts)
+	t.Execute(w, page)
 }
 
 func post(w http.ResponseWriter, req *http.Request) {
@@ -167,16 +187,32 @@ func post(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	page := struct {
+		Post *BlogPost
+		SiteName string
+	} {
+		post,
+		config.Name,
+	}
+
 	t, _ := template.ParseFiles(themePath + "/templates/post.html")
-	t.Execute(w, post)
+	t.Execute(w, page)
 }
 
 func rss(w http.ResponseWriter, req *http.Request) {
 
 	posts, _ := repo.SearchPosts("", 0, 10)
 
+	page := struct {
+		Posts BlogPosts
+		SiteName string
+	} {
+		posts,
+		config.Name,
+	}
+
 	t, _ := template.ParseFiles(themePath + "/templates/rss.html")
-	t.Execute(w, posts)
+	t.Execute(w, page)
 }
 
 func main() {
@@ -190,7 +226,9 @@ func main() {
 	configPath := flag.String("config", "./gobble.conf", "config file path")
 	flag.Parse()
 
-	config, err := LoadConfig(*configPath)
+	var err error
+
+	config, err = LoadConfig(*configPath)
 
 	if err != nil {
 		log.Println("Could not load config file", *configPath)
