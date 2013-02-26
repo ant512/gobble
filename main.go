@@ -197,8 +197,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	repo = NewFileRepository("./posts")
-
 	themePath = "themes" + string(filepath.Separator) + config.Theme
 
 	_, err = os.Stat(themePath)
@@ -212,6 +210,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not load posts from", config.PostPath)
 	}
+
+	repo = NewFileRepository(config.PostPath)
 
 	m := pat.New()
 	m.Get("/tags/:tag/:page", http.HandlerFunc(taggedPosts))
