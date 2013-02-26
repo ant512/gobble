@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 )
 
 type Config struct {
@@ -21,9 +20,12 @@ func LoadConfig(filename string) (*Config, error) {
 
 	config := new(Config)
 
-	err = json.Unmarshal(file, config)
+	// Set up defaults
+	config.Port = 8080
+	config.PostPath = "./posts"
+	config.Theme = "simianzombie"
 
-	log.Println(err)
+	err = json.Unmarshal(file, config)
 
 	return config, err
 }

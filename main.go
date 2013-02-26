@@ -193,7 +193,8 @@ func main() {
 	config, err := LoadConfig(*configPath)
 
 	if err != nil {
-		log.Fatal("Could not load config file ", configPath)
+		log.Println("Could not load config file", *configPath)
+		log.Fatal(err)
 	}
 
 	repo = NewFileRepository("./posts")
@@ -203,13 +204,13 @@ func main() {
 	_, err = os.Stat(themePath)
 
 	if err != nil {
-		log.Fatal("Could not load theme ", themePath)
+		log.Fatal("Could not load theme", themePath)
 	}
 
 	_, err = os.Stat(config.PostPath)
 
 	if err != nil {
-		log.Fatal("Could not load posts from ", config.PostPath)
+		log.Fatal("Could not load posts from", config.PostPath)
 	}
 
 	m := pat.New()
