@@ -9,6 +9,7 @@ This is a simple blogging engine written in Go.  Its features are:
  - Easy to install.
  - Fast.
  - Python 3 script to convert from a WordPress export to Gobble format.
+ - Configurable via JSON file.
  - Posts are stored on the file system.
  - Posts and comments are written in Markdown.
  - Simple search.
@@ -52,9 +53,9 @@ to lower-case for you should you enter some with upper-case characters.
 Theming
 -------
 
-Gobble currently only supports a single theme, which can be found in the
-gobble/theme directory.  It consists of image, css and templates folders.  All
-are designed to be standards compliant and easy to edit.
+Gobble supports multiple themes, which can be found in the gobble/themes
+directory.  Each theme consists of image, css and templates folders.  All are
+designed to be standards compliant and easy to edit.
 
 When editing templates, take care not to disturb content between {{brackets}}.
 These are part of Go's templating system and function as placeholders for
@@ -118,10 +119,43 @@ To stop Gobble:
 Startup Options
 ---------------
 
-The only command line argument currently available is "-port", which allows you
-to specify a different port for Gobble to run on:
+The only command line argument currently available is `-config`, which allows
+you to specify a different config file for Gobble to load:
 
-    ./gobble -port 8001
+    ./gobble -config ./gobble.conf
+
+
+Configuration
+-------------
+
+Gobble's configuration is changed by editing the gobble.conf file.  You can
+specify a different file to use via the command line, and therefore have
+multiple Gobble servers running simultaneously.
+
+The default config file looks like this:
+
+    {                                                 
+    	"name": "Simian Zombie",
+    	"port": 8080,
+    	"postPath": "../posts",
+    	"theme": "grump"
+    }
+
+The config file is a JSON document.  When editing the file, ensure that you
+respect the JSON conventions.
+
+The options are defined as follows:
+
+ - name: the site's name.
+ - port: the port on which Gobble should listen.
+ - postPath: the path to the posts directory.
+ - theme: the theme to use.
+
+Notes:
+
+ - All themes must be installed in `gobble/themes`.
+ - Missing configuration values will be given defaults.
+
 
 
 Nginx
