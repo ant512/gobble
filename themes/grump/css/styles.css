@@ -160,7 +160,7 @@ h1 {
 	font-size: 1em;
 }
 
-#posts article .comment {
+#posts article .comments .comment {
 	margin: auto;
 	width: 55%;
 	padding: 10px 20px 10px 20px;
@@ -170,7 +170,7 @@ h1 {
 	background-color: #f6f6f6;
 }
 
-#posts article .comment h3 {
+#posts article .comments .comment h3 {
 	font-size: 0.8em;
 }
 
