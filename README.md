@@ -67,9 +67,9 @@ Post Caching
 Rather than use a database, which would increase the complexity of Gobble and
 its installation, Gobble stores all of its posts on the file system.  However,
 when Gobble is running it caches the entire content of the blog in memory.  This
-may sound a little excessive, but simianzombie.com consists of 100,000 words
-spread over 500 posts and uses just 2MB of disk space.  Storing the posts in RAM
-makes retrieving and searching them extremely fast.
+may sound a little excessive, but simianzombie.com consists of 280,000 words
+spread over 480 posts and 912 comments, and uses just 2MB of disk space.
+Storing the posts in RAM makes retrieving and searching them extremely fast.
 
 The cache is updated by a background task every 10 minutes, which reloads the
 entire dataset from disk.
