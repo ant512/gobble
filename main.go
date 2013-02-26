@@ -8,12 +8,16 @@ import (
 	"strconv"
 	"text/template"
 	"flag"
+	"path/filepath"
+	"os"
 )
 
 const postsPerPage = 10
+const version = "1.0"
 
 var repo *FileRepository
-var port *int64
+var config *Config
+var themePath string
 
 func home(w http.ResponseWriter, req *http.Request) {
 
@@ -64,7 +68,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 		previousURL,
 	}
 
-	t, _ := template.ParseFiles("./theme/templates/home.html")
+	t, _ := template.ParseFiles(themePath + "/templates/home.html")
 	t.Execute(w, page)
 }
 
@@ -109,7 +113,7 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 		previousURL,
 	}
 
-	t, _ := template.ParseFiles("./theme/templates/home.html")
+	t, _ := template.ParseFiles(themePath + "/templates/home.html")
 	t.Execute(w, page)
 }
 
@@ -117,7 +121,7 @@ func tags(w http.ResponseWriter, req *http.Request) {
 
 	tags := repo.AllTags()
 
-	t, _ := template.ParseFiles("./theme/templates/tags.html")
+	t, _ := template.ParseFiles(themePath + "/templates/tags.html")
 	t.Execute(w, tags)
 }
 
@@ -125,7 +129,7 @@ func archive(w http.ResponseWriter, req *http.Request) {
 
 	posts := repo.AllPosts()
 
-	t, _ := template.ParseFiles("./theme/templates/archive.html")
+	t, _ := template.ParseFiles(themePath + "/templates/archive.html")
 	t.Execute(w, posts)
 }
 
@@ -163,7 +167,7 @@ func post(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	t, _ := template.ParseFiles("./theme/templates/post.html")
+	t, _ := template.ParseFiles(themePath + "/templates/post.html")
 	t.Execute(w, post)
 }
 
@@ -171,18 +175,42 @@ func rss(w http.ResponseWriter, req *http.Request) {
 
 	posts, _ := repo.SearchPosts("", 0, 10)
 
-	t, _ := template.ParseFiles("./theme/templates/rss.html")
+	t, _ := template.ParseFiles(themePath + "/templates/rss.html")
 	t.Execute(w, posts)
 }
 
 func main() {
 
-	repo = NewFileRepository("./posts")
+	fmt.Printf("Gobble Blogging Engine (version %v)\n", version)
+	fmt.Println("http://simianzombie.com")
+	fmt.Println("")
+	fmt.Println("Copyright (C) 2013 Antony Dzeryn")
+	fmt.Println("")
 
-	port = flag.Int64("port", 8080, "port number")
+	configPath := flag.String("config", "./gobble.conf", "config file path")
 	flag.Parse()
 
-	var version = "1.0"
+	config, err := LoadConfig(*configPath)
+
+	if err != nil {
+		log.Fatal("Could not load config file ", configPath)
+	}
+
+	repo = NewFileRepository("./posts")
+
+	themePath = "themes" + string(filepath.Separator) + config.Theme
+
+	_, err = os.Stat(themePath)
+
+	if err != nil {
+		log.Fatal("Could not load theme ", themePath)
+	}
+
+	_, err = os.Stat(config.PostPath)
+
+	if err != nil {
+		log.Fatal("Could not load posts from ", config.PostPath)
+	}
 
 	m := pat.New()
 	m.Get("/tags/:tag/:page", http.HandlerFunc(taggedPosts))
@@ -194,15 +222,12 @@ func main() {
 	m.Get("/", http.HandlerFunc(home))
 
 	http.Handle("/", m)
-	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir("theme"))))
+	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(themePath))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
 
-	fmt.Printf("Gobble Blogging Engine (version %v)\n", version)
-	fmt.Println("http://simianzombie.com")
-	fmt.Println("")
-	fmt.Println("Copyright (C) 2013 Antony Dzeryn")
-	fmt.Println("")
-	fmt.Printf("Listening on port %v\n", *port)
+	fmt.Printf("Listening on port %v\n", config.Port)
+	fmt.Printf("Using theme \"%v\"\n", config.Theme)
+	fmt.Printf("Post data stored in \"%v\"\n", config.PostPath)
 
-	http.ListenAndServe(":" + strconv.FormatInt(*port, 10), nil)
+	http.ListenAndServe(":" + strconv.FormatInt(config.Port, 10), nil)
 }
