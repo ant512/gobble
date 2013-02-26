@@ -157,7 +157,6 @@ Notes:
  - Missing configuration values will be given defaults.
 
 
-
 Nginx
 -----
 
