@@ -11,3 +11,5 @@ Todo
    - Port.
    - Post directory (move posts to home folder in their own hg repo).
    - Site name (and add site name to title tags).
+   - Specify config file on command line to enable running multiple Gobble
+     instances with data in different places.
