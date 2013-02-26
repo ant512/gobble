@@ -82,6 +82,13 @@ blockquote {
 	display: block;
 }
 
+.blogpost h2 {
+	width: 58%;
+	margin: auto;
+	padding-top: 30px;
+	font-size: 1.2em;
+}
+
 .blogpost footer {
 	margin: auto;
 	width: 58.4%;
@@ -105,6 +112,7 @@ blockquote {
 	padding: 5px;
 	border: 1px solid white;
 	border-radius: 10px;
+	color: #bbb;
 
 	-webkit-transition: background 200ms;
 	-moz-transition: background 200ms;
@@ -156,6 +164,20 @@ h1 {
 
 .blogpostContent h2 {
 	font-size: 100%;
+}
+
+.blogpostComment {
+	margin: auto;
+	width: 55%;
+	padding: 10px 20px 10px 20px;
+	border: 1px solid #ddd;
+	border-radius: 15px;
+	margin-bottom: 20px;
+	background-color: #f6f6f6;
+}
+
+.blogpostComment h3 {
+	font-size: 0.8em;
 }
 
 #navigation {
