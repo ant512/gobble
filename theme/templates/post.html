@@ -22,6 +22,13 @@
 							</header>
 							<div class="blogpostContent">
 								{{.Body}}
+								{{with .Comments}}
+								{{range .}}
+								{{printf "%04d" .Date.Year}}-{{printf "%02d" .Date.Month}}-{{printf "%02d" .Date.Day}}
+								{{.Author}}
+								{{.Body}}
+								{{end}}
+								{{end}}
 							</div>
 							<footer>
 								{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}

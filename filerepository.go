@@ -143,7 +143,7 @@ func (f *FileRepository) fetchAllPosts() error {
 			continue
 		}
 
-		post, err := f.fetchPost(files[i].Name())
+		post, err := f.fetchPost(dirname + files[i].Name())
 
 		if err != nil {
 			return err
@@ -184,15 +184,13 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 
 	post := new(BlogPost)
 
-	dirname := f.directory + string(filepath.Separator)
-
-	file, err := ioutil.ReadFile(dirname + filename)
+	file, err := ioutil.ReadFile(filename)
 
 	if err != nil {
 		return post, err
 	}
 
-	file = []byte(extractHeader(string(file), post))
+	file = []byte(extractPostHeader(string(file), post))
 
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
 	extensions := blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
@@ -203,10 +201,103 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 
 	post.SetBody(string(output))
 
+	f.fetchCommentsForPost(post, filename)
+
 	return post, nil
 }
 
-func extractHeader(text string, post *BlogPost) string {
+func (f *FileRepository) fetchCommentsForPost(post *BlogPost, filename string) {
+	dirname := filename[:len(filename) - 3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
+
+	files, err := ioutil.ReadDir(dirname)
+
+	if err != nil {
+		return
+	}
+
+	post.comments = Comments{}
+
+	for i := range files {
+
+		if files[i].IsDir() {
+			continue
+		}
+
+		log.Println(dirname + "/" + files[i].Name())
+
+		if filepath.Ext(files[i].Name()) != ".md" {
+			continue
+		}
+
+		comment, err := f.fetchComment(dirname + files[i].Name())
+
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
+		post.comments = append(post.comments, comment)
+	}
+}
+
+func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
+	comment := new(Comment)
+
+	file, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		return comment, err
+	}
+
+	file = []byte(extractCommentHeader(string(file), comment))
+
+	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
+	extensions := blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
+
+	renderer := blackfriday.HtmlRenderer(htmlFlags, "", "")
+
+	output := blackfriday.Markdown(file, renderer, extensions)
+
+	comment.SetBody(string(output))
+
+	return comment, nil
+}
+
+func extractCommentHeader(text string, comment *Comment) string {
+
+	lines := strings.Split(text, "\n")
+
+	headerSize := 0
+
+	for i := range lines {
+		if strings.Contains(lines[i], ":") {
+			components := strings.Split(lines[i], ":")
+
+			header := strings.ToLower(strings.Trim(components[0], " "))
+			separatorIndex := strings.Index(lines[i], ":") + 1
+			data := strings.Trim(lines[i][separatorIndex:], " ")
+
+			switch header {
+			case "author":
+				comment.SetAuthor(data)
+			case "email":
+				comment.SetEmail(data)
+			case "date":
+				comment.SetDate(stringToTime(data))
+			default:
+				continue
+			}
+
+			headerSize += len(lines[i]) + 1
+		} else {
+			break
+		}
+	}
+
+	return text[headerSize:]
+}
+
+func extractPostHeader(text string, post *BlogPost) string {
 
 	lines := strings.Split(text, "\n")
 

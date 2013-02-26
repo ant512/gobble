@@ -27,6 +27,7 @@ type BlogPost struct {
 	publishDate time.Time
 	tags        []string
 	body        string
+	comments    Comments
 }
 
 func (b *BlogPost) SetTitle(s string) {
@@ -61,9 +62,17 @@ func (b *BlogPost) Body() string {
 	return b.body
 }
 
+func (b *BlogPost) SetComments(c Comments) {
+	b.comments = c
+}
+
+func (b *BlogPost) Comments() Comments {
+	return b.comments
+}
+
 func (b *BlogPost) ContainsTag(tag string) bool {
 	for i := range b.Tags() {
-		if b.Tags()[i] == tag {
+		if b.Tags()[i] == strings.ToLower(tag) {
 			return true
 		}
 	}
@@ -72,11 +81,14 @@ func (b *BlogPost) ContainsTag(tag string) bool {
 }
 
 func (b *BlogPost) ContainsTerm(term string) bool {
+
+	term = strings.ToLower(term)
+
 	if b.ContainsTag(term) {
 		return true
 	}
 
-	return strings.Contains(b.body, term)
+	return strings.Contains(strings.ToLower(b.body), term)
 }
 
 func (b *BlogPost) Url() string {
