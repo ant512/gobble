@@ -7,3 +7,7 @@ Todo
  - Create/edit comments.
  - Use http://oscargodson.github.com/EpicEditor/ as the comment editor.
  - Tidy up all posts/comments.
+ - Config file:
+   - Port.
+   - Post directory (move posts to home folder in their own hg repo).
+   - Site name (and add site name to title tags).
