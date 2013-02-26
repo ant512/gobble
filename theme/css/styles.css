@@ -83,6 +83,10 @@ blockquote {
 	position: relative;
 }
 
+.blogpost header a {
+	color: black;
+}
+
 .blogpost img {
 	margin-left: auto;
 	margin-right: auto;
@@ -122,7 +126,6 @@ blockquote {
 .blogpostSingle footer a {
 	font-weight: bold;
 }
-
 
 h1 {
 	clear: both;

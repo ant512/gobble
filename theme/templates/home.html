@@ -20,7 +20,7 @@
 						{{range .}}
 						<article class="blogpost">
 							<header class="blogpostHeader">
-								<h1>{{.Title}}</h1>
+								<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
 								<p>Posted on {{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
 							</header>
 							<div class="blogpostContent">
