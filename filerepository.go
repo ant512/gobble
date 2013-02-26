@@ -193,7 +193,7 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 	file = []byte(extractPostHeader(string(file), post))
 
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
-	extensions := blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
+	extensions := blackfriday.EXTENSION_AUTOLINK | blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
 
 	renderer := blackfriday.HtmlRenderer(htmlFlags, post.Title(), "")
 
@@ -223,8 +223,6 @@ func (f *FileRepository) fetchCommentsForPost(post *BlogPost, filename string) {
 			continue
 		}
 
-		log.Println(dirname + "/" + files[i].Name())
-
 		if filepath.Ext(files[i].Name()) != ".md" {
 			continue
 		}
@@ -252,7 +250,7 @@ func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
 	file = []byte(extractCommentHeader(string(file), comment))
 
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
-	extensions := blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
+	extensions := blackfriday.EXTENSION_AUTOLINK | blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
 
 	renderer := blackfriday.HtmlRenderer(htmlFlags, "", "")
 

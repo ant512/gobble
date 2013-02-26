@@ -104,6 +104,18 @@ blockquote {
 	font-weight: bold;
 }
 
+.blogpostComment {
+	padding: 10px 20px 10px 20px;
+	border: 1px solid #ddd;
+	border-radius: 15px;
+	margin-bottom: 20px;
+	background-color: #f6f6f6;
+}
+
+.blogpostComment h3 {
+	font-size: 0.8em;
+}
+
 .blogpostSingle {
 	margin: 0 0 1.625em;
 	padding: 0 0 1.625em;

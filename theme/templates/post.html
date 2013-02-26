@@ -22,14 +22,16 @@
 							</header>
 							<div class="blogpostContent">
 								{{.Body}}
-								{{with .Comments}}
-								{{range .}}
-								{{printf "%04d" .Date.Year}}-{{printf "%02d" .Date.Month}}-{{printf "%02d" .Date.Day}}
-								{{.Author}}
-								{{.Body}}
-								{{end}}
-								{{end}}
 							</div>
+							<h2>Comments</h2>
+							{{with .Comments}}
+							{{range .}}
+							<div class="blogpostComment">
+								<h3>{{.Author}} on {{printf "%04d" .Date.Year}}-{{printf "%02d" .Date.Month}}-{{printf "%02d" .Date.Day}} at {{printf "%02d" .Date.Hour}}:{{printf "%02d" .Date.Minute}} said:</h3>
+								{{.Body}}
+							</div>
+							{{end}}
+							{{end}}
 							<footer>
 								{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
 							</footer>
