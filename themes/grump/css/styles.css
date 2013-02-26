@@ -67,6 +67,10 @@ blockquote {
 	color: black;
 }
 
+.blogpost header a:hover {
+	color: #1982D1;
+}
+
 .blogpostContent {
 	margin: auto;
 	width: 58.4%;
@@ -99,6 +103,34 @@ blockquote {
 
 .tags a {
 	padding: 5px;
+	border: 1px solid white;
+	border-radius: 10px;
+
+	-webkit-transition: background 200ms;
+	-moz-transition: background 200ms;
+	-o-transition: background 200ms;
+	transition: background 200ms;
+
+	-webkit-transition: border 200ms;
+	-moz-transition: border 200ms;
+	-o-transition: border 200ms;
+	transition: border 200ms;
+}
+
+.tags a:hover {
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	background-color: #f6f6f6;
+
+	-webkit-transition: background 200ms;
+	-moz-transition: background 200ms;
+	-o-transition: background 200ms;
+	transition: background 200ms;
+
+	-webkit-transition: border 200ms;
+	-moz-transition: border 200ms;
+	-o-transition: border 200ms;
+	transition: border 200ms;
 }
 
 h1 {
