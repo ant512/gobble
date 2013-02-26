@@ -7,38 +7,38 @@
 		<title></title>
 	</head>
 	<body>
+		<header id="header">
+			<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
+		</header>
 		<div id="container">
-			<header id="header">
-				<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
-			</header>
-
-			<div id="content">
-				<div id="primary">
-					<div id="blogposts">
+			<article class="blogpost">
+				<header class="blogpostHeader">
 					<h1>Tags</h1>
-
-						<ul id="archive">
-							{{range .}}
-							<li><a href="/tags/{{.}}">{{.}}</a></li>
-							{{end}}
-						</ul>
-					</div>
+				</header>
+				<div class="blogpostContent">
+					<ul id="archive">
+						{{range .}}
+						<li><a href="/tags/{{.}}">{{.}}</a></li>
+						{{end}}
+					</ul>
 				</div>
-				<div id="secondary">
-					<div id="navigation">
-						<h3>More</h3>
-						<ul>
-							<li><a href="/archive">Archive</a></li>
-							<li><a href="/tags">Tags</a></li>
-							<li><a href="/rss">RSS Feed</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
+			</article>
 
-			<footer id="footer">
-				Powered by <a href="https://bitbucket.org/ant512/gobble">Gobble</a>and <a href="http://craig.is/making/rainbows">Rainbow</a>.
-			</footer>
+			<nav id="navigation">
+				<ul>
+					<li><a href="/archive">Archive</a></li>
+					<li><a href="/tags">Tags</a></li>
+					<li><a href="/rss">RSS Feed</a></li>
+				</ul>
+				<form method="get" id="searchForm" action="/">
+					<input type="text" name="search" id="search" placeholder="Search">
+					<input type="submit" value="Search" class="searchSubmit">
+				</form>
+			</nav>
+		</div>
+		<footer id="footer">
+			Powered by <a href="https://bitbucket.org/ant512/gobble">Gobble</a> and <a href="http://craig.is/making/rainbows">Rainbow</a>.
+		</footer>
 		</div>
 	</body>
 </html>

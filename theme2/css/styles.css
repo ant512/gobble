@@ -48,18 +48,6 @@ blockquote {
 	color: #373737;
 }
 
-#subtitle {
-	margin: 0 34% 0 7.6%;
-	width: 58.4%;
-	
-	color: #666;
-	font-size: 10px;
-	font-weight: 500;
-	letter-spacing: 0.1em;
-	line-height: 2.6em;
-	text-transform: uppercase;
-}
-
 .blogpost {
 	border-bottom: 1px solid #DDD;
 	margin: 0 0 1.625em;
@@ -101,29 +89,6 @@ blockquote {
 }
 
 .blogpost footer a {
-	font-weight: bold;
-}
-
-.blogpostSingle {
-	margin: 0 0 1.625em;
-	padding: 0 0 1.625em;
-	position: relative;
-}
-
-.blogpostSingle img {
-	margin-left: auto;
-	margin-right: auto;
-	display: block;
-}
-
-.blogpostSingle footer {
-	color: #666;
-	clear: both;
-	font-size: 12px;
-	line-height: 18px;
-}
-
-.blogpostSingle footer a {
 	font-weight: bold;
 }
 
