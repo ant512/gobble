@@ -138,8 +138,15 @@ h1 {
 }
 
 #header {
-	margin: 0px;
-	padding: 0px;
+	background-color: #333;
+}
+
+#header img {
+	float: left;
+}
+
+#posts {
+	background-color: white;
 }
 
 #posts article {
