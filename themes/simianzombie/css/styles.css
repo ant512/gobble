@@ -104,6 +104,10 @@ blockquote {
 	font-weight: bold;
 }
 
+.blogpost p.comments {
+	font-weight: 400;
+}
+
 .blogpostComment {
 	padding: 10px 20px 10px 20px;
 	border: 1px solid #ddd;
