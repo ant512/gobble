@@ -12,6 +12,7 @@ type Config struct {
 	Port int64
 	PostPath string
 	Theme string
+	AkismetAPIKey string
 }
 
 func LoadConfig(filename string) (*Config, error) {

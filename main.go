@@ -256,6 +256,7 @@ func loadConfig() {
 }
 
 func prepareHandler() {
+
 	repo = NewFileRepository(config.PostPath)
 
 	m := pat.New()
@@ -282,5 +283,18 @@ func prepareHandler() {
 func main() {
 	printInfo()
 	loadConfig()
+
+	valid, err := ValidateComment("This is some text", config.Address, "127.0.0.1", "curl", "viagra-test-123", "joe@example.com", config.AkismetAPIKey)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	if valid {
+		log.Println("Comment is valid")
+	} else {
+		log.Println("Comment is invalid")
+	}
+
 	prepareHandler()
 }
