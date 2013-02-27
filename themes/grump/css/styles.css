@@ -146,8 +146,12 @@ h1 {
 	padding: 0px;
 }
 
+#posts article {
+	margin-top: 30px;
+}
+
 #posts article header p {
-	color: #666;
+	color: #888;
 	clear: both;
 	font-size: 12px;
 	line-height: 18px;
@@ -156,13 +160,16 @@ h1 {
 	text-align: right;
 }
 
-#posts article footer h2 {
+#comments {
+	margin: auto;
+	width: 58%;
+}
+
+#comments header h2 {
 	font-size: 1em;
 }
 
-#posts article .comments .comment {
-	margin: auto;
-	width: 55%;
+#comments article {
 	padding: 10px 20px 10px 20px;
 	border: 1px solid #ddd;
 	border-radius: 15px;
@@ -170,7 +177,7 @@ h1 {
 	background-color: #f6f6f6;
 }
 
-#posts article .comments .comment h3 {
+#comments article header h3 {
 	font-size: 0.8em;
 }
 

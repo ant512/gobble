@@ -13,10 +13,10 @@
 			<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
 		</header>
 
+		{{with .Post}}
 		<section id="posts">
 
 			<article>
-				{{with .Post}}
 				<header>
 					<p>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
 					<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
@@ -24,28 +24,35 @@
 				<div class="content">
 					{{.Body}}
 				</div>
-
-				{{if .Comments}}
-				<h2>Comments</h2>
-				<div class="comments">
-					{{with .Comments}}
-					{{range .}}
-					<div class="comment">
-						<h3>{{.Author}} on {{printf "%04d" .Date.Year}}-{{printf "%02d" .Date.Month}}-{{printf "%02d" .Date.Day}} at {{printf "%02d" .Date.Hour}}:{{printf "%02d" .Date.Minute}} said:</h3>
-						{{.Body}}
-					</div>
-					{{end}}
-					{{end}}
-				</div>
-				{{end}}
-				
 				<footer>
 					{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
 				</footer>
-				{{end}}
 			</article>
 
 		</section>
+
+		{{if .Comments}}
+		<section id="comments">
+			<header>
+				<h2>Comments</h2>
+			</header>
+
+			{{with .Comments}}
+			{{range .}}
+			<article>
+				<header>
+					<h3>{{.Author}} on {{printf "%04d" .Date.Year}}-{{printf "%02d" .Date.Month}}-{{printf "%02d" .Date.Day}} at {{printf "%02d" .Date.Hour}}:{{printf "%02d" .Date.Minute}} said:</h3>
+				</header>
+				<div class="content">
+					{{.Body}}
+				</div>
+			</article>
+			{{end}}
+			{{end}}
+			
+		</section>
+		{{end}}
+		{{end}}
 
 		<footer id="footer">
 			<form method="get" id="searchForm" action="/">
