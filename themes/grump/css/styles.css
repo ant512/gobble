@@ -56,9 +56,7 @@ h1 {
 
 #posts article {
 	border-bottom: 1px solid #ddd;
-	margin: 0 0 1.625em;
-	padding: 0 0 1.625em;
-	position: relative;
+	padding: 1.625em 0 1.625em 0;
 	margin: auto;
 	clear: both;
 }
@@ -84,11 +82,6 @@ h1 {
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
-}
-
-#posts article h2 {
-	padding-top: 30px;
-	font-size: 1.2em;
 }
 
 #posts article footer {
@@ -155,7 +148,6 @@ h1 {
 
 #posts article header p {
 	color: #888;
-	clear: both;
 	font-size: 0.7em;
 	margin: 0px;
 	padding: 0px;
