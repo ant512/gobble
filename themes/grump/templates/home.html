@@ -18,31 +18,33 @@
 			{{with .Posts}}
 			{{range .}}
 			<article>
-				<header>
-					<p>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
-					<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
-				</header>
-				<div class="content">
-					{{.Body}}
+				<div class="post">
+					<header>
+						<p>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
+						<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
+					</header>
+					<div class="content">
+						{{.Body}}
+					</div>
+					<footer>
+						{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
+					</footer>
 				</div>
-				<footer>
-					{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
-				</footer>
 			</article>
 			{{end}}
 			{{end}}
 
-			<nav id="paging">
-				{{if .PreviousURL}}
-				<div class="previous"><a href="{{.PreviousURL}}">&larr; Older posts</a></div>
-				{{end}}
-				{{if .NextURL}}
-				<div class="next"><a href="{{.NextURL}}">Newer posts &rarr;</a></div>
-				{{end}}
-			</nav>
-
 		</section>
-		
+
+		<nav id="paging">
+			{{if .PreviousURL}}
+			<div class="previous"><a href="{{.PreviousURL}}">&larr; Older posts</a></div>
+			{{end}}
+			{{if .NextURL}}
+			<div class="next"><a href="{{.NextURL}}">Newer posts &rarr;</a></div>
+			{{end}}
+		</nav>
+
 		<footer id="footer">
 			<form method="get" id="searchForm" action="/">
 				<input type="text" name="search" id="search" placeholder="Search">

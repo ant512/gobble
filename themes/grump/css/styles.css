@@ -60,11 +60,14 @@ h1 {
 	padding: 0 0 1.625em;
 	position: relative;
 	margin: auto;
-	width: 100%;
 	clear: both;
 }
 
-#posts article header {
+#posts article:last-child {
+	border-bottom: 0px;
+}
+
+#posts article .post {
 	margin: auto;
 	width: 58.4%;
 }
@@ -77,11 +80,6 @@ h1 {
 	color: #1982D1;
 }
 
-#posts article .content {
-	margin: auto;
-	width: 58.4%;
-}
-
 #posts article .content img {
 	margin-left: auto;
 	margin-right: auto;
@@ -89,8 +87,6 @@ h1 {
 }
 
 #posts article h2 {
-	width: 58%;
-	margin: auto;
 	padding-top: 30px;
 	font-size: 1.2em;
 }
@@ -99,7 +95,6 @@ h1 {
 	text-align: center;
 	padding: 20px;
 	margin: auto;
-	width: 58.4%;
 	color: #666;
 	clear: both;
 	font-size: 12px;
@@ -113,6 +108,7 @@ h1 {
 	border: 1px solid white;
 	border-radius: 10px;
 	color: #bbb;
+	line-height: 2.5em;
 
 	-webkit-transition: background 200ms;
 	-moz-transition: background 200ms;
@@ -126,7 +122,7 @@ h1 {
 }
 
 #posts article footer a:hover {
-	border: 1px solid #ddd;
+	border: 1px solid #e2e2e2;
 	border-radius: 10px;
 	background-color: #f6f6f6;
 
@@ -147,22 +143,25 @@ h1 {
 }
 
 #posts article {
-	margin-top: 30px;
+	margin-top: 1.2em;
 }
 
 #posts article header p {
 	color: #888;
 	clear: both;
-	font-size: 12px;
-	line-height: 18px;
+	font-size: 0.7em;
 	margin: 0px;
 	padding: 0px;
 	text-align: right;
 }
 
+#posts article header h1 {
+	margin-top: 1.5em;
+}
+
 #comments {
 	margin: auto;
-	width: 58%;
+	width: 58.4%;
 }
 
 #comments header h2 {
@@ -213,7 +212,6 @@ h1 {
 #footer nav {
 	font-size: 12px;
 	clear: both;
-	width: 100%;
 	min-height: 55px;
 }
 
@@ -223,7 +221,6 @@ h1 {
 	font-weight: bold;
 	font-size: 14px;
 	text-align: center;
-	width: 100%;
 }
 
 #footer nav li {

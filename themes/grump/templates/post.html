@@ -17,16 +17,18 @@
 		<section id="posts">
 
 			<article>
-				<header>
-					<p>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
-					<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
-				</header>
-				<div class="content">
-					{{.Body}}
+				<div class="post">
+					<header>
+						<p>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
+						<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
+					</header>
+					<div class="content">
+						{{.Body}}
+					</div>
+					<footer>
+						{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
+					</footer>
 				</div>
-				<footer>
-					{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
-				</footer>
 			</article>
 
 		</section>
