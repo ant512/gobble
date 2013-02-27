@@ -206,9 +206,13 @@ func rss(w http.ResponseWriter, req *http.Request) {
 	page := struct {
 		Posts BlogPosts
 		SiteName string
+		SiteDescription string
+		SiteAddress string
 	} {
 		posts,
 		config.Name,
+		config.Description,
+		config.Address,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/rss.html")

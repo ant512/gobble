@@ -7,6 +7,8 @@ import (
 
 type Config struct {
 	Name string
+	Description string
+	Address string
 	Port int64
 	PostPath string
 	Theme string
@@ -23,9 +25,11 @@ func LoadConfig(filename string) (*Config, error) {
 
 	// Set up defaults
 	config.Name = "Gobble"
+	config.Description = "Blogging Engine"
+	config.Address = "http://simianzombie.com"
 	config.Port = 8080
 	config.PostPath = "./posts"
-	config.Theme = "simianzombie"
+	config.Theme = "grump"
 
 	err = json.Unmarshal(file, config)
 
