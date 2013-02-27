@@ -15,17 +15,19 @@
 		<section id="posts">
 
 			<article>
-				<header>
-					<h1>Archive</h1>
-				</header>
-				<div class="content">
-					<ul id="archive">
-						{{with .Posts}}
-						{{range .}}
-						<li><a href="/posts/{{.Url}}">{{.Title}}</a> <span class="archiveTime">{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</span></li>
-						{{end}}
-						{{end}}
-					</ul>
+				<div class="post">
+					<header>
+						<h1>Archive</h1>
+					</header>
+					<div class="content">
+						<ul id="archive">
+							{{with .Posts}}
+							{{range .}}
+							<li><a href="/posts/{{.Url}}">{{.Title}}</a> <span class="archiveTime">{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</span></li>
+							{{end}}
+							{{end}}
+						</ul>
+					</div>
 				</div>
 			</article>
 
