@@ -270,6 +270,7 @@ func prepareHandler() {
 	http.Handle("/", m)
 	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(themePath))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
+	http.Handle("/epiceditor/", http.StripPrefix("/epiceditor/", http.FileServer(http.Dir("epiceditor"))))
 
 	fmt.Printf("Listening on port %v\n", config.Port)
 	fmt.Printf("Using theme \"%v\"\n", config.Theme)

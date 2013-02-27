@@ -50,6 +50,15 @@
 			</article>
 			{{end}}
 			{{end}}
+
+			<article>
+				<div id="epiceditor"></div>
+				<div>
+					<form method="post" action="/posts/{{.Url}}">
+						<input type="submit" value="Submit">
+					</form>
+				</div>
+			</article>
 			
 		</section>
 		{{end}}
@@ -69,6 +78,7 @@
 			<p>Powered by <a href="https://bitbucket.org/ant512/gobble">Gobble</a>.</p>
 		</footer>
 
+		<script src="/epiceditor/js/epiceditor.min.js"></script>
 		<script src="/rainbow/js/rainbow.min.js"></script>
 		<script src="/rainbow/js/language/c.js"></script>
 		<script src="/rainbow/js/language/csharp.js"></script>
@@ -80,5 +90,33 @@
 		<script src="/rainbow/js/language/javascript.js"></script>
 		<script src="/rainbow/js/language/python.js"></script>
 		<script src="/rainbow/js/language/shell.js"></script>
+
+		<script>
+			var opts = {
+				container: 'epiceditor',
+				basePath: '/epiceditor',
+				clientSideStorage: true,
+				localStorageName: 'epiceditor',
+				useNativeFullscreen: true,
+				parser: marked,
+				file: {
+					name: 'epiceditor',
+					defaultContent: '',
+					autoSave: 100
+				},
+				theme: {
+					base:'/themes/base/epiceditor.css',
+					preview:'/themes/preview/preview-dark.css',
+					editor:'/themes/editor/epic-dark.css'
+				},
+				focusOnLoad: false,
+				shortcut: {
+					modifier: 18,
+					fullscreen: 70,
+					preview: 80
+				}
+			};
+			var editor = new EpicEditor(opts).load();
+		</script>
 	</body>
 </html>

@@ -172,3 +172,13 @@ an example server block:
             }
     }
 
+
+Libraries
+---------
+
+Gobble uses a handful of libraries to do its thing:
+
+ - http://craig.is/making/rainbows
+ - http://oscargodson.github.com/EpicEditor
+ - http://github.com/russross/blackfriday
+ - http://github.com/bmizerany/pat
