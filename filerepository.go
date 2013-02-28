@@ -16,7 +16,7 @@ import (
 type FileRepository struct {
 	directory string
 	posts BlogPosts
-	tags []string
+	tags map[string]int
 	mutex sync.RWMutex
 }
 
@@ -30,7 +30,7 @@ func NewFileRepository(directory string) *FileRepository {
 	return f
 }
 
-func (f *FileRepository) AllTags() []string {
+func (f *FileRepository) AllTags() map[string]int {
 	return f.tags
 }
 
@@ -161,21 +161,15 @@ func (f *FileRepository) fetchAllPosts() error {
 func (f *FileRepository) fetchAllTags() {
 
 	// We're using a map to simulate a set
-	tagMap := make(map[string]bool)
+	tags := make(map[string]int)
 
 	for i := range f.posts {
 		for j := range f.posts[i].Tags() {
-			tagMap[strings.ToLower(f.posts[i].Tags()[j])] = true
+
+			value := tags[strings.ToLower(f.posts[i].Tags()[j])] + 1
+			tags[strings.ToLower(f.posts[i].Tags()[j])] = value
 		}
 	}
-
-	tags := []string{}
-
-	for key := range tagMap {
-		tags = append(tags, key)
-	}
-
-	sort.Strings(tags)
 
 	f.mutex.Lock()
 	f.tags = tags

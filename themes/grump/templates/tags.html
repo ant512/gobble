@@ -22,8 +22,8 @@
 					<div class="content">
 						<ul id="archive">
 							{{with .Tags}}
-							{{range .}}
-							<li><a href="/tags/{{.}}">{{.}}</a></li>
+							{{range $name, $count := .}}
+							<li><a href="/tags/{{$name}}">{{$name}}</a> ({{$count}})</li>
 							{{end}}
 							{{end}}
 						</ul>

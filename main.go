@@ -126,7 +126,7 @@ func tags(w http.ResponseWriter, req *http.Request) {
 	tags := repo.AllTags()
 
 	page := struct {
-		Tags []string
+		Tags map[string]int
 		SiteName string
 	} {
 		tags,

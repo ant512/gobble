@@ -1,7 +1,6 @@
 Todo
 ====
 
- - Show post count next to each tag in tag list.
  - Create comments.
  - Use http://oscargodson.github.com/EpicEditor/ as the comment editor.
  - Figure out a way to preserve WordPress links.
