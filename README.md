@@ -7,7 +7,6 @@ This is a simple blogging engine written in Go.  Its features are:
  - Does not require a database.
  - Syntax highlighting via Rainbow.
  - Comment spam detection via Akismet.
- - Markdown commenting via EpicEditor.
  - Easy to install.
  - Fast.
  - Python 3 script to convert from an XML WordPress export to Gobble format.
@@ -190,6 +189,5 @@ Libraries
 Gobble uses a handful of libraries to do its thing:
 
  - http://craig.is/making/rainbows
- - http://oscargodson.github.com/EpicEditor
  - http://github.com/russross/blackfriday
  - http://github.com/bmizerany/pat
