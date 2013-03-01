@@ -24,6 +24,7 @@ func (b BlogPosts) Less(i, j int) bool {
 
 type BlogPost struct {
 	title       string
+	filePath    string
 	publishDate time.Time
 	tags        []string
 	body        string
@@ -36,6 +37,14 @@ func (b *BlogPost) SetTitle(s string) {
 
 func (b *BlogPost) Title() string {
 	return b.title
+}
+
+func (b *BlogPost) SetFilePath(s string) {
+	b.filePath = s
+}
+
+func (b *BlogPost) FilePath() string {
+	return b.filePath
 }
 
 func (b *BlogPost) SetPublishDate(t time.Time) {

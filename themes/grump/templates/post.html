@@ -52,7 +52,7 @@
 			{{end}}
 
 			<article id="commentEditor">
-				<form method="get" action="/posts/{{.Url}}/comments">
+				<form method="post" action="/posts/{{.Url}}/comments">
 					<input type="text" name="name" placeholder="name">
 					<input type="text" name="email" placeholder="email">
 					<textarea name="comment" placeholder="comment"></textarea>

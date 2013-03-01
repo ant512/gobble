@@ -11,6 +11,7 @@ import (
 	"time"
 	"sync"
 	"log"
+	"fmt"
 )
 
 type FileRepository struct {
@@ -106,6 +107,19 @@ func (f *FileRepository) SearchPosts(term string, start int, count int) (BlogPos
 	return filteredPosts[start:start + count], len(filteredPosts)
 }
 
+func (f *FileRepository) SaveComment(comment *Comment, post *BlogPost) {
+
+	postPath := post.FilePath()[:len(post.FilePath()) - 3]
+
+	dirname := postPath[:len(postPath) - 3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
+
+	filename := timeToString(comment.Date())
+
+	log.Println(dirname + filename)
+
+
+}
+
 func (f *FileRepository) update() {
 
 	for {
@@ -179,6 +193,7 @@ func (f *FileRepository) fetchAllTags() {
 func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 
 	post := new(BlogPost)
+	post.SetFilePath(filename)
 
 	file, err := ioutil.ReadFile(filename)
 
@@ -203,6 +218,7 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 }
 
 func (f *FileRepository) fetchCommentsForPost(post *BlogPost, filename string) {
+
 	dirname := filename[:len(filename) - 3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
 
 	files, err := ioutil.ReadDir(dirname)
@@ -339,6 +355,10 @@ func extractPostHeader(text string, post *BlogPost) string {
 	}
 
 	return text[headerSize:]
+}
+
+func timeToString(t time.Time) string {
+	return fmt.Sprintf("%v-%v-%v_%v-%v-%v", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
 }
 
 func stringToTime(s string) time.Time {

@@ -192,7 +192,7 @@ img {
 }
 
 #commentEditor input {
-	width: 90%;
+	width: 100%;
 }
 
 #commentEditor input.submit {
@@ -200,7 +200,7 @@ img {
 }
 
 #commentEditor textarea {
-	width: 90%;
+	width: 100%;
 	height: 15em;
 }
 

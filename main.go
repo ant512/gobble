@@ -5,11 +5,14 @@ import (
 	"github.com/bmizerany/pat"
 	"log"
 	"net/http"
+	"html"
+	"net/url"
 	"strconv"
 	"text/template"
 	"flag"
 	"path/filepath"
 	"os"
+	"time"
 )
 
 const postsPerPage = 10
@@ -153,34 +156,41 @@ func archive(w http.ResponseWriter, req *http.Request) {
 	t.Execute(w, page)
 }
 
-func post(w http.ResponseWriter, req *http.Request) {
+func postWithQuery(query url.Values) (*BlogPost, error) {
 
-	title := req.URL.Query().Get(":title")
+	title := query.Get(":title")
 
-	year, err := strconv.Atoi(req.URL.Query().Get(":year"))
+	year, err := strconv.Atoi(query.Get(":year"))
 
 	if err != nil {
 		log.Println("Invalid year supplied")
-		return
+		return nil, err
 	}
 
-	month, err := strconv.Atoi(req.URL.Query().Get(":month"))
+	month, err := strconv.Atoi(query.Get(":month"))
 
 	if err != nil {
 		log.Println("Invalid month supplied")
-		return
+		return nil, err
 	}
 
-	day, err := strconv.Atoi(req.URL.Query().Get(":day"))
+	day, err := strconv.Atoi(query.Get(":day"))
 
 	if err != nil {
 		log.Println("Invalid day supplied")
-		return
+		return nil, err
 	}
 
 	url := fmt.Sprintf("%04d/%02d/%02d/%s", year, month, day, title)
 
 	post, err := repo.PostWithUrl(url)
+
+	return post, err
+}
+
+func post(w http.ResponseWriter, req *http.Request) {
+
+	post, err := postWithQuery(req.URL.Query())
 
 	if err != nil {
 		log.Println("Could not load post")
@@ -197,6 +207,31 @@ func post(w http.ResponseWriter, req *http.Request) {
 
 	t, _ := template.ParseFiles(themePath + "/templates/post.html")
 	t.Execute(w, page)
+}
+
+func createComment(w http.ResponseWriter, req *http.Request) {
+
+	post, err := postWithQuery(req.URL.Query())
+
+	comment := new(Comment)
+
+	comment.SetAuthor(req.FormValue("name"))
+	comment.SetEmail(req.FormValue("email"))
+	comment.SetDate(time.Now())
+	comment.SetBody(html.EscapeString(req.FormValue("comment")))
+
+	post.SetComments(append(post.Comments(), comment))
+
+	repo.SaveComment(comment, post)
+
+	if err != nil {
+		log.Println("Could not load post")
+		return
+	}
+
+	log.Println(post.Title())
+
+	http.Redirect(w, req, "/posts/" + post.Url() + "#comments", http.StatusFound)
 }
 
 func rss(w http.ResponseWriter, req *http.Request) {
@@ -267,6 +302,8 @@ func prepareHandler() {
 	m.Get("/rss/", http.HandlerFunc(rss))
 	m.Get("/posts/:year/:month/:day/:title", http.HandlerFunc(post))
 	m.Get("/", http.HandlerFunc(home))
+
+	m.Post("/posts/:year/:month/:day/:title/comments", http.HandlerFunc(createComment))
 
 	http.Handle("/", m)
 	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(themePath))))
