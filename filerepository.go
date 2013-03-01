@@ -111,13 +111,22 @@ func (f *FileRepository) SaveComment(comment *Comment, post *BlogPost) {
 
 	postPath := post.FilePath()[:len(post.FilePath()) - 3]
 
-	dirname := postPath[:len(postPath) - 3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
+	dirname := postPath + string(filepath.Separator) + "comments" + string(filepath.Separator)
 
-	filename := timeToString(comment.Date())
+	filename := timeToFilename(comment.Date())
 
 	log.Println(dirname + filename)
 
+	content := "Author: " + comment.Author() + "\n"
+	content += "Email: " + comment.Email() + "\n"
+	content += "Date: " + timeToString(comment.Date()) + "\n\n"
+	content += comment.Body()
 
+	err := ioutil.WriteFile(dirname + filename, []byte(content), 0644)
+
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (f *FileRepository) update() {
@@ -357,8 +366,12 @@ func extractPostHeader(text string, post *BlogPost) string {
 	return text[headerSize:]
 }
 
+func timeToFilename(t time.Time) string {
+	return fmt.Sprintf("%04d-%02d-%02d_%02d-%02d-%02d.md", t.Year(), int(t.Month()), t.Day(), t.Hour(), t.Minute(), t.Second())
+}
+
 func timeToString(t time.Time) string {
-	return fmt.Sprintf("%v-%v-%v_%v-%v-%v", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
+	return fmt.Sprintf("%04d-%02d-%02d %02d:%02d:%02d", t.Year(), int(t.Month()), t.Day(), t.Hour(), t.Minute(), t.Second())
 }
 
 func stringToTime(s string) time.Time {
