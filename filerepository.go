@@ -34,11 +34,31 @@ func NewFileRepository(directory string) *FileRepository {
 }
 
 func (f *FileRepository) AllTags() map[string]int {
-	return f.tags
+
+	f.mutex.RLock()
+	defer f.mutex.RUnlock()
+
+	tags := make(map[string]int)
+
+	for i := range f.tags {
+		tags[i] = f.tags[i]
+	}
+
+	return tags
 }
 
 func (f *FileRepository) AllPosts() BlogPosts {
-	return f.posts
+
+	f.mutex.RLock()
+	defer f.mutex.RUnlock()
+
+	posts := BlogPosts{}
+
+	for i := range f.posts {
+		posts = append(posts, f.posts[i])
+	}
+
+	return posts
 }
 
 func (f *FileRepository) PostWithUrl(url string) (*BlogPost, error) {
@@ -224,6 +244,8 @@ func (f *FileRepository) fetchAllTags() {
 	// We're using a map to simulate a set
 	tags := make(map[string]int)
 
+	f.mutex.RLock()
+
 	for i := range f.posts {
 		for j := range f.posts[i].Tags {
 
@@ -231,6 +253,8 @@ func (f *FileRepository) fetchAllTags() {
 			tags[strings.ToLower(f.posts[i].Tags[j])] = value
 		}
 	}
+
+	f.mutex.RUnlock()
 
 	f.mutex.Lock()
 	f.tags = tags
