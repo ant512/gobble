@@ -170,9 +170,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 }
 
 func (f *FileRepository) update() {
-
 	for {
-
 		start := time.Now()
 
 		f.fetchAllPosts()

@@ -20,30 +20,36 @@ var repo *FileRepository
 var config *Config
 var themePath string
 
+func showSinglePost(b *BlogPost, w http.ResponseWriter, req *http.Request) {
+
+	if b == nil {
+		http.NotFound(w, req)
+		return
+	}
+
+	page := struct {
+		Post     *BlogPost
+		SiteName string
+	}{
+		b,
+		config.Name,
+	}
+
+	t, _ := template.ParseFiles(themePath + "/templates/post.html")
+	t.Execute(w, page)
+
+	return
+}
+
 func home(w http.ResponseWriter, req *http.Request) {
 
 	id, err := strconv.Atoi(req.URL.Query().Get("p"))
 
 	if err == nil {
 
-		post, err := repo.PostWithId(id)
-
-		if err != nil {
-			log.Println("Could not load post")
-			return
-		}
-
-		page := struct {
-			Post     *BlogPost
-			SiteName string
-		}{
-			post,
-			config.Name,
-		}
-
-		t, _ := template.ParseFiles(themePath + "/templates/post.html")
-		t.Execute(w, page)
-
+		post, _ := repo.PostWithId(id)
+		showSinglePost(post, w, req)
+		
 		return
 	}
 
@@ -212,24 +218,8 @@ func postWithQuery(query url.Values) (*BlogPost, error) {
 }
 
 func post(w http.ResponseWriter, req *http.Request) {
-
-	post, err := postWithQuery(req.URL.Query())
-
-	if err != nil {
-		log.Println("Could not load post")
-		return
-	}
-
-	page := struct {
-		Post     *BlogPost
-		SiteName string
-	}{
-		post,
-		config.Name,
-	}
-
-	t, _ := template.ParseFiles(themePath + "/templates/post.html")
-	t.Execute(w, page)
+	post, _ := postWithQuery(req.URL.Query())
+	showSinglePost(post, w, req)
 }
 
 func createComment(w http.ResponseWriter, req *http.Request) {
