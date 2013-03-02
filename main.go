@@ -220,6 +220,8 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 	email := req.FormValue("email")
 	body := req.FormValue("comment")
 
+	// TODO: Error detection
+
 	repo.SaveComment(post, config.AkismetAPIKey, config.Address, req.RemoteAddr, req.UserAgent(), req.Referer(), author, email, body)
 
 	log.Println(post.Title)
