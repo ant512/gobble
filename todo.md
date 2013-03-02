@@ -1,12 +1,11 @@
 Todo
 ====
 
- - Create comments.
- - Use http://oscargodson.github.com/EpicEditor/ as the comment editor.
- - Figure out a way to preserve WordPress links.
+ - Comment validation:
+   - Require all 3 fields.
+   - Check max lengths.
  - Tidy up all posts/comments.
  - Add ability to force cache refresh.
- - Integrate Akismet for spam detection.
 
  - Admin section:
    - Comments:
