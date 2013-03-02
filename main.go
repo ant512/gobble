@@ -22,6 +22,31 @@ var themePath string
 
 func home(w http.ResponseWriter, req *http.Request) {
 
+	id, err := strconv.Atoi(req.URL.Query().Get("p"))
+
+	if err == nil {
+
+		post, err := repo.PostWithId(id)
+
+		if err != nil {
+			log.Println("Could not load post")
+			return
+		}
+
+		page := struct {
+			Post     *BlogPost
+			SiteName string
+		}{
+			post,
+			config.Name,
+		}
+
+		t, _ := template.ParseFiles(themePath + "/templates/post.html")
+		t.Execute(w, page)
+
+		return
+	}
+
 	term := req.URL.Query().Get("search")
 	pageNumber, err := strconv.ParseInt(req.URL.Query().Get("page"), 10, 32)
 

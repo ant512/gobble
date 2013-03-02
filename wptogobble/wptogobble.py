@@ -111,8 +111,12 @@ for item in items:
 	output = open(os.path.join(outputPath, post.name + ".md"), 'wt')
 	output.write("Title: " + post.title + "\n")
 	output.write("Date: " + post.date + "\n")
-	output.write("Tags: " + ", ".join(post.tags))
-	output.write("\n\n")
+	output.write("ID: " + post.id + "\n")
+
+	if len(post.tags) > 0:
+		output.write("Tags: " + ", ".join(post.tags) + "\n")
+		
+	output.write("\n")
 	output.write(post.text)
 	output.close()
 

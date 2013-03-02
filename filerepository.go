@@ -57,6 +57,22 @@ func (f *FileRepository) PostWithUrl(url string) (*BlogPost, error) {
 	return nil, err
 }
 
+func (f *FileRepository) PostWithId(id int) (*BlogPost, error) {
+
+	f.mutex.RLock()
+	defer f.mutex.RUnlock()
+
+	for i := range f.posts {
+		if f.posts[i].Id == id {
+			return f.posts[i], nil
+		}
+	}
+
+	err := errors.New("Could not find post")
+
+	return nil, err
+}
+
 func (f *FileRepository) PostsWithTag(tag string, start int, count int) (BlogPosts, int) {
 
 	f.mutex.RLock()
@@ -359,6 +375,8 @@ func extractPostHeader(text string, post *BlogPost) string {
 			switch header {
 			case "title":
 				post.Title = data
+			case "id":
+				post.Id, _ = strconv.Atoi(data)
 			case "tags":
 
 				tags := strings.Split(data, ",")

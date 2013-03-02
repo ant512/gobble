@@ -24,6 +24,7 @@ func (b BlogPosts) Less(i, j int) bool {
 
 type BlogPost struct {
 	Title       string
+	Id          int
 	FilePath    string
 	PublishDate time.Time
 	Tags        []string
