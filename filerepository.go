@@ -1,26 +1,26 @@
 package main
 
 import (
-	"errors"
-	"github.com/russross/blackfriday"
 	"bitbucket.org/ant512/gobble/akismet"
+	"errors"
+	"fmt"
+	"github.com/russross/blackfriday"
+	"html"
 	"io/ioutil"
+	"log"
 	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 	"sync"
-	"log"
-	"fmt"
-	"html"
+	"time"
 )
 
 type FileRepository struct {
 	directory string
-	posts BlogPosts
-	tags map[string]int
-	mutex sync.RWMutex
+	posts     BlogPosts
+	tags      map[string]int
+	mutex     sync.RWMutex
 }
 
 func NewFileRepository(directory string) *FileRepository {
@@ -74,11 +74,11 @@ func (f *FileRepository) PostsWithTag(tag string, start int, count int) (BlogPos
 		return BlogPosts{}, 0
 	}
 
-	if start + count > len(filteredPosts) {
+	if start+count > len(filteredPosts) {
 		count = len(filteredPosts) - start
 	}
 
-	return filteredPosts[start:start + count], len(filteredPosts)
+	return filteredPosts[start : start+count], len(filteredPosts)
 }
 
 func (f *FileRepository) SearchPosts(term string, start int, count int) (BlogPosts, int) {
@@ -102,11 +102,11 @@ func (f *FileRepository) SearchPosts(term string, start int, count int) (BlogPos
 		return BlogPosts{}, 0
 	}
 
-	if start + count > len(filteredPosts) {
+	if start+count > len(filteredPosts) {
 		count = len(filteredPosts) - start
 	}
 
-	return filteredPosts[start:start + count], len(filteredPosts)
+	return filteredPosts[start : start+count], len(filteredPosts)
 }
 
 func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddress, remoteAddress, userAgent, referer, author, email, body string) {
@@ -124,7 +124,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	post.Comments = append(post.Comments, comment)
 	f.mutex.Unlock()
 
-	postPath := post.FilePath[:len(post.FilePath) - 3]
+	postPath := post.FilePath[:len(post.FilePath)-3]
 
 	dirname := postPath + string(filepath.Separator) + "comments" + string(filepath.Separator)
 
@@ -146,7 +146,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 
 	content += comment.Body
 
-	err := ioutil.WriteFile(dirname + filename, []byte(content), 0644)
+	err := ioutil.WriteFile(dirname+filename, []byte(content), 0644)
 
 	if err != nil {
 		log.Println(err)
@@ -252,7 +252,7 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 
 func (f *FileRepository) fetchCommentsForPost(post *BlogPost, filename string) {
 
-	dirname := filename[:len(filename) - 3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
+	dirname := filename[:len(filename)-3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
 
 	files, err := ioutil.ReadDir(dirname)
 
@@ -327,6 +327,8 @@ func extractCommentHeader(text string, comment *Comment) string {
 				comment.Email = data
 			case "date":
 				comment.Date = stringToTime(data)
+			case "spam":
+				comment.IsSpam = data == "true"
 			default:
 				continue
 			}

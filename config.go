@@ -6,12 +6,12 @@ import (
 )
 
 type Config struct {
-	Name string
-	Description string
-	Address string
-	Port int64
-	PostPath string
-	Theme string
+	Name          string
+	Description   string
+	Address       string
+	Port          int64
+	PostPath      string
+	Theme         string
 	AkismetAPIKey string
 }
 

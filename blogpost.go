@@ -31,6 +31,18 @@ type BlogPost struct {
 	Comments    Comments
 }
 
+func (b *BlogPost) NonSpamComments() Comments {
+	comments := Comments{}
+
+	for i := range b.Comments {
+		if !b.Comments[i].IsSpam {
+			comments = append(comments, b.Comments[i])
+		}
+	}
+
+	return comments
+}
+
 func (b *BlogPost) ContainsTag(tag string) bool {
 	for i := range b.Tags {
 		if b.Tags[i] == strings.ToLower(tag) {

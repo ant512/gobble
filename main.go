@@ -1,16 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/bmizerany/pat"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strconv"
 	"text/template"
-	"flag"
-	"path/filepath"
-	"os"
 )
 
 const postsPerPage = 10
@@ -41,7 +41,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 	var previousURL string
 	var nextURL string
 
-	posts, count := repo.SearchPosts(term, int(pageNumber) * postsPerPage, postsPerPage)
+	posts, count := repo.SearchPosts(term, int(pageNumber)*postsPerPage, postsPerPage)
 
 	if pageNumber > 0 {
 		if len(term) > 0 {
@@ -51,20 +51,20 @@ func home(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if int(pageNumber) < count / postsPerPage {
+	if int(pageNumber) < count/postsPerPage {
 		if len(term) > 0 {
-			previousURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber + 2)
+			previousURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber+2)
 		} else {
-			previousURL = fmt.Sprintf("/?page=%v", pageNumber + 2)
+			previousURL = fmt.Sprintf("/?page=%v", pageNumber+2)
 		}
 	}
 
 	page := struct {
-		Posts BlogPosts
-		NextURL string
+		Posts       BlogPosts
+		NextURL     string
 		PreviousURL string
-		SiteName string
-	} {
+		SiteName    string
+	}{
 		posts,
 		nextURL,
 		previousURL,
@@ -96,22 +96,22 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 	var previousURL string
 	var nextURL string
 
-	posts, count := repo.PostsWithTag(tag, int(pageNumber) * postsPerPage, postsPerPage)
+	posts, count := repo.PostsWithTag(tag, int(pageNumber)*postsPerPage, postsPerPage)
 
 	if pageNumber > 0 {
 		nextURL = fmt.Sprintf("/tags/%v/%v", tag, pageNumber)
 	}
 
-	if int(pageNumber) < count / postsPerPage {
-		previousURL = fmt.Sprintf("/tags/%v/%v", tag, pageNumber + 2)
+	if int(pageNumber) < count/postsPerPage {
+		previousURL = fmt.Sprintf("/tags/%v/%v", tag, pageNumber+2)
 	}
 
 	page := struct {
-		Posts BlogPosts
-		NextURL string
+		Posts       BlogPosts
+		NextURL     string
 		PreviousURL string
-		SiteName string
-	} {
+		SiteName    string
+	}{
 		posts,
 		nextURL,
 		previousURL,
@@ -127,9 +127,9 @@ func tags(w http.ResponseWriter, req *http.Request) {
 	tags := repo.AllTags()
 
 	page := struct {
-		Tags map[string]int
+		Tags     map[string]int
 		SiteName string
-	} {
+	}{
 		tags,
 		config.Name,
 	}
@@ -143,9 +143,9 @@ func archive(w http.ResponseWriter, req *http.Request) {
 	posts := repo.AllPosts()
 
 	page := struct {
-		Posts BlogPosts
+		Posts    BlogPosts
 		SiteName string
-	} {
+	}{
 		posts,
 		config.Name,
 	}
@@ -196,9 +196,9 @@ func post(w http.ResponseWriter, req *http.Request) {
 	}
 
 	page := struct {
-		Post *BlogPost
+		Post     *BlogPost
 		SiteName string
-	} {
+	}{
 		post,
 		config.Name,
 	}
@@ -226,7 +226,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 
 	log.Println(post.Title)
 
-	http.Redirect(w, req, "/posts/" + post.Url() + "#comments", http.StatusFound)
+	http.Redirect(w, req, "/posts/"+post.Url()+"#comments", http.StatusFound)
 }
 
 func rss(w http.ResponseWriter, req *http.Request) {
@@ -234,11 +234,11 @@ func rss(w http.ResponseWriter, req *http.Request) {
 	posts, _ := repo.SearchPosts("", 0, 10)
 
 	page := struct {
-		Posts BlogPosts
-		SiteName string
+		Posts           BlogPosts
+		SiteName        string
 		SiteDescription string
-		SiteAddress string
-	} {
+		SiteAddress     string
+	}{
 		posts,
 		config.Name,
 		config.Description,
@@ -308,7 +308,7 @@ func prepareHandler() {
 	fmt.Printf("Using theme \"%v\"\n", config.Theme)
 	fmt.Printf("Post data stored in \"%v\"\n", config.PostPath)
 
-	http.ListenAndServe(":" + strconv.FormatInt(config.Port, 10), nil)
+	http.ListenAndServe(":"+strconv.FormatInt(config.Port, 10), nil)
 }
 
 func main() {

@@ -20,10 +20,11 @@ func (c Comments) Less(i, j int) bool {
 }
 
 type Comment struct {
-	Author      string
-	Email       string
-	Date        time.Time
-	Body        string
+	Author string
+	Email  string
+	Date   time.Time
+	Body   string
+	IsSpam bool
 }
 
 func (c *Comment) ContainsTerm(term string) bool {

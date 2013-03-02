@@ -26,7 +26,7 @@
 					<div class="content">
 						{{.Body}}
 					</div>
-					<p class="comments"><a href="/posts/{{.Url}}#comments">{{if .Comments}}{{len .Comments}} comments{{else}}Leave a reply{{end}}</a><p>
+					<p class="comments"><a href="/posts/{{.Url}}#comments">{{if .Comments}}{{len .NonSpamComments}} comments{{else}}Leave a reply{{end}}</a><p>
 					<footer>
 						{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
 					</footer>
