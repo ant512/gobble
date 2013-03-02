@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/russross/blackfriday"
+	"bitbucket.org/ant512/gobble/akismet"
 	"io/ioutil"
 	"path/filepath"
 	"sort"
@@ -12,6 +13,7 @@ import (
 	"sync"
 	"log"
 	"fmt"
+	"html"
 )
 
 type FileRepository struct {
@@ -107,20 +109,42 @@ func (f *FileRepository) SearchPosts(term string, start int, count int) (BlogPos
 	return filteredPosts[start:start + count], len(filteredPosts)
 }
 
-func (f *FileRepository) SaveComment(comment *Comment, post *BlogPost) {
+func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddress, remoteAddress, userAgent, referer, author, email, body string) {
 
-	postPath := post.FilePath()[:len(post.FilePath()) - 3]
+	// TODO: Ensure file name is unique
+
+	comment := new(Comment)
+
+	comment.Author = author
+	comment.Email = email
+	comment.Date = time.Now()
+	comment.Body = html.EscapeString(body)
+
+	f.mutex.Lock()
+	post.Comments = append(post.Comments, comment)
+	f.mutex.Unlock()
+
+	postPath := post.FilePath[:len(post.FilePath) - 3]
 
 	dirname := postPath + string(filepath.Separator) + "comments" + string(filepath.Separator)
 
-	filename := timeToFilename(comment.Date())
+	filename := timeToFilename(comment.Date)
 
 	log.Println(dirname + filename)
 
-	content := "Author: " + comment.Author() + "\n"
-	content += "Email: " + comment.Email() + "\n"
-	content += "Date: " + timeToString(comment.Date()) + "\n\n"
-	content += comment.Body()
+	isSpam, _ := akismet.IsSpamComment(comment.Body, serverAddress, remoteAddress, userAgent, referer, author, email, akismetAPIKey)
+
+	content := "Author: " + comment.Author + "\n"
+	content += "Email: " + comment.Email + "\n"
+	content += "Date: " + timeToString(comment.Date) + "\n"
+
+	if isSpam {
+		content += "Spam: true\n"
+	}
+
+	content += "\n"
+
+	content += comment.Body
 
 	err := ioutil.WriteFile(dirname + filename, []byte(content), 0644)
 
@@ -187,10 +211,10 @@ func (f *FileRepository) fetchAllTags() {
 	tags := make(map[string]int)
 
 	for i := range f.posts {
-		for j := range f.posts[i].Tags() {
+		for j := range f.posts[i].Tags {
 
-			value := tags[strings.ToLower(f.posts[i].Tags()[j])] + 1
-			tags[strings.ToLower(f.posts[i].Tags()[j])] = value
+			value := tags[strings.ToLower(f.posts[i].Tags[j])] + 1
+			tags[strings.ToLower(f.posts[i].Tags[j])] = value
 		}
 	}
 
@@ -202,7 +226,7 @@ func (f *FileRepository) fetchAllTags() {
 func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 
 	post := new(BlogPost)
-	post.SetFilePath(filename)
+	post.FilePath = filename
 
 	file, err := ioutil.ReadFile(filename)
 
@@ -215,11 +239,11 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
 	extensions := blackfriday.EXTENSION_AUTOLINK | blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
 
-	renderer := blackfriday.HtmlRenderer(htmlFlags, post.Title(), "")
+	renderer := blackfriday.HtmlRenderer(htmlFlags, post.Title, "")
 
 	output := blackfriday.Markdown(file, renderer, extensions)
 
-	post.SetBody(string(output))
+	post.Body = string(output)
 
 	f.fetchCommentsForPost(post, filename)
 
@@ -236,7 +260,7 @@ func (f *FileRepository) fetchCommentsForPost(post *BlogPost, filename string) {
 		return
 	}
 
-	post.comments = Comments{}
+	post.Comments = Comments{}
 
 	for i := range files {
 
@@ -255,7 +279,7 @@ func (f *FileRepository) fetchCommentsForPost(post *BlogPost, filename string) {
 			return
 		}
 
-		post.comments = append(post.comments, comment)
+		post.Comments = append(post.Comments, comment)
 	}
 }
 
@@ -277,7 +301,7 @@ func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
 
 	output := blackfriday.Markdown(file, renderer, extensions)
 
-	comment.SetBody(string(output))
+	comment.Body = string(output)
 
 	return comment, nil
 }
@@ -298,11 +322,11 @@ func extractCommentHeader(text string, comment *Comment) string {
 
 			switch header {
 			case "author":
-				comment.SetAuthor(data)
+				comment.Author = data
 			case "email":
-				comment.SetEmail(data)
+				comment.Email = data
 			case "date":
-				comment.SetDate(stringToTime(data))
+				comment.Date = stringToTime(data)
 			default:
 				continue
 			}
@@ -332,7 +356,7 @@ func extractPostHeader(text string, post *BlogPost) string {
 
 			switch header {
 			case "title":
-				post.SetTitle(data)
+				post.Title = data
 			case "tags":
 
 				tags := strings.Split(data, ",")
@@ -350,9 +374,9 @@ func extractPostHeader(text string, post *BlogPost) string {
 					}
 				}
 
-				post.SetTags(formattedTags)
+				post.Tags = formattedTags
 			case "date":
-				post.SetPublishDate(stringToTime(data))
+				post.PublishDate = stringToTime(data)
 			default:
 				continue
 			}

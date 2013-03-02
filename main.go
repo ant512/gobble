@@ -5,14 +5,12 @@ import (
 	"github.com/bmizerany/pat"
 	"log"
 	"net/http"
-	"html"
 	"net/url"
 	"strconv"
 	"text/template"
 	"flag"
 	"path/filepath"
 	"os"
-	"time"
 )
 
 const postsPerPage = 10
@@ -213,23 +211,18 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 
 	post, err := postWithQuery(req.URL.Query())
 
-	comment := new(Comment)
-
-	comment.SetAuthor(req.FormValue("name"))
-	comment.SetEmail(req.FormValue("email"))
-	comment.SetDate(time.Now())
-	comment.SetBody(html.EscapeString(req.FormValue("comment")))
-
-	post.SetComments(append(post.Comments(), comment))
-
-	repo.SaveComment(comment, post)
-
 	if err != nil {
 		log.Println("Could not load post")
 		return
 	}
 
-	log.Println(post.Title())
+	author := req.FormValue("name")
+	email := req.FormValue("email")
+	body := req.FormValue("comment")
+
+	repo.SaveComment(post, config.AkismetAPIKey, config.Address, req.RemoteAddr, req.UserAgent(), req.Referer(), author, email, body)
+
+	log.Println(post.Title)
 
 	http.Redirect(w, req, "/posts/" + post.Url() + "#comments", http.StatusFound)
 }
@@ -319,18 +312,5 @@ func prepareHandler() {
 func main() {
 	printInfo()
 	loadConfig()
-
-	valid, err := ValidateComment("This is some text", config.Address, "127.0.0.1", "curl", "viagra-test-123", "joe@example.com", config.AkismetAPIKey)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	if valid {
-		log.Println("Comment is valid")
-	} else {
-		log.Println("Comment is invalid")
-	}
-
 	prepareHandler()
 }
