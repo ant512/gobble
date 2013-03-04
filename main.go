@@ -27,7 +27,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 
 		post, _ := repo.PostWithId(id)
 		showSinglePost(post, w, req)
-		
+
 		return
 	}
 
@@ -136,8 +136,8 @@ func tags(w http.ResponseWriter, req *http.Request) {
 	tags := repo.AllTags()
 
 	page := struct {
-		Tags     map[string]int
-		Config   *Config
+		Tags   map[string]int
+		Config *Config
 	}{
 		tags,
 		config,
@@ -152,8 +152,8 @@ func archive(w http.ResponseWriter, req *http.Request) {
 	posts := repo.AllPosts()
 
 	page := struct {
-		Posts    BlogPosts
-		Config   *Config
+		Posts  BlogPosts
+		Config *Config
 	}{
 		posts,
 		config,
@@ -168,8 +168,8 @@ func rss(w http.ResponseWriter, req *http.Request) {
 	posts, _ := repo.SearchPosts("", 0, 10)
 
 	page := struct {
-		Posts           BlogPosts
-		SiteConfig      *Config
+		Posts      BlogPosts
+		SiteConfig *Config
 	}{
 		posts,
 		config,

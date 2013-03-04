@@ -23,16 +23,17 @@ func LoadConfig(filename string) (*Config, error) {
 	}
 
 	config := new(Config)
-
-	// Set up defaults
-	config.Name = "Gobble"
-	config.Description = "Blogging Engine"
-	config.Address = "http://simianzombie.com"
-	config.Port = 8080
-	config.PostPath = "./posts"
-	config.Theme = "grump"
+	config.setDefaults()
 
 	err = json.Unmarshal(file, config)
 
 	return config, err
+}
+
+func (c *Config) setDefaults() {
+	c.Name = "Gobble"
+	c.Description = "Blogging Engine"
+	c.Port = 8080
+	c.PostPath = "./posts"
+	c.Theme = "grump"
 }

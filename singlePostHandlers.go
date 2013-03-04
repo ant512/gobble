@@ -95,7 +95,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		commentNameError = "Name cannot be blank"
 	} else if len(author) > 254 {
 		hasErrors = true
-		commentNameError = fmt.Sprintf("Name must be less than %v characters", + maxCommentNameLength)
+		commentNameError = fmt.Sprintf("Name must be less than %v characters", +maxCommentNameLength)
 	}
 
 	if len(email) < 5 {
@@ -142,5 +142,3 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		t.Execute(w, page)
 	}
 }
-
-
