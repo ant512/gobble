@@ -13,9 +13,8 @@
 			<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
 		</header>
 
-		{{with .Post}}
 		<section id="posts">
-
+			{{with .Post}}
 			<article>
 				<div class="post">
 					<header>
@@ -30,6 +29,7 @@
 					</footer>
 				</div>
 			</article>
+			{{end}}
 
 		</section>
 
@@ -38,7 +38,7 @@
 				<h2>Comments</h2>
 			</header>
 
-			{{with .NonSpamComments}}
+			{{with .Post.NonSpamComments}}
 			{{range .}}
 			<article>
 				<header>
@@ -52,16 +52,18 @@
 			{{end}}
 
 			<article id="commentEditor">
-				<form method="post" action="/posts/{{.Url}}/comments">
-					<input type="text" name="name" placeholder="name">
-					<input type="text" name="email" placeholder="email">
-					<textarea name="comment" placeholder="comment"></textarea>
+				<form method="post" action="/posts/{{.Post.Url}}/comments">
+					<input type="text" name="name" placeholder="name" maxlength="254" value="{{.CommentName}}">
+					<p class="error">{{.CommentNameError}}</p>
+					<input type="text" name="email" placeholder="email" maxlength="254" value="{{.CommentEmail}}">
+					<p class="error">{{.CommentEmailError}}</p>
+					<textarea name="comment" placeholder="comment" maxlength="5000">{{.CommentBody}}</textarea>
+					<p class="error">{{.CommentBodyError}}</p>
 					<input type="submit" value="Post Comment" class="submit">
 				</form>
 			</article>
 			
 		</section>
-		{{end}}
 
 		<footer id="footer">
 			<form method="get" id="searchForm" action="/">

@@ -204,6 +204,13 @@ img {
 	height: 15em;
 }
 
+#commentEditor p.error {
+	text-align: left;
+	color: red;
+	padding: 0px;
+	margin: 0px;
+}
+
 #footer {
 	clear: both;
 	background: #333333;

@@ -6,7 +6,6 @@ import (
 	"github.com/bmizerany/pat"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -19,27 +18,6 @@ const version = "1.0"
 var repo *FileRepository
 var config *Config
 var themePath string
-
-func showSinglePost(b *BlogPost, w http.ResponseWriter, req *http.Request) {
-
-	if b == nil {
-		http.NotFound(w, req)
-		return
-	}
-
-	page := struct {
-		Post     *BlogPost
-		SiteName string
-	}{
-		b,
-		config.Name,
-	}
-
-	t, _ := template.ParseFiles(themePath + "/templates/post.html")
-	t.Execute(w, page)
-
-	return
-}
 
 func home(w http.ResponseWriter, req *http.Request) {
 
@@ -183,65 +161,6 @@ func archive(w http.ResponseWriter, req *http.Request) {
 
 	t, _ := template.ParseFiles(themePath + "/templates/archive.html")
 	t.Execute(w, page)
-}
-
-func postWithQuery(query url.Values) (*BlogPost, error) {
-
-	title := query.Get(":title")
-
-	year, err := strconv.Atoi(query.Get(":year"))
-
-	if err != nil {
-		log.Println("Invalid year supplied")
-		return nil, err
-	}
-
-	month, err := strconv.Atoi(query.Get(":month"))
-
-	if err != nil {
-		log.Println("Invalid month supplied")
-		return nil, err
-	}
-
-	day, err := strconv.Atoi(query.Get(":day"))
-
-	if err != nil {
-		log.Println("Invalid day supplied")
-		return nil, err
-	}
-
-	url := fmt.Sprintf("%04d/%02d/%02d/%s", year, month, day, title)
-
-	post, err := repo.PostWithUrl(url)
-
-	return post, err
-}
-
-func post(w http.ResponseWriter, req *http.Request) {
-	post, _ := postWithQuery(req.URL.Query())
-	showSinglePost(post, w, req)
-}
-
-func createComment(w http.ResponseWriter, req *http.Request) {
-
-	post, err := postWithQuery(req.URL.Query())
-
-	if err != nil {
-		log.Println("Could not load post")
-		return
-	}
-
-	author := req.FormValue("name")
-	email := req.FormValue("email")
-	body := req.FormValue("comment")
-
-	// TODO: Error detection
-
-	repo.SaveComment(post, config.AkismetAPIKey, config.Address, req.RemoteAddr, req.UserAgent(), req.Referer(), author, email, body)
-
-	log.Println(post.Title)
-
-	http.Redirect(w, req, "/posts/"+post.Url()+"#comments", http.StatusFound)
 }
 
 func rss(w http.ResponseWriter, req *http.Request) {

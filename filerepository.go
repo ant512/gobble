@@ -131,8 +131,8 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 
 	comment := new(Comment)
 
-	comment.Author = author
-	comment.Email = email
+	comment.Author = html.EscapeString(author)
+	comment.Email = html.EscapeString(email)
 	comment.Date = time.Now()
 	comment.Body = html.EscapeString(body)
 
