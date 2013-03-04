@@ -1,9 +1,6 @@
 Todo
 ====
 
- - Comment validation:
-   - Require all 3 fields.
-   - Check max lengths.
  - Tidy up all posts/comments.
  - Add ability to force cache refresh.
 

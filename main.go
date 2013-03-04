@@ -70,14 +70,14 @@ func home(w http.ResponseWriter, req *http.Request) {
 
 	page := struct {
 		Posts       BlogPosts
+		Config      *Config
 		NextURL     string
 		PreviousURL string
-		SiteName    string
 	}{
 		posts,
+		config,
 		nextURL,
 		previousURL,
-		config.Name,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/home.html")
@@ -117,14 +117,14 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 
 	page := struct {
 		Posts       BlogPosts
+		Config      *Config
 		NextURL     string
 		PreviousURL string
-		SiteName    string
 	}{
 		posts,
+		config,
 		nextURL,
 		previousURL,
-		config.Name,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/home.html")
@@ -137,10 +137,10 @@ func tags(w http.ResponseWriter, req *http.Request) {
 
 	page := struct {
 		Tags     map[string]int
-		SiteName string
+		Config   *Config
 	}{
 		tags,
-		config.Name,
+		config,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/tags.html")
@@ -153,10 +153,10 @@ func archive(w http.ResponseWriter, req *http.Request) {
 
 	page := struct {
 		Posts    BlogPosts
-		SiteName string
+		Config   *Config
 	}{
 		posts,
-		config.Name,
+		config,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/archive.html")
@@ -169,14 +169,10 @@ func rss(w http.ResponseWriter, req *http.Request) {
 
 	page := struct {
 		Posts           BlogPosts
-		SiteName        string
-		SiteDescription string
-		SiteAddress     string
+		SiteConfig      *Config
 	}{
 		posts,
-		config.Name,
-		config.Description,
-		config.Address,
+		config,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/rss.html")

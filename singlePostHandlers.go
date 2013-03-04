@@ -21,25 +21,15 @@ func showSinglePost(b *BlogPost, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	page := struct {
-		Post     *BlogPost
-		SiteName string
-		CommentName string
-		CommentEmail string
-		CommentBody string
-		CommentNameError string
-		CommentEmailError string
-		CommentBodyError string
-	}{
-		b,
-		config.Name,
-		"",
-		"",
-		"",
-		"",
-		"",
-		"",
-	}
+	page := PostPage{}
+	page.Post = b
+	page.Config = config
+	page.CommentName = ""
+	page.CommentEmail = ""
+	page.CommentBody = ""
+	page.CommentNameError = ""
+	page.CommentEmailError = ""
+	page.CommentBodyError = ""
 
 	t, _ := template.ParseFiles(themePath + "/templates/post.html")
 	t.Execute(w, page)
@@ -137,25 +127,16 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 
 		return
 	} else {
-		page := struct {
-			Post     *BlogPost
-			SiteName string
-			CommentName string
-			CommentEmail string
-			CommentBody string
-			CommentNameError string
-			CommentEmailError string
-			CommentBodyError string
-		}{
-			post,
-			config.Name,
-			author,
-			email,
-			body,
-			commentNameError,
-			commentEmailError,
-			commentBodyError,
-		}
+
+		page := PostPage{}
+		page.Post = post
+		page.Config = config
+		page.CommentName = author
+		page.CommentEmail = email
+		page.CommentBody = body
+		page.CommentNameError = commentNameError
+		page.CommentEmailError = commentEmailError
+		page.CommentBodyError = commentBodyError
 
 		t, _ := template.ParseFiles(themePath + "/templates/post.html")
 		t.Execute(w, page)
