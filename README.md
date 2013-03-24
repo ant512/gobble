@@ -7,6 +7,7 @@ This is a simple blogging engine written in Go.  Its features are:
  - Does not require a database.
  - Syntax highlighting via Rainbow.
  - Comment spam detection via Akismet.
+ - Comment spam prevention via reCAPTCHA.
  - Easy to install.
  - Fast.
  - Python 3 script to convert from an XML WordPress export to Gobble format.
@@ -143,7 +144,9 @@ The default config file looks like this:
         "port": 8080,
         "postPath": "./posts",
         "theme": "grump",
-        "akismetAPIKey": ""
+        "akismetAPIKey": "",
+        "recaptchaPublicKey": "",
+        "recaptchaPrivateKey": ""
     }
 
 The config file is a JSON document.  When editing the file, ensure that you
@@ -151,15 +154,19 @@ respect the JSON conventions.
 
 The options are defined as follows:
 
- - name:          the site's name.
- - description:   the site's description, which appears on the RSS feed.
- - address:       the site's address, which appears on the RSS feed and is sent
-                  to Akismet for comment validation.
- - port:          the port on which Gobble should listen.
- - postPath:      the path to the posts directory.
- - theme:         the theme to use.
- - akismetAPIKey: the key used to check comments for spam (leave it blank if you
-                  don't want to use Akismet).
+ - name:                the site's name.
+ - description:         the site's description, which appears on the RSS feed.
+ - address:             the site's address, which appears on the RSS feed and is
+                        sent to Akismet for comment validation.
+ - port:                the port on which Gobble should listen.
+ - postPath:            the path to the posts directory.
+ - theme:               the theme to use.
+ - akismetAPIKey:       the key used to check comments for spam (leave it blank
+                        if you don't want to use Akismet).
+ - recaptchaPublicKey:  the key used to ensure the commenter isn't a bot (leave
+                        it blank if you don't want to use reCAPTCHA).
+ - recaptchaPrivateKey: the key used to ensure the commenter isn't a bot (leave
+                        it blank if you don't want to use reCAPTCHA).
 
 Notes:
 
@@ -189,5 +196,6 @@ Libraries
 Gobble uses a handful of libraries to do its thing:
 
  - http://craig.is/making/rainbows
- - http://github.com/russross/blackfriday
  - http://github.com/bmizerany/pat
+ - http://github.com/dpapathanasiou/go-recaptcha
+ - http://github.com/russross/blackfriday
