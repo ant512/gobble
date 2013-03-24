@@ -6,13 +6,15 @@ import (
 )
 
 type Config struct {
-	Name          string
-	Description   string
-	Address       string
-	Port          int64
-	PostPath      string
-	Theme         string
-	AkismetAPIKey string
+	Name                string
+	Description         string
+	Address             string
+	Port                int64
+	PostPath            string
+	Theme               string
+	AkismetAPIKey       string
+	RecaptchaPublicKey  string
+	RecaptchaPrivateKey string
 }
 
 func LoadConfig(filename string) (*Config, error) {

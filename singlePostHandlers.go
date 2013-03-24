@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/dpapathanasiou/go-recaptcha"
 	"log"
 	"net/http"
 	"net/url"
@@ -89,6 +90,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 	commentNameError := ""
 	commentEmailError := ""
 	commentBodyError := ""
+	commentRecaptchaError := ""
 
 	if len(author) == 0 {
 		hasErrors = true
@@ -121,6 +123,14 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		commentBodyError = fmt.Sprintf("Comment must be less than %v characters", maxCommentBodyLength)
 	}
 
+	if len(config.RecaptchaPrivateKey) > 0 {
+		recaptcha.Init(config.RecaptchaPrivateKey)
+		if !recaptcha.Confirm(req.RemoteAddr, req.FormValue("recaptcha_challenge_field"), req.FormValue("recaptcha_response_field")) {
+			hasErrors = true
+			commentRecaptchaError = "Incorrect reCAPTCHA entered"
+		}
+	}
+
 	if !hasErrors {
 		repo.SaveComment(post, config.AkismetAPIKey, config.Address, req.RemoteAddr, req.UserAgent(), req.Referer(), author, email, body)
 		http.Redirect(w, req, "/posts/"+post.Url()+"#comments", http.StatusFound)
@@ -137,6 +147,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		page.CommentNameError = commentNameError
 		page.CommentEmailError = commentEmailError
 		page.CommentBodyError = commentBodyError
+		page.CommentRecaptchaError = commentRecaptchaError
 
 		t, _ := template.ParseFiles(themePath + "/templates/post.html")
 		t.Execute(w, page)

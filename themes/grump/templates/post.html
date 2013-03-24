@@ -59,6 +59,17 @@
 					<p class="error">{{.CommentEmailError}}</p>
 					<textarea name="comment" placeholder="comment" maxlength="5000">{{.CommentBody}}</textarea>
 					<p class="error">{{.CommentBodyError}}</p>
+
+					{{if .Config.RecaptchaPublicKey}}
+					<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k={{.Config.RecaptchaPublicKey}}"></script>
+					<noscript>
+						<iframe src="http://www.google.com/recaptcha/api/noscript?k={{.Config.RecaptchaPublicKey}}" height="300" width="500" frameborder="0"></iframe><br>
+						<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+						<input type="hidden" name="recaptcha_response_field" value="manual_challenge">
+					</noscript>
+					<p class="error">{{.CommentRecaptchaError}}</p>
+					{{end}}
+
 					<input type="submit" value="Post Comment" class="submit">
 				</form>
 			</article>
