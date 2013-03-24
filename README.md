@@ -88,6 +88,7 @@ installed and configured correctly:
  - go get bitbucket.org/ant512/gobble
  - go get github.com/bmizerany/pat
  - go get github.com/russross/blackfriday
+ - go get github.com/dpapathanasiou/go-recaptcha
  - cd $GOPATH/src/bitbucket.org/ant512/gobble
  - go build
  - ./gobble
