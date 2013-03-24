@@ -5,9 +5,9 @@ This is a simple blogging engine written in Go.  Its features are:
 
  - Works on any platform that Go can build for.
  - Does not require a database.
- - Syntax highlighting via Rainbow.
- - Comment spam detection via Akismet.
- - Comment spam prevention via reCAPTCHA.
+ - Syntax highlighting via [Rainbow][1].
+ - Comment spam detection via [Akismet][2].
+ - Comment spam prevention via [reCAPTCHA][3].
  - Easy to install.
  - Fast.
  - Python 3 script to convert from an XML WordPress export to Gobble format.
@@ -21,13 +21,19 @@ This is a simple blogging engine written in Go.  Its features are:
  - RSS feed.
  - Simple re-theming.
 
+  [1]: http://craig.is/making/rainbows
+  [2]: http://akismet.com
+  [3]: http://www.google.com/recaptcha
+
 
 Writing Posts
 -------------
 
 All posts are stored in the gobble/posts directory.  All posts are written in
 Markdown, with metadata included at the top of the post giving the publish date,
-tags, etc.  The format is identical to that used by Scriptogram.
+tags, etc.  The format is identical to that used by [Scriptogram][4].
+
+  [4]: http://scriptogr.am
 
 To write a post, create a new file in the posts directory.  Call it whatever you
 like, but ensure it has the extension ".md".  Here's an example:
@@ -85,13 +91,13 @@ Installation
 The easiest way to install Gobble is via the command line.  Assuming you have Go
 installed and configured correctly:
 
- - go get bitbucket.org/ant512/gobble
- - go get github.com/bmizerany/pat
- - go get github.com/russross/blackfriday
- - go get github.com/dpapathanasiou/go-recaptcha
- - cd $GOPATH/src/bitbucket.org/ant512/gobble
- - go build
- - ./gobble
+    go get bitbucket.org/ant512/gobble
+    go get github.com/bmizerany/pat
+    go get github.com/russross/blackfriday
+    go get github.com/dpapathanasiou/go-recaptcha
+    cd $GOPATH/src/bitbucket.org/ant512/gobble
+    go build
+    ./gobble
 
 Gobble wil now be available at http://localhost:8080.
 
@@ -196,7 +202,12 @@ Libraries
 
 Gobble uses a handful of libraries to do its thing:
 
- - http://craig.is/making/rainbows
- - http://github.com/bmizerany/pat
- - http://github.com/dpapathanasiou/go-recaptcha
- - http://github.com/russross/blackfriday
+ - [http://craig.is/making/rainbows][5]
+ - [http://github.com/bmizerany/pat][6]
+ - [http://github.com/dpapathanasiou/go-recaptcha][7]
+ - [http://github.com/russross/blackfriday][8]
+
+  [5]: http://craig.is/making/rainbows
+  [6]: http://github.com/bmizerany/pat
+  [7]: http://github.com/dpapathanasiou/go-recaptcha
+  [8]: http://github.com/russross/blackfriday
