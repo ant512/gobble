@@ -14,5 +14,16 @@ type Comment struct {
 }
 
 func (c *Comment) ContainsTerm(term string) bool {
-	return strings.Contains(strings.ToLower(c.Body), term)
+
+	term = strings.ToLower(term)
+	terms := strings.Split(term, " ")
+	body := strings.ToLower(c.Body)
+
+	for i := range terms {
+		if !strings.Contains(body, terms[i]) {
+			return false
+		}
+	}
+
+	return true
 }

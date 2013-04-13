@@ -46,7 +46,21 @@ func (b *BlogPost) ContainsTerm(term string) bool {
 		return true
 	}
 
-	return strings.Contains(strings.ToLower(b.Body), term)
+	if b.Comments.ContainsTerm(term) {
+		return true
+	}
+
+	terms := strings.Split(term, " ")
+	body := strings.ToLower(b.Body)
+	title := strings.ToLower(b.Title)
+
+	for i := range terms {
+		if !strings.Contains(body, terms[i]) && !strings.Contains(title, terms[i]) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func (b *BlogPost) Url() string {
