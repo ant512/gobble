@@ -233,6 +233,7 @@ func prepareHandler() {
 	http.Handle("/", m)
 	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(themePath))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
+	http.Handle("/media/", http.StripPrefix("/media/", http.FileServer(http.Dir("media"))))
 
 	fmt.Printf("Listening on port %v\n", config.Port)
 	fmt.Printf("Using theme \"%v\"\n", config.Theme)
