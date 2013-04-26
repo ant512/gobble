@@ -20,7 +20,7 @@
 						<h1>Tags</h1>
 					</header>
 					<div class="content">
-						<ul id="archive">
+						<ul id="tags">
 							{{with .Tags}}
 							{{range $name, $count := .}}
 							<li><a href="/tags/{{$name}}">{{$name}}</a> ({{$count}})</li>
