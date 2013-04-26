@@ -60,7 +60,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if int(pageNumber + 1) < count/postsPerPage {
+	if int(pageNumber+1) < count/postsPerPage {
 		if len(term) > 0 {
 			previousURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber+2)
 		} else {
@@ -233,11 +233,12 @@ func prepareHandler() {
 	http.Handle("/", m)
 	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(themePath))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
-	http.Handle("/media/", http.StripPrefix("/media/", http.FileServer(http.Dir("media"))))
+	http.Handle("/media/", http.StripPrefix("/media/", http.FileServer(http.Dir(config.MediaPath))))
 
 	fmt.Printf("Listening on port %v\n", config.Port)
 	fmt.Printf("Using theme \"%v\"\n", config.Theme)
 	fmt.Printf("Post data stored in \"%v\"\n", config.PostPath)
+	fmt.Printf("Media stored in \"%v\"\n", config.MediaPath)
 
 	http.ListenAndServe(":"+strconv.FormatInt(config.Port, 10), nil)
 }

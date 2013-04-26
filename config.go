@@ -9,6 +9,7 @@ type Config struct {
 	Name                string
 	Description         string
 	Address             string
+	MediaPath           string
 	Port                int64
 	PostPath            string
 	Theme               string
@@ -37,5 +38,6 @@ func (c *Config) setDefaults() {
 	c.Description = "Blogging Engine"
 	c.Port = 8080
 	c.PostPath = "./posts"
+	c.MediaPath = "./media"
 	c.Theme = "grump"
 }
