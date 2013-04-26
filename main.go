@@ -60,7 +60,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if int(pageNumber) < count/postsPerPage {
+	if int(pageNumber + 1) < count/postsPerPage {
 		if len(term) > 0 {
 			previousURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber+2)
 		} else {
