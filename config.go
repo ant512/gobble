@@ -13,6 +13,7 @@ type Config struct {
 	Port                int64
 	PostPath            string
 	Theme               string
+	ThemePath           string
 	AkismetAPIKey       string
 	RecaptchaPublicKey  string
 	RecaptchaPrivateKey string
@@ -39,5 +40,6 @@ func (c *Config) setDefaults() {
 	c.Port = 8080
 	c.PostPath = "./posts"
 	c.MediaPath = "./media"
+	c.ThemePath = "./themes"
 	c.Theme = "grump"
 }

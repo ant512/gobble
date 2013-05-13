@@ -200,7 +200,7 @@ func loadConfig() {
 		log.Fatal(err)
 	}
 
-	themePath = "themes" + string(filepath.Separator) + config.Theme
+	themePath = config.ThemePath + string(filepath.Separator) + config.Theme
 
 	_, err = os.Stat(themePath)
 
@@ -239,6 +239,7 @@ func prepareHandler() {
 	fmt.Printf("Using theme \"%v\"\n", config.Theme)
 	fmt.Printf("Post data stored in \"%v\"\n", config.PostPath)
 	fmt.Printf("Media stored in \"%v\"\n", config.MediaPath)
+	fmt.Printf("Themes stored in \"%v\"\n", config.ThemePath)
 
 	http.ListenAndServe(":"+strconv.FormatInt(config.Port, 10), nil)
 }
