@@ -151,6 +151,7 @@ The default config file looks like this:
         "port": 8080,
         "postPath": "./posts",
         "mediaPath": "./media",
+        "themePath": "./themes",
         "theme": "grump",
         "akismetAPIKey": "",
         "recaptchaPublicKey": "",
@@ -168,7 +169,8 @@ The options are defined as follows:
                         sent to Akismet for comment validation.
  - port:                the port on which Gobble should listen.
  - postPath:            the path to the posts directory.
- - media:               the path to the media directory.
+ - mediaPath:           the path to the media directory.
+ - themePath:           the path to the themes directory.
  - theme:               the theme to use.
  - akismetAPIKey:       the key used to check comments for spam (leave it blank
                         if you don't want to use Akismet).
@@ -177,10 +179,7 @@ The options are defined as follows:
  - recaptchaPrivateKey: the key used to ensure the commenter isn't a bot (leave
                         it blank if you don't want to use reCAPTCHA).
 
-Notes:
-
- - All themes must be installed in `gobble/themes`.
- - Missing configuration values will be given defaults.
+Note that missing configuration values will be given the defaults.
 
 
 Nginx
