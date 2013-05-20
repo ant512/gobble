@@ -51,6 +51,9 @@
 			{{end}}
 			{{end}}
 
+			{{if .Post.DisallowComments}}
+			<p>New comments are not allowed on this post.</p>
+			{{else}}
 			<article id="commentEditor">
 				<form method="post" action="/posts/{{.Post.Url}}/comments">
 					<input type="text" name="name" placeholder="name" maxlength="254" value="{{.CommentName}}">
@@ -73,6 +76,7 @@
 					<input type="submit" value="Post Comment" class="submit">
 				</form>
 			</article>
+			{{end}}
 			
 		</section>
 

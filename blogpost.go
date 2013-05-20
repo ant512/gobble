@@ -7,13 +7,14 @@ import (
 )
 
 type BlogPost struct {
-	Title       string
-	Id          int
-	FilePath    string
-	PublishDate time.Time
-	Tags        []string
-	Body        string
-	Comments    Comments
+	Title            string
+	Id               int
+	FilePath         string
+	PublishDate      time.Time
+	Tags             []string
+	Body             string
+	Comments         Comments
+	DisallowComments bool
 }
 
 func (b *BlogPost) NonSpamComments() Comments {

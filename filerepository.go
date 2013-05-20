@@ -399,6 +399,8 @@ func extractPostHeader(text string, post *BlogPost) string {
 				post.Tags = formattedTags
 			case "date":
 				post.PublishDate = stringToTime(data)
+			case "disallowcomments":
+				post.DisallowComments = data == "true"
 			default:
 				continue
 			}
