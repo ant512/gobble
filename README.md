@@ -59,6 +59,26 @@ commas.  They should be lower-case, but Gobble will automatically convert them
 to lower-case for you should you enter some with upper-case characters.
 
 
+Comments
+--------
+
+Comments are stored in a folder in the posts directory that has the same name
+as the post's Markdown file.  For example, a post called "my-first-post.md" will
+store its comments in a folder called "my-first-post/comments".
+
+Comments can be disabled on a post-by-post basis by using the "DisallowComments"
+metadata tag:
+
+    DisallowComments: true
+
+Omitting the tag or using any value other than "true" will enable comments.
+This functionality is provided mainly as a way to stop spam bots that latch on
+to a particular post and repeatedly manage to bypass the other spam protections.
+
+Other spam protection is implemented via Akismet and reCAPTCHA.  Both services
+are enabled automatically if their keys are provided in the config file.
+
+
 Theming
 -------
 
