@@ -82,6 +82,10 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if post.DisallowComments {
+		return
+	}
+
 	author := strings.Trim(req.FormValue("name"), " ")
 	email := strings.Trim(req.FormValue("email"), " ")
 	body := strings.Trim(req.FormValue("comment"), " ")
