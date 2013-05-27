@@ -169,7 +169,7 @@ func rss(w http.ResponseWriter, req *http.Request) {
 
 	page := struct {
 		Posts      BlogPosts
-		SiteConfig *Config
+		Config     *Config
 	}{
 		posts,
 		config,
@@ -224,7 +224,7 @@ func prepareHandler() {
 	m.Get("/tags/:tag", http.HandlerFunc(taggedPosts))
 	m.Get("/tags/", http.HandlerFunc(tags))
 	m.Get("/archive/", http.HandlerFunc(archive))
-	m.Get("/rss/", http.HandlerFunc(rss))
+	m.Get("/rss", http.HandlerFunc(rss))
 	m.Get("/posts/:year/:month/:day/:title", http.HandlerFunc(post))
 	m.Get("/", http.HandlerFunc(home))
 
