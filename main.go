@@ -174,9 +174,9 @@ func rss(w http.ResponseWriter, req *http.Request) {
 	}
 
 	page := struct {
-		Posts      BlogPosts
-		Updated    time.Time
-		Config     *Config
+		Posts   BlogPosts
+		Updated time.Time
+		Config  *Config
 	}{
 		posts,
 		updated,
