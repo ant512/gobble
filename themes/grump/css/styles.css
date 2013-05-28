@@ -217,7 +217,7 @@ img {
 	color: #666;
 	font-size: 0.8em;
 	line-height: 2.2em;
-	padding: 4em;
+	padding: 3em;
 	text-align: center;
 	font-weight: bold;
 }
@@ -292,6 +292,9 @@ img {
 }
 
 #searchForm {
+	position: absolute;
+	top: 0px;
+	right: 0px;
 	padding-bottom: 20px;
 	text-align: center;
 }
