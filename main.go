@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"text/template"
+	"time"
 )
 
 const postsPerPage = 10
@@ -166,12 +167,19 @@ func archive(w http.ResponseWriter, req *http.Request) {
 func rss(w http.ResponseWriter, req *http.Request) {
 
 	posts, _ := repo.SearchPosts("", 0, 10)
+	var updated time.Time
+
+	if len(posts) > 0 {
+		updated = posts[0].PublishDate
+	}
 
 	page := struct {
 		Posts      BlogPosts
+		Updated    time.Time
 		Config     *Config
 	}{
 		posts,
+		updated,
 		config,
 	}
 
