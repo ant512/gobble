@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="iso-8859-1" ?>
-<rss version="2.0">
-
-        <channel>
-                <title>{{.Config.Name}}</title>
-                <link>{{.Config.Address}}</link>
-                <description>{{.Config.Description}}</description>
-                {{with .Posts}}
-                {{range .}}
-                <item>
-                        <title>{{.Title}}</title>
-                        <link>{{.Url}}</link>
-                        <description>{{.Body}}</description>
-                </item>
-                {{end}}
-                {{end}}
-        </channel>
-
-</rss>
+<?xml version="1.0" encoding="utf-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>{{.Config.Name}}</title>
+	<subtitle>{{.Config.Description}}</subtitle>
+	<link rel="alternate" type="text/html" href="{{.Config.Address}}" />
+	<link rel="self" type="application/atom+xml" href="{{.Config.Address}}/rss" />
+	<id>{{.Config.Address}}/rss</id>
+	<updated>{{printf "%04d" .Updated.Year}}-{{printf "%02d" .Updated.Month}}-{{printf "%02d" .Updated.Day}}T{{printf "%02d" .Updated.Hour}}:{{printf "%02d" .Updated.Minute}}:{{printf "%02d" .Updated.Second}}Z</updated>
+	{{$siteUrl := .Config.Address}}
+	{{$siteName := .Config.Name}}
+	{{with .Posts}}
+	{{range .}}
+	<entry>
+		<id>{{$siteUrl}}/posts/{{.Url}}</id>
+		<title>{{.Title}}</title>
+		<published>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}T{{printf "%02d" .PublishDate.Hour}}:{{printf "%02d" .PublishDate.Minute}}:{{printf "%02d" .PublishDate.Second}}Z</published>
+		<updated>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}T{{printf "%02d" .PublishDate.Hour}}:{{printf "%02d" .PublishDate.Minute}}:{{printf "%02d" .PublishDate.Second}}Z</updated>
+		<author>
+			<name>{{$siteName}}</name>
+			<uri>{{$siteUrl}}</uri>
+		</author>
+		<link rel="alternate" type="text/html" href="{{$siteUrl}}/posts/{{.Url}}" />
+		<content type="html"><![CDATA[{{.Body}}]]></content>
+	</entry>
+	{{end}}
+	{{end}}
+</feed>
