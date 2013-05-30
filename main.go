@@ -69,16 +69,26 @@ func home(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	var searchPlaceholder string
+
+	if len(term) > 0 {
+		searchPlaceholder = term
+	} else {
+		searchPlaceholder = "Search"
+	}
+
 	page := struct {
 		Posts       BlogPosts
 		Config      *Config
 		NextURL     string
 		PreviousURL string
+		SearchPlaceholder string
 	}{
 		posts,
 		config,
 		nextURL,
 		previousURL,
+		searchPlaceholder,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/home.html")
