@@ -8,6 +8,7 @@ import (
 	"html"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -149,6 +150,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	filename := timeToFilename(comment.Date)
 
 	log.Println(dirname + filename)
+	os.MkdirAll(dirname, 0700)
 
 	content := "Author: " + comment.Author + "\n"
 	content += "Email: " + comment.Email + "\n"
