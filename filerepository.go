@@ -128,6 +128,7 @@ func (f *FileRepository) SearchPosts(term string, start int, count int) (BlogPos
 func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddress, remoteAddress, userAgent, referer, author, email, body string) {
 
 	// TODO: Ensure file name is unique
+	isSpam, _ := akismet.IsSpamComment(body, serverAddress, remoteAddress, userAgent, referer, author, email, akismetAPIKey)
 
 	comment := new(Comment)
 
@@ -135,6 +136,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	comment.Email = html.EscapeString(email)
 	comment.Date = time.Now()
 	comment.Body = html.EscapeString(body)
+	comment.IsSpam = isSpam
 
 	f.mutex.Lock()
 	post.Comments = append(post.Comments, comment)
@@ -147,8 +149,6 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	filename := timeToFilename(comment.Date)
 
 	log.Println(dirname + filename)
-
-	isSpam, _ := akismet.IsSpamComment(comment.Body, serverAddress, remoteAddress, userAgent, referer, author, email, akismetAPIKey)
 
 	content := "Author: " + comment.Author + "\n"
 	content += "Email: " + comment.Email + "\n"
