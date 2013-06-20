@@ -150,7 +150,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	filename := timeToFilename(comment.Date)
 
 	log.Println(dirname + filename)
-	os.MkdirAll(dirname, 0700)
+	os.MkdirAll(dirname, 0775)
 
 	content := "Author: " + comment.Author + "\n"
 	content += "Email: " + comment.Email + "\n"
