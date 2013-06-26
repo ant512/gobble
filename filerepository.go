@@ -131,6 +131,16 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	// TODO: Ensure file name is unique
 	isSpam, _ := akismet.IsSpamComment(body, serverAddress, remoteAddress, userAgent, referer, author, email, akismetAPIKey)
 
+	log.Println(isSpam)
+	log.Println(serverAddress)
+	log.Printf("%s", remoteAddress)
+	log.Println(userAgent)
+	log.Println(body)
+	log.Println(referer)
+	log.Println(author)
+	log.Println(email)
+	log.Println(akismetAPIKey)
+
 	comment := new(Comment)
 
 	comment.Author = html.EscapeString(author)
