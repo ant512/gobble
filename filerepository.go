@@ -131,24 +131,12 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	// TODO: Ensure file name is unique
 	isSpam, _ := akismet.IsSpamComment(body, serverAddress, remoteAddress, userAgent, referer, author, email, akismetAPIKey)
 
-	meta := fmt.Sprintf("\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", isSpam, serverAddress, remoteAddress, userAgent, body, referer, author, email)
-
-	log.Println(isSpam)
-	log.Println(serverAddress)
-	log.Printf("%s", remoteAddress)
-	log.Println(userAgent)
-	log.Println(body)
-	log.Println(referer)
-	log.Println(author)
-	log.Println(email)
-	log.Println(akismetAPIKey)
-
 	comment := new(Comment)
 
 	comment.Author = html.EscapeString(author)
 	comment.Email = html.EscapeString(email)
 	comment.Date = time.Now()
-	comment.Body = html.EscapeString(body + meta)
+	comment.Body = html.EscapeString(body)
 	comment.IsSpam = isSpam
 
 	f.mutex.Lock()
