@@ -129,14 +129,14 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 
 	if len(config.RecaptchaPrivateKey) > 0 {
 		recaptcha.Init(config.RecaptchaPrivateKey)
-		if !recaptcha.Confirm(req.RemoteAddr, req.FormValue("recaptcha_challenge_field"), req.FormValue("recaptcha_response_field")) {
+		if !recaptcha.Confirm(getIpAddress(req), req.FormValue("recaptcha_challenge_field"), req.FormValue("recaptcha_response_field")) {
 			hasErrors = true
 			commentRecaptchaError = "Incorrect reCAPTCHA entered"
 		}
 	}
 
 	if !hasErrors {
-		repo.SaveComment(post, config.AkismetAPIKey, config.Address, req.RemoteAddr, req.UserAgent(), req.Referer(), author, email, body)
+		repo.SaveComment(post, config.AkismetAPIKey, config.Address, getIpAddress(req), req.UserAgent(), req.Referer(), author, email, body)
 		http.Redirect(w, req, "/posts/"+post.Url()+"#comments", http.StatusFound)
 
 		return
@@ -156,4 +156,31 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		t, _ := template.ParseFiles(themePath + "/templates/post.html")
 		t.Execute(w, page)
 	}
+}
+
+func ipAddrFromRemoteAddr(s string) string {
+	idx := strings.LastIndex(s, ":")
+	if idx == -1 {
+		return s
+	}
+	return s[:idx]
+}
+
+func getIpAddress(r *http.Request) string {
+	hdr := r.Header
+	hdrRealIp := hdr.Get("X-Real-Ip")
+	hdrForwardedFor := hdr.Get("X-Forwarded-For")
+	if hdrRealIp == "" && hdrForwardedFor == "" {
+		return ipAddrFromRemoteAddr(r.RemoteAddr)
+	}
+	if hdrForwardedFor != "" {
+		// X-Forwarded-For is potentially a list of addresses separated with ","
+		parts := strings.Split(hdrForwardedFor, ",")
+		for i, p := range parts {
+			parts[i] = strings.TrimSpace(p)
+		}
+		// TODO: should return first non-local address
+		return parts[0]
+	}
+	return hdrRealIp
 }
