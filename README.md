@@ -172,6 +172,7 @@ The default config file looks like this:
         "postPath": "./posts",
         "mediaPath": "./media",
         "themePath": "./themes",
+        "faviconPath": "./favicon.ico",
         "theme": "grump",
         "akismetAPIKey": "",
         "recaptchaPublicKey": "",

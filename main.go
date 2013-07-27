@@ -233,6 +233,10 @@ func loadConfig() {
 	}
 }
 
+func favicon(w http.ResponseWriter, req *http.Request) {
+	http.ServeFile(w, req, themePath + "/favicon.ico")
+}
+
 func prepareHandler() {
 
 	repo = NewFileRepository(config.PostPath)
@@ -244,6 +248,7 @@ func prepareHandler() {
 	m.Get("/archive/", http.HandlerFunc(archive))
 	m.Get("/rss", http.HandlerFunc(rss))
 	m.Get("/posts/:year/:month/:day/:title", http.HandlerFunc(post))
+	m.Get("/favicon.ico", http.HandlerFunc(favicon))
 	m.Get("/", http.HandlerFunc(home))
 
 	m.Post("/posts/:year/:month/:day/:title/comments", http.HandlerFunc(createComment))
