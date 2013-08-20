@@ -1,8 +1,9 @@
 Todo
 ====
 
- - Tidy up all posts/comments.
  - Add ability to force cache refresh.
+ - Strip carriage returns from posts and comments when loading them.
+ - Option to automatically disable comments on posts older than x days.
 
  - Admin section:
    - Comments:
