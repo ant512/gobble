@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bitbucket.org/ant512/gobble/akismet"
+	"github.com/ant512/gobble/akismet"
 	"errors"
 	"fmt"
 	"github.com/russross/blackfriday"
