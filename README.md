@@ -84,7 +84,17 @@ Theming
 
 Gobble supports multiple themes, which can be found in the gobble/themes
 directory.  Each theme consists of image, css and templates folders.  All are
-designed to be standards compliant and easy to edit.
+designed to be standards compliant and easy to edit.  Each theme can also
+include a "favicon.ico" file and a "robots.txt" file.  Both files should be
+placed in the root folder of the theme:
+
+    - themes/
+      - grump/
+        - css/
+        - img/
+        - templates/
+        - favicon.ico
+        - robots.txt
 
 When editing templates, take care not to disturb content between {{brackets}}.
 These are part of Go's templating system and function as placeholders for
