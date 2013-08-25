@@ -121,11 +121,11 @@ Installation
 The easiest way to install Gobble is via the command line.  Assuming you have Go
 installed and configured correctly:
 
-    go get bitbucket.org/ant512/gobble
+    go get github.com/ant512/gobble
     go get github.com/bmizerany/pat
     go get github.com/russross/blackfriday
     go get github.com/dpapathanasiou/go-recaptcha
-    cd $GOPATH/src/bitbucket.org/ant512/gobble
+    cd $GOPATH/src/github.com/ant512/gobble
     go build
     ./gobble
 
