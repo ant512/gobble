@@ -1,5 +1,6 @@
-Gobble
-======
+Title: Gobble
+Date: 2013-06-28 12:25:00
+Tags: gobble, golang, blog
 
 This is a simple blogging engine written in Go.  Its features are:
 

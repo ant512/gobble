@@ -51,7 +51,7 @@
 			{{end}}
 			{{end}}
 
-			{{if .Post.DisallowComments}}
+			{{if not .Post.AllowsComments}}
 			<p>New comments are not allowed on this post.</p>
 			{{else}}
 			<article id="commentEditor">

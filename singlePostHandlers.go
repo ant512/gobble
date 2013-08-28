@@ -24,7 +24,7 @@ func showSinglePost(b *BlogPost, w http.ResponseWriter, req *http.Request) {
 
 	page := PostPage{}
 	page.Post = b
-	page.Config = config
+	page.Config = SharedConfig
 	page.CommentName = ""
 	page.CommentEmail = ""
 	page.CommentBody = ""
@@ -127,8 +127,8 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		commentBodyError = fmt.Sprintf("Comment must be less than %v characters", maxCommentBodyLength)
 	}
 
-	if len(config.RecaptchaPrivateKey) > 0 {
-		recaptcha.Init(config.RecaptchaPrivateKey)
+	if len(SharedConfig.RecaptchaPrivateKey) > 0 {
+		recaptcha.Init(SharedConfig.RecaptchaPrivateKey)
 		if !recaptcha.Confirm(getIpAddress(req), req.FormValue("recaptcha_challenge_field"), req.FormValue("recaptcha_response_field")) {
 			hasErrors = true
 			commentRecaptchaError = "Incorrect reCAPTCHA entered"
@@ -136,7 +136,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if !hasErrors {
-		repo.SaveComment(post, config.AkismetAPIKey, config.Address, getIpAddress(req), req.UserAgent(), req.Referer(), author, email, body)
+		repo.SaveComment(post, SharedConfig.AkismetAPIKey, SharedConfig.Address, getIpAddress(req), req.UserAgent(), req.Referer(), author, email, body)
 		http.Redirect(w, req, "/posts/"+post.Url()+"#comments", http.StatusFound)
 
 		return
@@ -144,7 +144,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 
 		page := PostPage{}
 		page.Post = post
-		page.Config = config
+		page.Config = SharedConfig
 		page.CommentName = author
 		page.CommentEmail = email
 		page.CommentBody = body

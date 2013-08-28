@@ -17,7 +17,6 @@ const postsPerPage = 10
 const version = "1.0"
 
 var repo *FileRepository
-var config *Config
 var themePath string
 
 func home(w http.ResponseWriter, req *http.Request) {
@@ -85,7 +84,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 		SearchPlaceholder string
 	}{
 		posts,
-		config,
+		SharedConfig,
 		nextURL,
 		previousURL,
 		searchPlaceholder,
@@ -133,7 +132,7 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 		PreviousURL string
 	}{
 		posts,
-		config,
+		SharedConfig,
 		nextURL,
 		previousURL,
 	}
@@ -151,7 +150,7 @@ func tags(w http.ResponseWriter, req *http.Request) {
 		Config *Config
 	}{
 		tags,
-		config,
+		SharedConfig,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/tags.html")
@@ -167,7 +166,7 @@ func archive(w http.ResponseWriter, req *http.Request) {
 		Config *Config
 	}{
 		posts,
-		config,
+		SharedConfig,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/archive.html")
@@ -190,7 +189,7 @@ func rss(w http.ResponseWriter, req *http.Request) {
 	}{
 		posts,
 		updated,
-		config,
+		SharedConfig,
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/rss.html")
@@ -211,14 +210,14 @@ func loadConfig() {
 
 	var err error
 
-	config, err = LoadConfig(*configPath)
+	err = LoadConfig(*configPath)
 
 	if err != nil {
 		log.Println("Could not load config file", *configPath)
 		log.Fatal(err)
 	}
 
-	themePath = config.ThemePath + string(filepath.Separator) + config.Theme
+	themePath = SharedConfig.ThemePath + string(filepath.Separator) + SharedConfig.Theme
 
 	_, err = os.Stat(themePath)
 
@@ -226,24 +225,24 @@ func loadConfig() {
 		log.Fatal("Could not load theme", themePath)
 	}
 
-	_, err = os.Stat(config.PostPath)
+	_, err = os.Stat(SharedConfig.PostPath)
 
 	if err != nil {
-		log.Fatal("Could not load posts from", config.PostPath)
+		log.Fatal("Could not load posts from", SharedConfig.PostPath)
 	}
 }
 
 func favicon(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, themePath + "/favicon.ico")
+	http.ServeFile(w, req, themePath+"/favicon.ico")
 }
 
 func robots(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, themePath + "/robots.txt")
+	http.ServeFile(w, req, themePath+"/robots.txt")
 }
 
 func prepareHandler() {
 
-	repo = NewFileRepository(config.PostPath)
+	repo = NewFileRepository(SharedConfig.PostPath)
 
 	m := pat.New()
 	m.Get("/tags/:tag/:page", http.HandlerFunc(taggedPosts))
@@ -261,15 +260,15 @@ func prepareHandler() {
 	http.Handle("/", m)
 	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(themePath))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
-	http.Handle("/media/", http.StripPrefix("/media/", http.FileServer(http.Dir(config.MediaPath))))
+	http.Handle("/media/", http.StripPrefix("/media/", http.FileServer(http.Dir(SharedConfig.MediaPath))))
 
-	fmt.Printf("Listening on port %v\n", config.Port)
-	fmt.Printf("Using theme \"%v\"\n", config.Theme)
-	fmt.Printf("Post data stored in \"%v\"\n", config.PostPath)
-	fmt.Printf("Media stored in \"%v\"\n", config.MediaPath)
-	fmt.Printf("Themes stored in \"%v\"\n", config.ThemePath)
+	fmt.Printf("Listening on port %v\n", SharedConfig.Port)
+	fmt.Printf("Using theme \"%v\"\n", SharedConfig.Theme)
+	fmt.Printf("Post data stored in \"%v\"\n", SharedConfig.PostPath)
+	fmt.Printf("Media stored in \"%v\"\n", SharedConfig.MediaPath)
+	fmt.Printf("Themes stored in \"%v\"\n", SharedConfig.ThemePath)
 
-	http.ListenAndServe(":"+strconv.FormatInt(config.Port, 10), nil)
+	http.ListenAndServe(":"+strconv.FormatInt(SharedConfig.Port, 10), nil)
 }
 
 func main() {

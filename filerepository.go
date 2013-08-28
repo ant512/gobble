@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/ant512/gobble/akismet"
 	"errors"
 	"fmt"
+	"github.com/ant512/gobble/akismet"
 	"github.com/russross/blackfriday"
 	"html"
 	"io/ioutil"

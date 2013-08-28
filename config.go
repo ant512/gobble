@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	Name                string
+	CommentsOpenForDays int
 	Description         string
 	Address             string
 	MediaPath           string
@@ -19,23 +20,26 @@ type Config struct {
 	RecaptchaPrivateKey string
 }
 
-func LoadConfig(filename string) (*Config, error) {
+var SharedConfig *Config = nil
+
+func LoadConfig(filename string) error {
 	file, err := ioutil.ReadFile(filename)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	config := new(Config)
-	config.setDefaults()
+	SharedConfig = new(Config)
+	SharedConfig.setDefaults()
 
-	err = json.Unmarshal(file, config)
+	err = json.Unmarshal(file, SharedConfig)
 
-	return config, err
+	return err
 }
 
 func (c *Config) setDefaults() {
 	c.Name = "Gobble"
+	c.CommentsOpenForDays = 0
 	c.Description = "Blogging Engine"
 	c.Port = 8080
 	c.PostPath = "./posts"

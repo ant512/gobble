@@ -76,3 +76,17 @@ func (b *BlogPost) Url() string {
 
 	return fmt.Sprintf("%04d/%02d/%02d/%s", b.PublishDate.Year(), b.PublishDate.Month(), b.PublishDate.Day(), title)
 }
+
+func (b *BlogPost) AllowsComments() bool {
+	if b.DisallowComments {
+		return false
+	}
+
+	if SharedConfig.CommentsOpenForDays == 0 {
+		return true
+	}
+
+	var closeDate = b.PublishDate.Add(time.Hour * 24 * time.Duration(SharedConfig.CommentsOpenForDays))
+
+	return time.Now().Before(closeDate)
+}
