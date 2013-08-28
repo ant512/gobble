@@ -75,6 +75,11 @@ Omitting the tag or using any value other than "true" will enable comments.
 This functionality is provided mainly as a way to stop spam bots that latch on
 to a particular post and repeatedly manage to bypass the other spam protections.
 
+Comments can also be disabled by setting a value for the "commentsOpenForDays"
+configuration property.  Setting this to a value other than `0` will cause
+comments to be disabled after the specified number of days.  This is useful both
+for blocking spam and for preventing discussion of ancient posts.
+
 Other spam protection is implemented via Akismet and reCAPTCHA.  Both services
 are enabled automatically if their keys are provided in the config file.
 
@@ -183,6 +188,7 @@ The default config file looks like this:
         "mediaPath": "./media",
         "themePath": "./themes",
         "theme": "grump",
+        "commentsOpenForDays": 0,
         "akismetAPIKey": "",
         "recaptchaPublicKey": "",
         "recaptchaPrivateKey": ""
@@ -202,6 +208,8 @@ The options are defined as follows:
  - mediaPath:           the path to the media directory.
  - themePath:           the path to the themes directory.
  - theme:               the theme to use.
+ - commentsOpenForDays: the number of days that comments can be added to a post
+                        after its publish date (0 means "forever").
  - akismetAPIKey:       the key used to check comments for spam (leave it blank
                         if you don't want to use Akismet).
  - recaptchaPublicKey:  the key used to ensure the commenter isn't a bot (leave

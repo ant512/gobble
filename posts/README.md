@@ -76,6 +76,11 @@ Omitting the tag or using any value other than "true" will enable comments.
 This functionality is provided mainly as a way to stop spam bots that latch on
 to a particular post and repeatedly manage to bypass the other spam protections.
 
+Comments can also be disabled by setting a value for the "commentsOpenForDays"
+configuration property.  Setting this to a value other than `0` will cause
+comments to be disabled after the specified number of days.  This is useful both
+for blocking spam and for preventing discussion of ancient posts.
+
 Other spam protection is implemented via Akismet and reCAPTCHA.  Both services
 are enabled automatically if their keys are provided in the config file.
 
@@ -85,7 +90,17 @@ Theming
 
 Gobble supports multiple themes, which can be found in the gobble/themes
 directory.  Each theme consists of image, css and templates folders.  All are
-designed to be standards compliant and easy to edit.
+designed to be standards compliant and easy to edit.  Each theme can also
+include a "favicon.ico" file and a "robots.txt" file.  Both files should be
+placed in the root folder of the theme:
+
+    - themes/
+      - grump/
+        - css/
+        - img/
+        - templates/
+        - favicon.ico
+        - robots.txt
 
 When editing templates, take care not to disturb content between {{brackets}}.
 These are part of Go's templating system and function as placeholders for
@@ -112,11 +127,11 @@ Installation
 The easiest way to install Gobble is via the command line.  Assuming you have Go
 installed and configured correctly:
 
-    go get bitbucket.org/ant512/gobble
+    go get github.com/ant512/gobble
     go get github.com/bmizerany/pat
     go get github.com/russross/blackfriday
     go get github.com/dpapathanasiou/go-recaptcha
-    cd $GOPATH/src/bitbucket.org/ant512/gobble
+    cd $GOPATH/src/github.com/ant512/gobble
     go build
     ./gobble
 
@@ -166,7 +181,7 @@ multiple Gobble servers running simultaneously.
 The default config file looks like this:
 
     {                                                 
-    	"name": "Gobble",
+        "name": "Gobble",
         "description": "Blogging Engine",
         "address": "http://simianzombie.com",
         "port": 8080,
@@ -174,6 +189,7 @@ The default config file looks like this:
         "mediaPath": "./media",
         "themePath": "./themes",
         "theme": "grump",
+        "commentsOpenForDays": 0,
         "akismetAPIKey": "",
         "recaptchaPublicKey": "",
         "recaptchaPrivateKey": ""
@@ -193,6 +209,8 @@ The options are defined as follows:
  - mediaPath:           the path to the media directory.
  - themePath:           the path to the themes directory.
  - theme:               the theme to use.
+ - commentsOpenForDays: the number of days that comments can be added to a post
+                        after its publish date (0 means "forever").
  - akismetAPIKey:       the key used to check comments for spam (leave it blank
                         if you don't want to use Akismet).
  - recaptchaPublicKey:  the key used to ensure the commenter isn't a bot (leave
