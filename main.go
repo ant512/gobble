@@ -130,11 +130,13 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 		Config      *Config
 		NextURL     string
 		PreviousURL string
+		SearchPlaceholder string
 	}{
 		posts,
 		SharedConfig,
 		nextURL,
 		previousURL,
+		"",
 	}
 
 	t, _ := template.ParseFiles(themePath + "/templates/home.html")
