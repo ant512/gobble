@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/ant512/gobble/akismet"
 	"github.com/russross/blackfriday"
+	"github.com/howeyc/fsnotify"
 	"html"
 	"io/ioutil"
 	"log"
@@ -29,7 +30,31 @@ func NewFileRepository(directory string) *FileRepository {
 	f := new(FileRepository)
 	f.directory = directory
 
-	go f.update()
+	f.fetchAllPosts()
+	f.fetchAllTags()
+
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	go func() {
+		for {
+			select {
+			case ev := <-watcher.Event:
+				f.fetchAllPosts()
+				f.fetchAllTags()
+				log.Println("Reloading posts due to event:", ev)
+			case err := <-watcher.Error:
+				log.Println("fswatcher error:", err)
+			}
+		}
+	}()
+
+	err = watcher.Watch(directory)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return f
 }
@@ -168,20 +193,6 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 
 	if err != nil {
 		log.Println(err)
-	}
-}
-
-func (f *FileRepository) update() {
-	for {
-		start := time.Now()
-
-		f.fetchAllPosts()
-		f.fetchAllTags()
-
-		end := time.Now()
-		log.Printf("Cached %v posts in %v", len(f.posts), end.Sub(start))
-
-		time.Sleep(10 * time.Minute)
 	}
 }
 
