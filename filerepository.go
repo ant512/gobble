@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ant512/gobble/akismet"
-	"github.com/russross/blackfriday"
 	"github.com/howeyc/fsnotify"
+	"github.com/russross/blackfriday"
 	"html"
 	"io/ioutil"
 	"log"
@@ -72,15 +72,7 @@ func (f *FileRepository) PostWithUrl(url string) (*BlogPost, error) {
 	f.mutex.RLock()
 	defer f.mutex.RUnlock()
 
-	for i := range f.posts {
-		if f.posts[i].Url() == url {
-			return f.posts[i], nil
-		}
-	}
-
-	err := errors.New("Could not find post")
-
-	return nil, err
+	return f.posts.PostWithUrl(url)
 }
 
 func (f *FileRepository) PostWithId(id int) (*BlogPost, error) {
@@ -128,27 +120,7 @@ func (f *FileRepository) SearchPosts(term string, start int, count int) (BlogPos
 	f.mutex.RLock()
 	defer f.mutex.RUnlock()
 
-	filteredPosts := BlogPosts{}
-
-	if len(term) > 0 {
-		for i := range f.posts {
-			if f.posts[i].ContainsTerm(term) {
-				filteredPosts = append(filteredPosts, f.posts[i])
-			}
-		}
-	} else {
-		filteredPosts = f.posts
-	}
-
-	if start > len(filteredPosts) {
-		return BlogPosts{}, 0
-	}
-
-	if start+count > len(filteredPosts) {
-		count = len(filteredPosts) - start
-	}
-
-	return filteredPosts[start : start+count], len(filteredPosts)
+	return f.posts.FilteredPosts(term, start, count)
 }
 
 func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddress, remoteAddress, userAgent, referer, author, email, body string) {

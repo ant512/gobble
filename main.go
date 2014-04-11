@@ -126,10 +126,10 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 	}
 
 	page := struct {
-		Posts       BlogPosts
-		Config      *Config
-		NextURL     string
-		PreviousURL string
+		Posts             BlogPosts
+		Config            *Config
+		NextURL           string
+		PreviousURL       string
 		SearchPlaceholder string
 	}{
 		posts,
