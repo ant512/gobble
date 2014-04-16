@@ -170,9 +170,11 @@ func (f *FileRepository) fetchAllTags() {
 
 	for i := range f.posts {
 		for j := range f.posts[i].Tags {
+			tag := strings.ToLower(f.posts[i].Tags[j])
+			tag = stripChars(tag, "#")
 
-			value := tags[strings.ToLower(f.posts[i].Tags[j])] + 1
-			tags[strings.ToLower(f.posts[i].Tags[j])] = value
+			value := tags[tag] + 1
+			tags[tag] = value
 		}
 	}
 
@@ -354,4 +356,13 @@ func extractPostHeader(text string, post *BlogPost) string {
 	}
 
 	return text[headerSize:]
+}
+
+func stripChars(str, chr string) string {
+    return strings.Map(func(r rune) rune {
+        if strings.IndexRune(chr, r) < 0 {
+            return r
+        }
+        return -1
+    }, str)
 }

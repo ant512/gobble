@@ -1,5 +1,6 @@
-Gobble
-======
+Title: Gobble
+Date: 2013-06-28 12:25:00
+Tags: gobble, golang, blog
 
 This is a simple blogging engine written in Go.  Its features are:
 
@@ -57,6 +58,9 @@ Tagging
 Tags are specified as a list of words in a post's metadata block, separated by
 commas.  They should be lower-case, but Gobble will automatically convert them
 to lower-case for you should you enter some with upper-case characters.
+
+Hash characters in tags are stripped out.  Tags are included in URLs, so hash
+characters would prevent the browser from accessing the correct page.
 
 
 Comments
@@ -116,8 +120,7 @@ sound a little excessive, but simianzombie.com consists of 280,000 words spread
 over 480 posts and 912 comments, and uses just 2MB of disk space.  Storing the
 posts in RAM makes retrieving and searching them extremely fast.
 
-The cache is updated by a background task every 10 minutes, which reloads the
-entire dataset from disk.
+The cache is reloaded whenever the content of the posts directory changes.
 
 
 Installation
@@ -128,8 +131,9 @@ installed and configured correctly:
 
     go get github.com/ant512/gobble
     go get github.com/bmizerany/pat
-    go get github.com/russross/blackfriday
     go get github.com/dpapathanasiou/go-recaptcha
+    go get github.com/howeyc/fsnotify
+    go get github.com/russross/blackfriday
     cd $GOPATH/src/github.com/ant512/gobble
     go build
     ./gobble
@@ -180,7 +184,7 @@ multiple Gobble servers running simultaneously.
 The default config file looks like this:
 
     {                                                 
-    	"name": "Gobble",
+        "name": "Gobble",
         "description": "Blogging Engine",
         "address": "http://simianzombie.com",
         "port": 8080,
@@ -244,9 +248,11 @@ Gobble uses a handful of libraries to do its thing:
  - [http://craig.is/making/rainbows][5]
  - [http://github.com/bmizerany/pat][6]
  - [http://github.com/dpapathanasiou/go-recaptcha][7]
- - [http://github.com/russross/blackfriday][8]
+ - [http://github.com/howeyc/fsnotify][8]
+ - [http://github.com/russross/blackfriday][9]
 
   [5]: http://craig.is/making/rainbows
   [6]: http://github.com/bmizerany/pat
   [7]: http://github.com/dpapathanasiou/go-recaptcha
-  [8]: http://github.com/russross/blackfriday
+  [8]: http://github.com/howeyc/fsnotify
+  [9]: http://github.com/russross/blackfriday

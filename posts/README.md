@@ -59,6 +59,9 @@ Tags are specified as a list of words in a post's metadata block, separated by
 commas.  They should be lower-case, but Gobble will automatically convert them
 to lower-case for you should you enter some with upper-case characters.
 
+Hash characters in tags are stripped out.  Tags are included in URLs, so hash
+characters would prevent the browser from accessing the correct page.
+
 
 Comments
 --------
