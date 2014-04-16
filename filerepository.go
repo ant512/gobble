@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/ant512/gobble/akismet"
 	"github.com/howeyc/fsnotify"
 	"github.com/russross/blackfriday"
@@ -14,7 +13,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
 type FileRepository struct {
@@ -103,13 +101,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	// TODO: Ensure file name is unique
 	isSpam, _ := akismet.IsSpamComment(body, serverAddress, remoteAddress, userAgent, referer, author, email, akismetAPIKey)
 
-	comment := new(Comment)
-
-	comment.Author = html.EscapeString(author)
-	comment.Email = html.EscapeString(email)
-	comment.Date = time.Now()
-	comment.Body = html.EscapeString(body)
-	comment.IsSpam = isSpam
+	comment := NewComment(html.EscapeString(author), html.EscapeString(email), html.EscapeString(body), isSpam)
 
 	f.mutex.Lock()
 	post.Comments = append(post.Comments, comment)
@@ -124,17 +116,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	log.Println(dirname + filename)
 	os.MkdirAll(dirname, 0775)
 
-	content := "Author: " + comment.Author + "\n"
-	content += "Email: " + comment.Email + "\n"
-	content += "Date: " + timeToString(comment.Date) + "\n"
-
-	if isSpam {
-		content += "Spam: true\n"
-	}
-
-	content += "\n"
-
-	content += comment.Body
+	content := comment.String()
 
 	err := ioutil.WriteFile(dirname+filename, []byte(content), 0644)
 
@@ -372,55 +354,4 @@ func extractPostHeader(text string, post *BlogPost) string {
 	}
 
 	return text[headerSize:]
-}
-
-func timeToFilename(t time.Time) string {
-	return fmt.Sprintf("%04d-%02d-%02d_%02d-%02d-%02d.md", t.Year(), int(t.Month()), t.Day(), t.Hour(), t.Minute(), t.Second())
-}
-
-func timeToString(t time.Time) string {
-	return fmt.Sprintf("%04d-%02d-%02d %02d:%02d:%02d", t.Year(), int(t.Month()), t.Day(), t.Hour(), t.Minute(), t.Second())
-}
-
-func stringToTime(s string) time.Time {
-
-	year, err := strconv.Atoi(s[:4])
-
-	if err != nil {
-		return time.Unix(0, 0)
-	}
-
-	month, err := strconv.Atoi(s[5:7])
-
-	if err != nil {
-		return time.Unix(0, 0)
-	}
-
-	day, err := strconv.Atoi(s[8:10])
-
-	if err != nil {
-		return time.Unix(0, 0)
-	}
-
-	hour, err := strconv.Atoi(s[11:13])
-
-	if err != nil {
-		return time.Unix(0, 0)
-	}
-
-	minute, err := strconv.Atoi(s[14:16])
-
-	if err != nil {
-		return time.Unix(0, 0)
-	}
-
-	seconds, err := strconv.Atoi(s[17:19])
-
-	if err != nil {
-		return time.Unix(0, 0)
-	}
-
-	location, err := time.LoadLocation("UTC")
-
-	return time.Date(year, time.Month(month), day, hour, minute, seconds, 0, location)
 }

@@ -13,6 +13,17 @@ type Comment struct {
 	IsSpam bool
 }
 
+func NewComment(author, email, body string, isSpam bool) *Comment {
+	c := new(Comment)
+	c.Author = author
+	c.Email = email
+	c.Date = time.Now()
+	c.Body = body
+	c.IsSpam = isSpam
+
+	return c
+}
+
 func (c *Comment) ContainsTerm(term string) bool {
 
 	term = strings.ToLower(term)
@@ -26,4 +37,20 @@ func (c *Comment) ContainsTerm(term string) bool {
 	}
 
 	return true
+}
+
+func (c *Comment) String() string {
+	content := "Author: " + c.Author + "\n"
+	content += "Email: " + c.Email + "\n"
+	content += "Date: " + timeToString(c.Date) + "\n"
+
+	if c.IsSpam {
+		content += "Spam: true\n"
+	}
+
+	content += "\n"
+
+	content += c.Body
+
+	return content
 }
