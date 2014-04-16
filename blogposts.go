@@ -55,3 +55,35 @@ func (b BlogPosts) PostWithUrl(url string) (*BlogPost, error) {
 
 	return nil, err
 }
+
+func (b BlogPosts) PostsWithTag(tag string, start int, count int) (BlogPosts, int) {
+	filteredPosts := BlogPosts{}
+
+	for i := range b {
+		if b[i].ContainsTag(tag) {
+			filteredPosts = append(filteredPosts, b[i])
+		}
+	}
+
+	if start > len(filteredPosts) {
+		return BlogPosts{}, 0
+	}
+
+	if start+count > len(filteredPosts) {
+		count = len(filteredPosts) - start
+	}
+
+	return filteredPosts[start : start+count], len(filteredPosts)
+}
+
+func (b BlogPosts) PostWithId(id int) (*BlogPost, error) {
+	for i := range b {
+		if b[i].Id == id {
+			return b[i], nil
+		}
+	}
+
+	err := errors.New("Could not find post")
+
+	return nil, err
+}

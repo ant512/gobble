@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/ant512/gobble/akismet"
 	"github.com/howeyc/fsnotify"
@@ -80,15 +79,7 @@ func (f *FileRepository) PostWithId(id int) (*BlogPost, error) {
 	f.mutex.RLock()
 	defer f.mutex.RUnlock()
 
-	for i := range f.posts {
-		if f.posts[i].Id == id {
-			return f.posts[i], nil
-		}
-	}
-
-	err := errors.New("Could not find post")
-
-	return nil, err
+	return f.posts.PostWithId(id)
 }
 
 func (f *FileRepository) PostsWithTag(tag string, start int, count int) (BlogPosts, int) {
@@ -96,23 +87,7 @@ func (f *FileRepository) PostsWithTag(tag string, start int, count int) (BlogPos
 	f.mutex.RLock()
 	defer f.mutex.RUnlock()
 
-	filteredPosts := BlogPosts{}
-
-	for i := range f.posts {
-		if f.posts[i].ContainsTag(tag) {
-			filteredPosts = append(filteredPosts, f.posts[i])
-		}
-	}
-
-	if start > len(filteredPosts) {
-		return BlogPosts{}, 0
-	}
-
-	if start+count > len(filteredPosts) {
-		count = len(filteredPosts) - start
-	}
-
-	return filteredPosts[start : start+count], len(filteredPosts)
+	return f.posts.PostsWithTag(tag, start, count)
 }
 
 func (f *FileRepository) SearchPosts(term string, start int, count int) (BlogPosts, int) {
