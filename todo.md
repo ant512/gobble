@@ -1,8 +1,6 @@
 Todo
 ====
 
- - Strip carriage returns from posts and comments when loading them.
-
  - Admin section:
    - Comments:
      - View all.
