@@ -196,6 +196,7 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 		return post, err
 	}
 
+	file = []byte(stripChars(string(file), "\015"))
 	file = []byte(extractPostHeader(string(file), post))
 
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
@@ -254,6 +255,7 @@ func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
 		return comment, err
 	}
 
+	file = []byte(stripChars(string(file), "\015"))
 	file = []byte(extractCommentHeader(string(file), comment))
 
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
@@ -359,10 +361,10 @@ func extractPostHeader(text string, post *BlogPost) string {
 }
 
 func stripChars(str, chr string) string {
-    return strings.Map(func(r rune) rune {
-        if strings.IndexRune(chr, r) < 0 {
-            return r
-        }
-        return -1
-    }, str)
+	return strings.Map(func(r rune) rune {
+		if strings.IndexRune(chr, r) < 0 {
+			return r
+		}
+		return -1
+	}, str)
 }
