@@ -270,6 +270,28 @@ func prepareHandler() {
 	fmt.Printf("Media stored in \"%v\"\n", SharedConfig.MediaPath)
 	fmt.Printf("Themes stored in \"%v\"\n", SharedConfig.ThemePath)
 
+	postCount := len(repo.posts)
+
+	if postCount == 1 {
+		fmt.Printf("Serving 1 post")
+	} else {
+		fmt.Printf("Serving %d posts", postCount)
+	}
+
+	commentCount := 0
+
+	for _, p := range repo.posts {
+		commentCount += len(p.Comments)
+	}
+
+	if commentCount == 0 {
+		fmt.Printf("\n")
+	} else if commentCount == 1 {
+		fmt.Printf(" and 1 comment\n")
+	} else {
+		fmt.Printf(" and %d comments\n", commentCount)
+	}
+
 	http.ListenAndServe(":"+strconv.FormatInt(SharedConfig.Port, 10), nil)
 }
 
