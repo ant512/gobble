@@ -272,99 +272,56 @@ func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
 
 func extractCommentHeader(text string, comment *Comment) string {
 
-	lines := strings.Split(text, "\n")
-
-	headerSize := 0
-
-	for i := range lines {
-		if strings.Contains(lines[i], ":") {
-			components := strings.Split(lines[i], ":")
-
-			header := strings.ToLower(strings.Trim(components[0], " "))
-			separatorIndex := strings.Index(lines[i], ":") + 1
-			data := strings.Trim(lines[i][separatorIndex:], " ")
-
-			switch header {
-			case "author":
-				comment.Author = data
-			case "email":
-				comment.Email = data
-			case "date":
-				comment.Date = stringToTime(data)
-			case "spam":
-				comment.IsSpam = data == "true"
-			default:
-				continue
-			}
-
-			headerSize += len(lines[i]) + 1
-		} else {
-			break
+	headerSize := ParseHeader(text, func(key, value string) {
+		switch key {
+		case "author":
+			comment.Author = value
+		case "email":
+			comment.Email = value
+		case "date":
+			comment.Date = stringToTime(value)
+		case "spam":
+			comment.IsSpam = value == "true"
+		default:
 		}
-	}
+	})
 
 	return text[headerSize:]
 }
 
 func extractPostHeader(text string, post *BlogPost) string {
 
-	lines := strings.Split(text, "\n")
+	headerSize := ParseHeader(text, func(key, value string) {
+		switch key {
+		case "title":
+			post.Title = value
+		case "id":
+			post.Id, _ = strconv.Atoi(value)
+		case "tags":
 
-	headerSize := 0
+			tags := strings.Split(value, ",")
 
-	for i := range lines {
-		if strings.Contains(lines[i], ":") {
-			components := strings.Split(lines[i], ":")
+			formattedTags := []string{}
 
-			header := strings.ToLower(strings.Trim(components[0], " "))
-			separatorIndex := strings.Index(lines[i], ":") + 1
-			data := strings.Trim(lines[i][separatorIndex:], " ")
+			for j := range tags {
+				tags[j] = strings.Trim(tags[j], " ")
+				tags[j] = strings.Replace(tags[j], " ", "-", -1)
+				tags[j] = strings.Replace(tags[j], "/", "-", -1)
+				tags[j] = strings.ToLower(tags[j])
 
-			switch header {
-			case "title":
-				post.Title = data
-			case "id":
-				post.Id, _ = strconv.Atoi(data)
-			case "tags":
-
-				tags := strings.Split(data, ",")
-
-				formattedTags := []string{}
-
-				for j := range tags {
-					tags[j] = strings.Trim(tags[j], " ")
-					tags[j] = strings.Replace(tags[j], " ", "-", -1)
-					tags[j] = strings.Replace(tags[j], "/", "-", -1)
-					tags[j] = strings.ToLower(tags[j])
-
-					if tags[j] != "" {
-						formattedTags = append(formattedTags, tags[j])
-					}
+				if tags[j] != "" {
+					formattedTags = append(formattedTags, tags[j])
 				}
-
-				post.Tags = formattedTags
-			case "date":
-				post.PublishDate = stringToTime(data)
-			case "disallowcomments":
-				post.DisallowComments = data == "true"
-			default:
-				continue
 			}
 
-			headerSize += len(lines[i]) + 1
-		} else {
-			break
+			post.Tags = formattedTags
+		case "date":
+			post.PublishDate = stringToTime(value)
+		case "disallowcomments":
+			post.DisallowComments = value == "true"
+		default:
 		}
-	}
+	})
 
 	return text[headerSize:]
-}
-
-func stripChars(str, chr string) string {
-	return strings.Map(func(r rune) rune {
-		if strings.IndexRune(chr, r) < 0 {
-			return r
-		}
-		return -1
-	}, str)
 }
