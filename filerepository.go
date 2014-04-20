@@ -163,7 +163,6 @@ func (f *FileRepository) fetchAllPosts() error {
 
 func (f *FileRepository) fetchAllTags() {
 
-	// We're using a map to simulate a set
 	tags := make(map[string]int)
 
 	f.mutex.RLock()
