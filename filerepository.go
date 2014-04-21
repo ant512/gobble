@@ -170,7 +170,7 @@ func (f *FileRepository) fetchAllTags() {
 	for i := range f.posts {
 		for j := range f.posts[i].Tags {
 			tag := strings.ToLower(f.posts[i].Tags[j])
-			tag = stripChars(tag, "#")
+			tag = strings.Replace(tag, "#", "", -1)
 
 			value := tags[tag] + 1
 			tags[tag] = value
@@ -194,8 +194,8 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 	if err != nil {
 		return post, err
 	}
-
-	file = []byte(stripChars(string(file), "\r"))
+	
+	file = []byte(strings.Replace(string(file), "\r", "", -1))
 	file = []byte(extractPostHeader(string(file), post))
 
 	post.Body = convertMarkdownToHtml(&file)
@@ -247,7 +247,7 @@ func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
 		return comment, err
 	}
 
-	file = []byte(stripChars(string(file), "\r"))
+	file = []byte(strings.Replace(string(file), "\r", "", -1))
 	file = []byte(extractCommentHeader(string(file), comment))
 
 	comment.Body = convertMarkdownToHtml(&file)
