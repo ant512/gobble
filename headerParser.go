@@ -7,7 +7,7 @@ import (
 type ParseHandler func(key, value string)
 
 func ParseHeader(text string, handler ParseHandler) int {
-	
+
 	lines := strings.Split(text, "\n")
 	headerSize := 0
 
