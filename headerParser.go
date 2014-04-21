@@ -4,9 +4,9 @@ import (
 	"strings"
 )
 
-type ParseHandler func(key, value string)
+type parseHandler func(key, value string)
 
-func ParseHeader(text string, handler ParseHandler) int {
+func parseHeader(text string, handler parseHandler) int {
 
 	lines := strings.Split(text, "\n")
 	headerSize := 0

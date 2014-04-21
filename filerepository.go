@@ -268,7 +268,7 @@ func convertMarkdownToHtml(markdown *[]byte) string {
 
 func extractCommentHeader(text string, comment *Comment) string {
 
-	headerSize := ParseHeader(text, func(key, value string) {
+	headerSize := parseHeader(text, func(key, value string) {
 		switch key {
 		case "author":
 			comment.Author = value
@@ -287,7 +287,7 @@ func extractCommentHeader(text string, comment *Comment) string {
 
 func extractPostHeader(text string, post *BlogPost) string {
 
-	headerSize := ParseHeader(text, func(key, value string) {
+	headerSize := parseHeader(text, func(key, value string) {
 		switch key {
 		case "title":
 			post.Title = value
