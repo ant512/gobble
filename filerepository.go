@@ -198,14 +198,7 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 	file = []byte(stripChars(string(file), "\r"))
 	file = []byte(extractPostHeader(string(file), post))
 
-	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
-	extensions := blackfriday.EXTENSION_AUTOLINK | blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
-
-	renderer := blackfriday.HtmlRenderer(htmlFlags, post.Title, "")
-
-	output := blackfriday.Markdown(file, renderer, extensions)
-
-	post.Body = string(output)
+	post.Body = convertMarkdownToHtml(&file)
 
 	f.fetchCommentsForPost(post, filename)
 
@@ -257,16 +250,20 @@ func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
 	file = []byte(stripChars(string(file), "\r"))
 	file = []byte(extractCommentHeader(string(file), comment))
 
+	comment.Body = convertMarkdownToHtml(&file)
+
+	return comment, nil
+}
+
+func convertMarkdownToHtml(markdown *[]byte) string {
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
 	extensions := blackfriday.EXTENSION_AUTOLINK | blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
 
 	renderer := blackfriday.HtmlRenderer(htmlFlags, "", "")
 
-	output := blackfriday.Markdown(file, renderer, extensions)
+	output := blackfriday.Markdown(*markdown, renderer, extensions)
 
-	comment.Body = string(output)
-
-	return comment, nil
+	return string(output)
 }
 
 func extractCommentHeader(text string, comment *Comment) string {
