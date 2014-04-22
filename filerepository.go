@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha1"
+	"encoding/base64"
 	"github.com/ant512/gobble/akismet"
 	"github.com/howeyc/fsnotify"
 	"github.com/russross/blackfriday"
@@ -101,7 +103,15 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	// TODO: Ensure file name is unique
 	isSpam, _ := akismet.IsSpamComment(body, serverAddress, remoteAddress, userAgent, referer, author, email, akismetAPIKey)
 
-	comment := NewComment(html.EscapeString(author), html.EscapeString(email), html.EscapeString(body), isSpam)
+	email = html.EscapeString(email)
+
+	if SharedConfig.HashEmailAddresses {
+		hasher := sha1.New()
+		hasher.Write([]byte(email))
+		email = base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+	}
+
+	comment := NewComment(html.EscapeString(author), email, html.EscapeString(body), isSpam)
 
 	f.mutex.Lock()
 	post.Comments = append(post.Comments, comment)

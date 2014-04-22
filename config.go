@@ -18,6 +18,7 @@ type Config struct {
 	AkismetAPIKey       string
 	RecaptchaPublicKey  string
 	RecaptchaPrivateKey string
+	HashEmailAddresses  bool
 }
 
 var SharedConfig *Config = nil
@@ -46,4 +47,5 @@ func (c *Config) setDefaults() {
 	c.MediaPath = "./media"
 	c.ThemePath = "./themes"
 	c.Theme = "grump"
+	c.HashEmailAddresses = false
 }
