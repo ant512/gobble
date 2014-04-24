@@ -102,6 +102,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 
 	// TODO: Ensure file name is unique
 	isSpam, _ := akismet.IsSpamComment(body, serverAddress, remoteAddress, userAgent, referer, author, email, akismetAPIKey)
+	hasHashedEmail := false
 
 	email = html.EscapeString(email)
 
@@ -109,9 +110,10 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 		hasher := sha1.New()
 		hasher.Write([]byte(email))
 		email = base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+		hasHashedEmail = true
 	}
 
-	comment := NewComment(html.EscapeString(author), email, html.EscapeString(body), isSpam)
+	comment := NewComment(html.EscapeString(author), email, html.EscapeString(body), isSpam, hasHashedEmail)
 
 	f.mutex.Lock()
 	post.Comments = append(post.Comments, comment)
@@ -204,7 +206,7 @@ func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
 	if err != nil {
 		return post, err
 	}
-	
+
 	file = []byte(strings.Replace(string(file), "\r", "", -1))
 	file = []byte(extractPostHeader(string(file), post))
 
@@ -288,6 +290,8 @@ func extractCommentHeader(text string, comment *Comment) string {
 			comment.Date = stringToTime(value)
 		case "spam":
 			comment.IsSpam = value == "true"
+		case "hasHashedEmail":
+			comment.HasHashedEmail = value == "true"
 		default:
 		}
 	})

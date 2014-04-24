@@ -6,20 +6,22 @@ import (
 )
 
 type Comment struct {
-	Author string
-	Email  string
-	Date   time.Time
-	Body   string
-	IsSpam bool
+	Author         string
+	Email          string
+	Date           time.Time
+	Body           string
+	IsSpam         bool
+	HasHashedEmail bool
 }
 
-func NewComment(author, email, body string, isSpam bool) *Comment {
+func NewComment(author, email, body string, isSpam, hasHashedEmail bool) *Comment {
 	c := new(Comment)
 	c.Author = author
 	c.Email = email
 	c.Date = time.Now()
 	c.Body = body
 	c.IsSpam = isSpam
+	c.HasHashedEmail = hasHashedEmail
 
 	return c
 }
@@ -46,6 +48,10 @@ func (c *Comment) String() string {
 
 	if c.IsSpam {
 		content += "Spam: true\n"
+	}
+
+	if c.HasHashedEmail {
+		content += "HasHashedEmail: true\n"
 	}
 
 	content += "\n"
