@@ -251,20 +251,8 @@ func (f *FileRepository) fetchCommentsForPost(post *BlogPost, filename string) {
 }
 
 func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
-	comment := new(Comment)
-
-	file, err := ioutil.ReadFile(filename)
-
-	if err != nil {
-		return comment, err
-	}
-
-	file = []byte(strings.Replace(string(file), "\r", "", -1))
-	file = []byte(extractCommentHeader(string(file), comment))
-
-	comment.Body = convertMarkdownToHtml(&file)
-
-	return comment, nil
+	comment, err := LoadComment(filename)
+	return comment, err
 }
 
 func convertMarkdownToHtml(markdown *[]byte) string {
@@ -278,26 +266,7 @@ func convertMarkdownToHtml(markdown *[]byte) string {
 	return string(output)
 }
 
-func extractCommentHeader(text string, comment *Comment) string {
 
-	headerSize := parseHeader(text, func(key, value string) {
-		switch key {
-		case "author":
-			comment.Author = value
-		case "email":
-			comment.Email = value
-		case "date":
-			comment.Date = stringToTime(value)
-		case "spam":
-			comment.IsSpam = value == "true"
-		case "hasHashedEmail":
-			comment.HasHashedEmail = value == "true"
-		default:
-		}
-	})
-
-	return text[headerSize:]
-}
 
 func extractPostHeader(text string, post *BlogPost) string {
 

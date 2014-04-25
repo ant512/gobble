@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"strings"
 	"time"
 )
@@ -12,6 +13,22 @@ type Comment struct {
 	Body           string
 	IsSpam         bool
 	HasHashedEmail bool
+}
+
+func LoadComment(path string) (*Comment, error) {
+	c := new(Comment)
+	file, err := ioutil.ReadFile(path)
+
+	if err != nil {
+		return c, err
+	}
+
+	file = []byte(strings.Replace(string(file), "\r", "", -1))
+	file = []byte(c.extractHeader(string(file)))
+
+	c.Body = convertMarkdownToHtml(&file)
+
+	return c, nil
 }
 
 func NewComment(author, email, body string, isSpam, hasHashedEmail bool) *Comment {
@@ -59,4 +76,25 @@ func (c *Comment) String() string {
 	content += c.Body
 
 	return content
+}
+
+func (c *Comment) extractHeader(text string) string {
+
+	headerSize := parseHeader(text, func(key, value string) {
+		switch key {
+		case "author":
+			c.Author = value
+		case "email":
+			c.Email = value
+		case "date":
+			c.Date = stringToTime(value)
+		case "spam":
+			c.IsSpam = value == "true"
+		case "hasHashedEmail":
+			c.HasHashedEmail = value == "true"
+		default:
+		}
+	})
+
+	return text[headerSize:]
 }
