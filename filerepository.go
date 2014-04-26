@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 	"sync"
 )
@@ -119,7 +118,7 @@ func (f *FileRepository) SaveComment(post *BlogPost, akismetAPIKey, serverAddres
 	post.Comments = append(post.Comments, comment)
 	f.mutex.Unlock()
 
-	postPath := post.FilePath[:len(post.FilePath)-3]
+	postPath := post.Path[:len(post.Path)-3]
 
 	dirname := postPath + string(filepath.Separator) + "comments" + string(filepath.Separator)
 
@@ -197,57 +196,7 @@ func (f *FileRepository) fetchAllTags() {
 }
 
 func (f *FileRepository) fetchPost(filename string) (*BlogPost, error) {
-
-	post := new(BlogPost)
-	post.FilePath = filename
-
-	file, err := ioutil.ReadFile(filename)
-
-	if err != nil {
-		return post, err
-	}
-
-	file = []byte(strings.Replace(string(file), "\r", "", -1))
-	file = []byte(extractPostHeader(string(file), post))
-
-	post.Body = convertMarkdownToHtml(&file)
-
-	f.fetchCommentsForPost(post, filename)
-
-	return post, nil
-}
-
-func (f *FileRepository) fetchCommentsForPost(post *BlogPost, filename string) {
-
-	dirname := filename[:len(filename)-3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
-
-	files, err := ioutil.ReadDir(dirname)
-
-	if err != nil {
-		return
-	}
-
-	post.Comments = Comments{}
-
-	for i := range files {
-
-		if files[i].IsDir() {
-			continue
-		}
-
-		if filepath.Ext(files[i].Name()) != ".md" {
-			continue
-		}
-
-		comment, err := f.fetchComment(dirname + files[i].Name())
-
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-
-		post.Comments = append(post.Comments, comment)
-	}
+	return LoadPost(filename)
 }
 
 func (f *FileRepository) fetchComment(filename string) (*Comment, error) {
@@ -264,43 +213,4 @@ func convertMarkdownToHtml(markdown *[]byte) string {
 	output := blackfriday.Markdown(*markdown, renderer, extensions)
 
 	return string(output)
-}
-
-
-
-func extractPostHeader(text string, post *BlogPost) string {
-
-	headerSize := parseHeader(text, func(key, value string) {
-		switch key {
-		case "title":
-			post.Title = value
-		case "id":
-			post.Id, _ = strconv.Atoi(value)
-		case "tags":
-
-			tags := strings.Split(value, ",")
-
-			formattedTags := []string{}
-
-			for j := range tags {
-				tags[j] = strings.Trim(tags[j], " ")
-				tags[j] = strings.Replace(tags[j], " ", "-", -1)
-				tags[j] = strings.Replace(tags[j], "/", "-", -1)
-				tags[j] = strings.ToLower(tags[j])
-
-				if tags[j] != "" {
-					formattedTags = append(formattedTags, tags[j])
-				}
-			}
-
-			post.Tags = formattedTags
-		case "date":
-			post.PublishDate = stringToTime(value)
-		case "disallowcomments":
-			post.DisallowComments = value == "true"
-		default:
-		}
-	})
-
-	return text[headerSize:]
 }

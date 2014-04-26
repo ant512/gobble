@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -9,12 +13,33 @@ import (
 type BlogPost struct {
 	Title            string
 	Id               int
-	FilePath         string
+	Path             string
 	PublishDate      time.Time
 	Tags             []string
 	Body             string
 	Comments         Comments
 	DisallowComments bool
+}
+
+func LoadPost(path string) (*BlogPost, error) {
+
+	b := new(BlogPost)
+	b.Path = path
+
+	file, err := ioutil.ReadFile(path)
+
+	if err != nil {
+		return b, err
+	}
+
+	file = []byte(strings.Replace(string(file), "\r", "", -1))
+	file = []byte(b.extractHeader(string(file)))
+
+	b.Body = convertMarkdownToHtml(&file)
+
+	b.loadComments()
+
+	return b, nil
 }
 
 func (b *BlogPost) NonSpamComments() Comments {
@@ -89,4 +114,74 @@ func (b *BlogPost) AllowsComments() bool {
 	var closeDate = b.PublishDate.Add(time.Hour * 24 * time.Duration(SharedConfig.CommentsOpenForDays))
 
 	return time.Now().Before(closeDate)
+}
+
+func (b *BlogPost) extractHeader(text string) string {
+
+	headerSize := parseHeader(text, func(key, value string) {
+		switch key {
+		case "title":
+			b.Title = value
+		case "id":
+			b.Id, _ = strconv.Atoi(value)
+		case "tags":
+
+			tags := strings.Split(value, ",")
+
+			formattedTags := []string{}
+
+			for j := range tags {
+				tags[j] = strings.Trim(tags[j], " ")
+				tags[j] = strings.Replace(tags[j], " ", "-", -1)
+				tags[j] = strings.Replace(tags[j], "/", "-", -1)
+				tags[j] = strings.ToLower(tags[j])
+
+				if tags[j] != "" {
+					formattedTags = append(formattedTags, tags[j])
+				}
+			}
+
+			b.Tags = formattedTags
+		case "date":
+			b.PublishDate = stringToTime(value)
+		case "disallowcomments":
+			b.DisallowComments = value == "true"
+		default:
+		}
+	})
+
+	return text[headerSize:]
+}
+
+func (b *BlogPost) loadComments() {
+
+	dirname := b.Path[:len(b.Path)-3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
+
+	files, err := ioutil.ReadDir(dirname)
+
+	if err != nil {
+		return
+	}
+
+	b.Comments = Comments{}
+
+	for i := range files {
+
+		if files[i].IsDir() {
+			continue
+		}
+
+		if filepath.Ext(files[i].Name()) != ".md" {
+			continue
+		}
+
+		comment, err := LoadComment(dirname + files[i].Name())
+
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+
+		b.Comments = append(b.Comments, comment)
+	}
 }
