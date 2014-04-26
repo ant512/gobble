@@ -12,7 +12,6 @@ type Comment struct {
 	Date           time.Time
 	Body           string
 	IsSpam         bool
-	HasHashedEmail bool
 }
 
 func LoadComment(path string) (*Comment, error) {
@@ -31,14 +30,13 @@ func LoadComment(path string) (*Comment, error) {
 	return c, nil
 }
 
-func NewComment(author, email, body string, isSpam, hasHashedEmail bool) *Comment {
+func NewComment(author, email, body string, isSpam bool) *Comment {
 	c := new(Comment)
 	c.Author = author
 	c.Email = email
 	c.Date = time.Now()
 	c.Body = body
 	c.IsSpam = isSpam
-	c.HasHashedEmail = hasHashedEmail
 
 	return c
 }
@@ -67,10 +65,6 @@ func (c *Comment) String() string {
 		content += "Spam: true\n"
 	}
 
-	if c.HasHashedEmail {
-		content += "HasHashedEmail: true\n"
-	}
-
 	content += "\n"
 
 	content += c.Body
@@ -90,8 +84,6 @@ func (c *Comment) extractHeader(text string) string {
 			c.Date = stringToTime(value)
 		case "spam":
 			c.IsSpam = value == "true"
-		case "hasHashedEmail":
-			c.HasHashedEmail = value == "true"
 		default:
 		}
 	})
