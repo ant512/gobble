@@ -7,11 +7,11 @@ import (
 )
 
 type Comment struct {
-	Author         string
-	Email          string
-	Date           time.Time
-	Body           string
-	IsSpam         bool
+	Author string
+	Email  string
+	Date   time.Time
+	Body   string
+	IsSpam bool
 }
 
 func LoadComment(path string) (*Comment, error) {

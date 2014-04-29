@@ -6,18 +6,17 @@ import (
 	"github.com/bmizerany/pat"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 	"text/template"
 	"time"
 )
 
 const postsPerPage = 10
-const version = "1.0"
+const version = "2.0"
 
+var blog *Blog
 var repo *FileRepository
-var themePath string
+var SharedConfig *Config
 
 func home(w http.ResponseWriter, req *http.Request) {
 
@@ -25,7 +24,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 
 	if err == nil {
 
-		post, _ := repo.PostWithId(id)
+		post, _ := blog.PostWithId(id)
 		showSinglePost(post, w, req)
 
 		return
@@ -50,7 +49,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 	var previousURL string
 	var nextURL string
 
-	posts, count := repo.SearchPosts(term, int(pageNumber)*postsPerPage, postsPerPage)
+	posts, count := blog.SearchPosts(term, int(pageNumber)*postsPerPage, postsPerPage)
 
 	if pageNumber > 0 {
 		if len(term) > 0 {
@@ -90,7 +89,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 		searchPlaceholder,
 	}
 
-	t, _ := template.ParseFiles(themePath + "/templates/home.html")
+	t, _ := template.ParseFiles(SharedConfig.FullThemePath() + "/templates/home.html")
 	t.Execute(w, page)
 }
 
@@ -115,7 +114,7 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 	var previousURL string
 	var nextURL string
 
-	posts, count := repo.PostsWithTag(tag, int(pageNumber)*postsPerPage, postsPerPage)
+	posts, count := blog.PostsWithTag(tag, int(pageNumber)*postsPerPage, postsPerPage)
 
 	if pageNumber > 0 {
 		nextURL = fmt.Sprintf("/tags/%v/%v", tag, pageNumber)
@@ -139,13 +138,13 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 		"",
 	}
 
-	t, _ := template.ParseFiles(themePath + "/templates/home.html")
+	t, _ := template.ParseFiles(SharedConfig.FullThemePath() + "/templates/home.html")
 	t.Execute(w, page)
 }
 
 func tags(w http.ResponseWriter, req *http.Request) {
 
-	tags := repo.AllTags()
+	tags := blog.AllTags()
 
 	page := struct {
 		Tags   map[string]int
@@ -155,13 +154,13 @@ func tags(w http.ResponseWriter, req *http.Request) {
 		SharedConfig,
 	}
 
-	t, _ := template.ParseFiles(themePath + "/templates/tags.html")
+	t, _ := template.ParseFiles(SharedConfig.FullThemePath() + "/templates/tags.html")
 	t.Execute(w, page)
 }
 
 func archive(w http.ResponseWriter, req *http.Request) {
 
-	posts := repo.AllPosts()
+	posts := blog.AllPosts()
 
 	page := struct {
 		Posts  BlogPosts
@@ -171,13 +170,13 @@ func archive(w http.ResponseWriter, req *http.Request) {
 		SharedConfig,
 	}
 
-	t, _ := template.ParseFiles(themePath + "/templates/archive.html")
+	t, _ := template.ParseFiles(SharedConfig.FullThemePath() + "/templates/archive.html")
 	t.Execute(w, page)
 }
 
 func rss(w http.ResponseWriter, req *http.Request) {
 
-	posts, _ := repo.SearchPosts("", 0, 10)
+	posts, _ := blog.SearchPosts("", 0, 10)
 	var updated time.Time
 
 	if len(posts) > 0 {
@@ -194,7 +193,7 @@ func rss(w http.ResponseWriter, req *http.Request) {
 		SharedConfig,
 	}
 
-	t, _ := template.ParseFiles(themePath + "/templates/rss.html")
+	t, _ := template.ParseFiles(SharedConfig.FullThemePath() + "/templates/rss.html")
 	t.Execute(w, page)
 }
 
@@ -202,49 +201,19 @@ func printInfo() {
 	fmt.Printf("Gobble Blogging Engine (version %v)\n", version)
 	fmt.Println("http://simianzombie.com")
 	fmt.Println("")
-	fmt.Println("Copyright (C) 2013 Antony Dzeryn")
+	fmt.Println("Copyright (C) 2013-2014 Antony Dzeryn")
 	fmt.Println("")
 }
 
-func loadConfig() {
-	configPath := flag.String("config", "./gobble.conf", "config file path")
-	flag.Parse()
-
-	var err error
-
-	err = LoadConfig(*configPath)
-
-	if err != nil {
-		log.Println("Could not load config file", *configPath)
-		log.Fatal(err)
-	}
-
-	themePath = SharedConfig.ThemePath + string(filepath.Separator) + SharedConfig.Theme
-
-	_, err = os.Stat(themePath)
-
-	if err != nil {
-		log.Fatal("Could not load theme", themePath)
-	}
-
-	_, err = os.Stat(SharedConfig.PostPath)
-
-	if err != nil {
-		log.Fatal("Could not load posts from", SharedConfig.PostPath)
-	}
-}
-
 func favicon(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, themePath+"/favicon.ico")
+	http.ServeFile(w, req, SharedConfig.FullThemePath()+"/favicon.ico")
 }
 
 func robots(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, themePath+"/robots.txt")
+	http.ServeFile(w, req, SharedConfig.FullThemePath()+"/robots.txt")
 }
 
 func prepareHandler() {
-
-	repo = NewFileRepository(SharedConfig.PostPath)
 
 	m := pat.New()
 	m.Get("/tags/:tag/:page", http.HandlerFunc(taggedPosts))
@@ -260,7 +229,7 @@ func prepareHandler() {
 	m.Post("/posts/:year/:month/:day/:title/comments", http.HandlerFunc(createComment))
 
 	http.Handle("/", m)
-	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(themePath))))
+	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(SharedConfig.FullThemePath()))))
 	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
 	http.Handle("/media/", http.StripPrefix("/media/", http.FileServer(http.Dir(SharedConfig.MediaPath))))
 
@@ -270,7 +239,7 @@ func prepareHandler() {
 	fmt.Printf("Media stored in \"%v\"\n", SharedConfig.MediaPath)
 	fmt.Printf("Themes stored in \"%v\"\n", SharedConfig.ThemePath)
 
-	postCount := len(repo.posts)
+	postCount := len(blog.posts)
 
 	if postCount == 1 {
 		fmt.Printf("Serving 1 post")
@@ -280,7 +249,7 @@ func prepareHandler() {
 
 	commentCount := 0
 
-	for _, p := range repo.posts {
+	for _, p := range blog.posts {
 		commentCount += len(p.Comments)
 	}
 
@@ -297,6 +266,24 @@ func prepareHandler() {
 
 func main() {
 	printInfo()
-	loadConfig()
+
+	configPath := flag.String("config", "./gobble.conf", "config file path")
+	flag.Parse()
+
+	var err error
+	SharedConfig, err = LoadConfig(*configPath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	blog, err = LoadBlog(SharedConfig.PostPath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repo = NewFileRepository(SharedConfig.PostPath)
+
 	prepareHandler()
 }

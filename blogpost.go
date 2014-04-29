@@ -19,6 +19,7 @@ type BlogPost struct {
 	Body             string
 	Comments         Comments
 	DisallowComments bool
+	Url              string
 }
 
 func LoadPost(path string) (*BlogPost, error) {
@@ -36,6 +37,7 @@ func LoadPost(path string) (*BlogPost, error) {
 	file = []byte(b.extractHeader(string(file)))
 
 	b.Body = convertMarkdownToHtml(&file)
+	b.Url = b.urlFromTitle(b.Title)
 
 	b.loadComments()
 
@@ -89,19 +91,6 @@ func (b *BlogPost) ContainsTerm(term string) bool {
 	return true
 }
 
-func (b *BlogPost) Url() string {
-	title := strings.ToLower(b.Title)
-	title = strings.Replace(title, " ", "-", -1)
-	title = strings.Replace(title, ",", "", -1)
-	title = strings.Replace(title, "#", "", -1)
-	title = strings.Replace(title, ":", "", -1)
-	title = strings.Replace(title, "\"", "", -1)
-	title = strings.Replace(title, "?", "", -1)
-	title = strings.Replace(title, "/", "", -1)
-
-	return fmt.Sprintf("%04d/%02d/%02d/%s", b.PublishDate.Year(), b.PublishDate.Month(), b.PublishDate.Day(), title)
-}
-
 func (b *BlogPost) AllowsComments() bool {
 	if b.DisallowComments {
 		return false
@@ -134,6 +123,7 @@ func (b *BlogPost) extractHeader(text string) string {
 				tags[j] = strings.Trim(tags[j], " ")
 				tags[j] = strings.Replace(tags[j], " ", "-", -1)
 				tags[j] = strings.Replace(tags[j], "/", "-", -1)
+				tags[j] = strings.Replace(tags[j], "#", "", -1)
 				tags[j] = strings.ToLower(tags[j])
 
 				if tags[j] != "" {
@@ -151,6 +141,19 @@ func (b *BlogPost) extractHeader(text string) string {
 	})
 
 	return text[headerSize:]
+}
+
+func (b *BlogPost) urlFromTitle(title string) string {
+	title = strings.ToLower(title)
+	title = strings.Replace(title, " ", "-", -1)
+	title = strings.Replace(title, ",", "", -1)
+	title = strings.Replace(title, "#", "", -1)
+	title = strings.Replace(title, ":", "", -1)
+	title = strings.Replace(title, "\"", "", -1)
+	title = strings.Replace(title, "?", "", -1)
+	title = strings.Replace(title, "/", "", -1)
+
+	return fmt.Sprintf("%04d/%02d/%02d/%s", b.PublishDate.Year(), b.PublishDate.Month(), b.PublishDate.Day(), title)
 }
 
 func (b *BlogPost) loadComments() {

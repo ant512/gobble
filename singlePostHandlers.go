@@ -32,7 +32,7 @@ func showSinglePost(b *BlogPost, w http.ResponseWriter, req *http.Request) {
 	page.CommentEmailError = ""
 	page.CommentBodyError = ""
 
-	t, _ := template.ParseFiles(themePath + "/templates/post.html")
+	t, _ := template.ParseFiles(SharedConfig.FullThemePath() + "/templates/post.html")
 	t.Execute(w, page)
 }
 
@@ -63,7 +63,7 @@ func postWithQuery(query url.Values) (*BlogPost, error) {
 
 	url := fmt.Sprintf("%04d/%02d/%02d/%s", year, month, day, title)
 
-	post, err := repo.PostWithUrl(url)
+	post, err := blog.PostWithUrl(url)
 
 	return post, err
 }
@@ -137,7 +137,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 
 	if !hasErrors {
 		repo.SaveComment(post, SharedConfig.AkismetAPIKey, SharedConfig.Address, getIpAddress(req), req.UserAgent(), req.Referer(), author, email, body)
-		http.Redirect(w, req, "/posts/"+post.Url()+"#comments", http.StatusFound)
+		http.Redirect(w, req, "/posts/"+post.Url+"#comments", http.StatusFound)
 
 		return
 	} else {
@@ -153,7 +153,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		page.CommentBodyError = commentBodyError
 		page.CommentRecaptchaError = commentRecaptchaError
 
-		t, _ := template.ParseFiles(themePath + "/templates/post.html")
+		t, _ := template.ParseFiles(SharedConfig.FullThemePath() + "/templates/post.html")
 		t.Execute(w, page)
 	}
 }
