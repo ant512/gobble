@@ -15,7 +15,7 @@ type Comment struct {
 }
 
 func LoadComment(path string) (*Comment, error) {
-	c := new(Comment)
+	c := &Comment{}
 	file, err := ioutil.ReadFile(path)
 
 	if err != nil {

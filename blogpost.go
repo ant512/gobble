@@ -24,7 +24,7 @@ type BlogPost struct {
 
 func LoadPost(path string) (*BlogPost, error) {
 
-	b := new(BlogPost)
+	b := &BlogPost{}
 	b.Path = path
 
 	file, err := ioutil.ReadFile(path)
