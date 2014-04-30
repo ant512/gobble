@@ -97,9 +97,9 @@ func (b BlogPosts) FilteredPosts(term string, start int, count int) (BlogPosts, 
 }
 
 func (b BlogPosts) PostWithUrl(url string) (*BlogPost, error) {
-	for i := range b {
-		if b[i].Url == url {
-			return b[i], nil
+	for _, post := range b {
+		if post.Url == url {
+			return post, nil
 		}
 	}
 
@@ -126,9 +126,9 @@ func (b BlogPosts) PostsWithTag(tag string, start int, count int) (BlogPosts, in
 }
 
 func (b BlogPosts) PostWithId(id int) (*BlogPost, error) {
-	for i := range b {
-		if b[i].Id == id {
-			return b[i], nil
+	for _, post := range b {
+		if post.Id == id {
+			return post, nil
 		}
 	}
 

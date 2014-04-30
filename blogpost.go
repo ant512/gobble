@@ -47,9 +47,9 @@ func LoadPost(path string) (*BlogPost, error) {
 func (b *BlogPost) NonSpamComments() Comments {
 	comments := Comments{}
 
-	for i := range b.Comments {
-		if !b.Comments[i].IsSpam {
-			comments = append(comments, b.Comments[i])
+	for _, comment := range b.Comments {
+		if !comment.IsSpam {
+			comments = append(comments, comment)
 		}
 	}
 
@@ -57,8 +57,8 @@ func (b *BlogPost) NonSpamComments() Comments {
 }
 
 func (b *BlogPost) ContainsTag(tag string) bool {
-	for i := range b.Tags {
-		if b.Tags[i] == strings.ToLower(tag) {
+	for _, t := range b.Tags {
+		if t == strings.ToLower(tag) {
 			return true
 		}
 	}
@@ -82,8 +82,8 @@ func (b *BlogPost) ContainsTerm(term string) bool {
 	body := strings.ToLower(b.Body)
 	title := strings.ToLower(b.Title)
 
-	for i := range terms {
-		if !strings.Contains(body, terms[i]) && !strings.Contains(title, terms[i]) {
+	for _, item := range terms {
+		if !strings.Contains(body, item) && !strings.Contains(title, item) {
 			return false
 		}
 	}

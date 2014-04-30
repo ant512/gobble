@@ -15,8 +15,8 @@ func (c Comments) Less(i, j int) bool {
 }
 
 func (c Comments) ContainsTerm(term string) bool {
-	for i := range c {
-		if c[i].ContainsTerm(term) {
+	for _, comment := range c {
+		if comment.ContainsTerm(term) {
 			return true
 		}
 	}

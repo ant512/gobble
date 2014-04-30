@@ -47,8 +47,8 @@ func (c *Comment) ContainsTerm(term string) bool {
 	terms := strings.Split(term, " ")
 	body := strings.ToLower(c.Body)
 
-	for i := range terms {
-		if !strings.Contains(body, terms[i]) {
+	for _, item := range terms {
+		if !strings.Contains(body, item) {
 			return false
 		}
 	}
