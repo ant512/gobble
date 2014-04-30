@@ -54,7 +54,7 @@ func TestFilteredPosts(t *testing.T) {
 	}
 }
 
-func TestContainsTag(t *testing.T) {
+func TestPostWithUrl(t *testing.T) {
 	b := createTestBlogPosts()
 
 	found, _ := b.PostWithUrl("/test1")
