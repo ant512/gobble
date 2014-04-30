@@ -14,8 +14,7 @@ type Blog struct {
 }
 
 func LoadBlog(postPath string) (*Blog, error) {
-	b := new(Blog)
-	b.postPath = postPath
+	b := &Blog{postPath: postPath}
 
 	b.fetchPosts()
 	b.fetchTags()
