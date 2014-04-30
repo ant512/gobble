@@ -22,6 +22,7 @@ type Config struct {
 	AkismetAPIKey       string
 	RecaptchaPublicKey  string
 	RecaptchaPrivateKey string
+	StaticFiles         map[string]string
 }
 
 func LoadConfig(filename string) (*Config, error) {

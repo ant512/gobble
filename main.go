@@ -6,6 +6,7 @@ import (
 	"github.com/bmizerany/pat"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strconv"
 )
 
@@ -24,14 +25,6 @@ func printInfo() {
 	fmt.Println("")
 }
 
-func favicon(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, SharedConfig.FullThemePath()+"/favicon.ico")
-}
-
-func robots(w http.ResponseWriter, req *http.Request) {
-	http.ServeFile(w, req, SharedConfig.FullThemePath()+"/robots.txt")
-}
-
 func prepareHandler() {
 
 	m := pat.New()
@@ -41,8 +34,16 @@ func prepareHandler() {
 	m.Get("/archive/", http.HandlerFunc(archive))
 	m.Get("/rss", http.HandlerFunc(rss))
 	m.Get("/posts/:year/:month/:day/:title", http.HandlerFunc(post))
-	m.Get("/favicon.ico", http.HandlerFunc(favicon))
-	m.Get("/robots.txt", http.HandlerFunc(robots))
+
+	for key, value := range SharedConfig.StaticFiles {
+		func (url, path string) {
+			m.Get(url, http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				log.Println("Static file request: " + url + " Serving: " + path)
+				http.ServeFile(w, req, SharedConfig.MediaPath + string(filepath.Separator) + path)
+			}))
+		}(key, value)
+	}
+
 	m.Get("/", http.HandlerFunc(home))
 
 	m.Post("/posts/:year/:month/:day/:title/comments", http.HandlerFunc(createComment))
