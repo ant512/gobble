@@ -36,10 +36,10 @@ func prepareHandler() {
 	m.Get("/posts/:year/:month/:day/:title", http.HandlerFunc(post))
 
 	for key, value := range SharedConfig.StaticFiles {
-		func (url, path string) {
+		func(url, path string) {
 			m.Get(url, http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 				log.Println("Static file request: " + url + " Serving: " + path)
-				http.ServeFile(w, req, SharedConfig.MediaPath + string(filepath.Separator) + path)
+				http.ServeFile(w, req, SharedConfig.MediaPath+string(filepath.Separator)+path)
 			}))
 		}(key, value)
 	}
