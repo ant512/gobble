@@ -17,17 +17,17 @@ func LoadBlogPosts(path string) (BlogPosts, error) {
 
 	posts := BlogPosts{}
 
-	for i := range files {
+	for _, file := range files {
 
-		if files[i].IsDir() {
+		if file.IsDir() {
 			continue
 		}
 
-		if filepath.Ext(files[i].Name()) != ".md" {
+		if filepath.Ext(file.Name()) != ".md" {
 			continue
 		}
 
-		post, err := LoadPost(dirname + files[i].Name())
+		post, err := LoadPost(dirname + file.Name())
 
 		if err != nil {
 			return nil, err
