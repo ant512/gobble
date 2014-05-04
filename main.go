@@ -39,7 +39,7 @@ func prepareHandler() {
 		func(url, path string) {
 			m.Get(url, http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 				log.Println("Static file request: " + url + " Serving: " + path)
-				http.ServeFile(w, req, SharedConfig.MediaPath+string(filepath.Separator)+path)
+				http.ServeFile(w, req, SharedConfig.StaticFilePath+string(filepath.Separator)+path)
 			}))
 		}(key, value)
 	}
@@ -58,6 +58,7 @@ func prepareHandler() {
 	fmt.Printf("Post data stored in \"%v\"\n", SharedConfig.PostPath)
 	fmt.Printf("Media stored in \"%v\"\n", SharedConfig.MediaPath)
 	fmt.Printf("Themes stored in \"%v\"\n", SharedConfig.ThemePath)
+	fmt.Printf("Files stored in \"%v\"\n", SharedConfig.StaticFilePath)
 
 	postCount := len(blog.posts)
 

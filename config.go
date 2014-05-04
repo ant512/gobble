@@ -22,6 +22,7 @@ type Config struct {
 	AkismetAPIKey       string
 	RecaptchaPublicKey  string
 	RecaptchaPrivateKey string
+	StaticFilePath      string
 	StaticFiles         map[string]string
 }
 
@@ -78,6 +79,13 @@ func (c *Config) validateConfig() error {
 		return errors.New(msg)
 	}
 
+	_, err = os.Stat(c.StaticFilePath)
+
+	if err != nil {
+		msg := fmt.Sprintf("Could not access files from %v", c.StaticFilePath)
+		return errors.New(msg)
+	}
+
 	return nil
 }
 
@@ -89,5 +97,6 @@ func (c *Config) setDefaults() {
 	c.PostPath = "./posts"
 	c.MediaPath = "./media"
 	c.ThemePath = "./themes"
+	c.StaticFilePath = "./files"
 	c.Theme = "grump"
 }
