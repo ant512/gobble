@@ -1,6 +1,5 @@
-Title: Gobble
-Date: 2013-06-28 12:25:00
-Tags: gobble, golang, blog
+Gobble
+======
 
 This is a simple blogging engine written in Go.  Its features are:
 
@@ -50,6 +49,55 @@ like, but ensure it has the extension ".md".  Here's an example:
 Save the file and start Gobble.  Your post should now appear.  Clicking on the
 "Tags" link in the navigation menu will show the two tags, and the "Archives"
 page will show this new post's title and publish date.
+
+
+Media Files
+-----------
+
+Media files, such as images, sounds and others, can be served from the folder
+defined in the `mediaPath` config setting.  Media links take this format:
+
+    /media/path/to/your/file
+
+Files can be organised however you want.  I personally organise my files like
+WordPress and use a directory structure like this:
+
+    /media/year/month/day/file
+
+For example:
+
+    /media/2014/01/26/Image.png
+
+To link to that image from a post, this is the Markdown syntax:
+
+    ![Image name](/media/2014/01/26/Image.png)
+
+
+Other Static Files
+------------------
+
+Other static files which support the blog itself, rather than content, should be
+stored in the path defined by the `staticFilePath` config setting.  These files
+include the robots.txt file, favicon.ico file, etc and are served from a user-
+defined URL.  The files have to be added to the config file in order for Gobble
+to serve them.
+
+Here's a partial example of a config file that will serve `robots.txt` and
+`favicon.ico` from the `./files` directory:
+
+    {
+        ...
+        "staticFilePath": "./files",
+        "staticFiles": {
+            "/favicon.ico": "favicon.ico",
+            "/robots.txt": "robots.txt"
+        }
+    }
+
+In the "staticFiles" dictionary, the key represents the URL of the file and the
+value represents the path to the file relative to the `staticFilePath` value.
+In this example, the URL `/favicon.ico` serves the file located at
+`./files/favicon.ico`.
 
 
 Tagging
@@ -195,7 +243,9 @@ The default config file looks like this:
         "commentsOpenForDays": 0,
         "akismetAPIKey": "",
         "recaptchaPublicKey": "",
-        "recaptchaPrivateKey": ""
+        "recaptchaPrivateKey": "",
+        "staticFilePath": "./files",
+        "staticFiles": { }
     }
 
 The config file is a JSON document.  When editing the file, ensure that you
@@ -220,6 +270,10 @@ The options are defined as follows:
                         it blank if you don't want to use reCAPTCHA).
  - recaptchaPrivateKey: the key used to ensure the commenter isn't a bot (leave
                         it blank if you don't want to use reCAPTCHA).
+ - staticFilePath:      the path to the files directory, which contains the
+                        robots.txt, favicon.ico, and others.
+ - staticFiles:         a dictionary of files to serve from the files directory;
+                        the key is the URL, and the value is the filename.
 
 Note that missing configuration values will be given the defaults.
 
