@@ -50,7 +50,7 @@ func prepareHandler() {
 
 	http.Handle("/", m)
 	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(SharedConfig.FullThemePath()))))
-	http.Handle("/rainbow/", http.StripPrefix("/rainbow/", http.FileServer(http.Dir("rainbow"))))
+	http.Handle("/highlight/", http.StripPrefix("/highlight/", http.FileServer(http.Dir("highlight"))))
 	http.Handle("/media/", http.StripPrefix("/media/", http.FileServer(http.Dir(SharedConfig.MediaPath))))
 
 	fmt.Printf("Listening on port %v\n", SharedConfig.Port)

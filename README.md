@@ -5,7 +5,7 @@ This is a simple blogging engine written in Go.  Its features are:
 
  - Works on any platform that Go can build for.
  - Does not require a database.
- - Syntax highlighting via [Rainbow][1].
+ - Syntax highlighting via [Highlight.js][1].
  - Comment spam detection via [Akismet][2].
  - Comment spam prevention via [reCAPTCHA][3].
  - Easy to install.
@@ -21,7 +21,7 @@ This is a simple blogging engine written in Go.  Its features are:
  - RSS feed.
  - Simple re-theming.
 
-  [1]: http://craig.is/making/rainbows
+  [1]: http://highlightjs.org
   [2]: http://akismet.com
   [3]: http://www.google.com/recaptcha
 
@@ -285,13 +285,13 @@ Libraries
 
 Gobble uses a handful of libraries to do its thing:
 
- - [http://craig.is/making/rainbows][5]
+ - [http://highlightjs.org][5]
  - [http://github.com/bmizerany/pat][6]
  - [http://github.com/dpapathanasiou/go-recaptcha][7]
  - [http://github.com/howeyc/fsnotify][8]
  - [http://github.com/russross/blackfriday][9]
 
-  [5]: http://craig.is/making/rainbows
+  [5]: http://highlightjs.org
   [6]: http://github.com/bmizerany/pat
   [7]: http://github.com/dpapathanasiou/go-recaptcha
   [8]: http://github.com/howeyc/fsnotify
