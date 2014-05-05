@@ -168,10 +168,6 @@ The easiest way to install Gobble is via the command line.  Assuming you have Go
 installed and configured correctly:
 
     go get github.com/ant512/gobble
-    go get github.com/bmizerany/pat
-    go get github.com/dpapathanasiou/go-recaptcha
-    go get github.com/howeyc/fsnotify
-    go get github.com/russross/blackfriday
     cd $GOPATH/src/github.com/ant512/gobble
     go build
     ./gobble
