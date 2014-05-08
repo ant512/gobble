@@ -102,7 +102,6 @@ img {
 #posts article footer a {
 	font-weight: bold;
 	padding: 5px;
-	border: 1px solid white;
 	border-radius: 10px;
 	color: #bbb;
 	line-height: 2.5em;
@@ -111,27 +110,15 @@ img {
 	-moz-transition: background 200ms;
 	-o-transition: background 200ms;
 	transition: background 200ms;
-
-	-webkit-transition: border 200ms;
-	-moz-transition: border 200ms;
-	-o-transition: border 200ms;
-	transition: border 200ms;
 }
 
 #posts article footer a:hover {
-	border: 1px solid #e2e2e2;
-	border-radius: 10px;
 	background-color: #f6f6f6;
 
 	-webkit-transition: background 200ms;
 	-moz-transition: background 200ms;
 	-o-transition: background 200ms;
 	transition: background 200ms;
-
-	-webkit-transition: border 200ms;
-	-moz-transition: border 200ms;
-	-o-transition: border 200ms;
-	transition: border 200ms;
 }
 
 #header {
