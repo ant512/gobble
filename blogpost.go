@@ -17,6 +17,7 @@ type BlogPost struct {
 	PublishDate      time.Time
 	Tags             []string
 	Body             string
+	RawBody          string
 	Comments         Comments
 	DisallowComments bool
 	Url              string
@@ -36,6 +37,7 @@ func LoadPost(path string) (*BlogPost, error) {
 	file = []byte(strings.Replace(string(file), "\r", "", -1))
 	file = []byte(b.extractHeader(string(file)))
 
+	b.RawBody = string(file)
 	b.Body = convertMarkdownToHtml(&file)
 	b.Url = b.urlFromTitle(b.Title)
 
@@ -79,7 +81,7 @@ func (b *BlogPost) ContainsTerm(term string) bool {
 	}
 
 	terms := strings.Split(term, " ")
-	body := strings.ToLower(b.Body)
+	body := strings.ToLower(b.RawBody)
 	title := strings.ToLower(b.Title)
 
 	for _, item := range terms {

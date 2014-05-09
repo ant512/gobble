@@ -7,11 +7,12 @@ import (
 )
 
 type Comment struct {
-	Author string
-	Email  string
-	Date   time.Time
-	Body   string
-	IsSpam bool
+	Author  string
+	Email   string
+	Date    time.Time
+	RawBody string
+	Body    string
+	IsSpam  bool
 }
 
 func LoadComment(path string) (*Comment, error) {
@@ -25,17 +26,22 @@ func LoadComment(path string) (*Comment, error) {
 	file = []byte(strings.Replace(string(file), "\r", "", -1))
 	file = []byte(c.extractHeader(string(file)))
 
+	c.RawBody = string(file)
 	c.Body = convertMarkdownToHtml(&file)
 
 	return c, nil
 }
 
 func NewComment(author, email, body string, isSpam bool) *Comment {
+
+	html := []byte(body)
+
 	c := new(Comment)
 	c.Author = author
 	c.Email = email
 	c.Date = time.Now()
-	c.Body = body
+	c.RawBody = body
+	c.Body = convertMarkdownToHtml(&html)
 	c.IsSpam = isSpam
 
 	return c
@@ -45,7 +51,7 @@ func (c *Comment) ContainsTerm(term string) bool {
 
 	term = strings.ToLower(term)
 	terms := strings.Split(term, " ")
-	body := strings.ToLower(c.Body)
+	body := strings.ToLower(c.RawBody)
 
 	for _, item := range terms {
 		if !strings.Contains(body, item) {
@@ -67,7 +73,7 @@ func (c *Comment) String() string {
 
 	content += "\n"
 
-	content += c.Body
+	content += c.RawBody
 
 	return content
 }
