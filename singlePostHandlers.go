@@ -136,7 +136,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if !hasErrors {
-		repo.SaveComment(post, SharedConfig.AkismetAPIKey, SharedConfig.Address, getIpAddress(req), req.UserAgent(), req.Referer(), author, email, body)
+		post.SaveComment(SharedConfig.AkismetAPIKey, SharedConfig.Address, getIpAddress(req), req.UserAgent(), req.Referer(), author, email, body)
 		http.Redirect(w, req, "/posts/"+post.Url+"#comments", http.StatusFound)
 
 		return

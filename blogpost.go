@@ -2,11 +2,15 @@ package main
 
 import (
 	"fmt"
+	"github.com/ant512/gobble/akismet"
+	"html"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -21,6 +25,7 @@ type BlogPost struct {
 	Comments         Comments
 	DisallowComments bool
 	Url              string
+	mutex            sync.RWMutex
 }
 
 func LoadPost(path string) (*BlogPost, error) {
@@ -105,6 +110,34 @@ func (b *BlogPost) AllowsComments() bool {
 	var closeDate = b.PublishDate.Add(time.Hour * 24 * time.Duration(SharedConfig.CommentsOpenForDays))
 
 	return time.Now().Before(closeDate)
+}
+
+func (b *BlogPost) SaveComment(akismetAPIKey, serverAddress, remoteAddress, userAgent, referrer, author, email, body string) {
+
+	// TODO: Ensure file name is unique
+	isSpam, _ := akismet.IsSpamComment(body, serverAddress, remoteAddress, userAgent, referrer, author, email, akismetAPIKey)
+	comment := NewComment(html.EscapeString(author), html.EscapeString(email), html.EscapeString(body), isSpam)
+
+	b.mutex.Lock()
+	b.Comments = append(b.Comments, comment)
+	b.mutex.Unlock()
+
+	postPath := b.Path[:len(b.Path)-3]
+
+	dirname := postPath + string(filepath.Separator) + "comments" + string(filepath.Separator)
+
+	filename := timeToFilename(comment.Date)
+
+	log.Println(dirname + filename)
+	os.MkdirAll(dirname, 0775)
+
+	content := comment.String()
+
+	err := ioutil.WriteFile(dirname+filename, []byte(content), 0644)
+
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (b *BlogPost) extractHeader(text string) string {
