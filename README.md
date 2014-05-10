@@ -174,6 +174,8 @@ installed and configured correctly:
 
 Gobble wil now be available at `http://localhost:8080`.
 
+Note that Gobble requires a minimum of Go v1.2.
+
 
 Ubuntu Gobble Service
 ---------------------
