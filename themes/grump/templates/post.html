@@ -35,6 +35,8 @@
 
 		</section>
 
+		{{$hasComments := gt .Post.NonSpamComments.Len 0}}
+		{{if or .Post.AllowsComments $hasComments}}
 		<section id="comments">
 			<header>
 				<h2>Comments</h2>
@@ -53,9 +55,7 @@
 			{{end}}
 			{{end}}
 
-			{{if not .Post.AllowsComments}}
-			<p>New comments are not allowed on this post.</p>
-			{{else}}
+			{{if .Post.AllowsComments}}
 			<article id="commentEditor">
 				<form method="post" action="/posts/{{.Post.Url}}/comments">
 					<input type="text" name="name" placeholder="name" maxlength="254" value="{{.CommentName}}">
@@ -81,6 +81,7 @@
 			{{end}}
 			
 		</section>
+		{{end}}
 
 		<footer id="footer">
 			<form method="get" id="searchForm" action="/">
