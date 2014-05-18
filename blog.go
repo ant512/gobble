@@ -7,14 +7,15 @@ import (
 )
 
 type Blog struct {
-	postPath string
-	posts    BlogPosts
-	tags     map[string]int
-	mutex    sync.RWMutex
+	postPath    string
+	commentPath string
+	posts       BlogPosts
+	tags        map[string]int
+	mutex       sync.RWMutex
 }
 
-func LoadBlog(postPath string) (*Blog, error) {
-	b := &Blog{postPath: postPath}
+func LoadBlog(postPath, commentPath string) (*Blog, error) {
+	b := &Blog{postPath: postPath, commentPath: commentPath}
 
 	b.fetchPosts()
 	b.fetchTags()
@@ -86,7 +87,7 @@ func (b *Blog) SearchPosts(term string, start int, count int) (BlogPosts, int) {
 }
 
 func (b *Blog) fetchPosts() {
-	posts, err := LoadBlogPosts(b.postPath)
+	posts, err := LoadBlogPosts(b.postPath, b.commentPath)
 
 	if err != nil {
 		log.Println("Error fetching posts: ", err)

@@ -17,7 +17,8 @@ import (
 type BlogPost struct {
 	Title            string
 	Id               int
-	Path             string
+	PostPath         string
+	CommentPath      string
 	PublishDate      time.Time
 	Tags             []string
 	Body             string
@@ -25,15 +26,20 @@ type BlogPost struct {
 	Comments         Comments
 	DisallowComments bool
 	Url              string
+	Filename         string
 	mutex            sync.RWMutex
 }
 
-func LoadPost(path string) (*BlogPost, error) {
+func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
 
 	b := &BlogPost{}
-	b.Path = path
+	b.PostPath = postPath
+	b.Filename = filename
+	b.CommentPath = commentPath
 
-	file, err := ioutil.ReadFile(path)
+	fullPath := filepath.Join(postPath, filename)
+
+	file, err := ioutil.ReadFile(fullPath)
 
 	if err != nil {
 		return b, err
@@ -122,18 +128,16 @@ func (b *BlogPost) SaveComment(akismetAPIKey, serverAddress, remoteAddress, user
 	b.Comments = append(b.Comments, comment)
 	b.mutex.Unlock()
 
-	postPath := b.Path[:len(b.Path)-3]
-
-	dirname := postPath + string(filepath.Separator) + "comments" + string(filepath.Separator)
-
+	commentPath := filepath.Join(b.CommentPath, b.Filename[:len(b.Filename)-3])
 	filename := timeToFilename(comment.Date)
+	fullPath := filepath.Join(commentPath, filename)
 
-	log.Println(dirname + filename)
-	os.MkdirAll(dirname, 0775)
+	log.Println(commentPath)
+	os.MkdirAll(commentPath, 0775)
 
 	content := comment.String()
 
-	err := ioutil.WriteFile(dirname+filename, []byte(content), 0644)
+	err := ioutil.WriteFile(fullPath, []byte(content), 0644)
 
 	if err != nil {
 		log.Println(err)
@@ -193,33 +197,8 @@ func (b *BlogPost) urlFromTitle(title string) string {
 
 func (b *BlogPost) loadComments() {
 
-	dirname := b.Path[:len(b.Path)-3] + string(filepath.Separator) + "comments" + string(filepath.Separator)
+	filename := b.Filename[:len(b.Filename)-3]
+	dirname := b.CommentPath + string(filepath.Separator) + filename + string(filepath.Separator)
 
-	files, err := ioutil.ReadDir(dirname)
-
-	if err != nil {
-		return
-	}
-
-	b.Comments = Comments{}
-
-	for i := range files {
-
-		if files[i].IsDir() {
-			continue
-		}
-
-		if filepath.Ext(files[i].Name()) != ".md" {
-			continue
-		}
-
-		comment, err := LoadComment(dirname + files[i].Name())
-
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-
-		b.Comments = append(b.Comments, comment)
-	}
+	b.Comments, _ = LoadComments(dirname)
 }

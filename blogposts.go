@@ -10,10 +10,12 @@ import (
 type BlogPostFilter func(post *BlogPost, index int, stop *bool) bool
 type BlogPosts []*BlogPost
 
-func LoadBlogPosts(path string) (BlogPosts, error) {
-	dirname := path + string(filepath.Separator)
+func LoadBlogPosts(postPath, commentPath string) (BlogPosts, error) {
+	files, err := ioutil.ReadDir(postPath)
 
-	files, err := ioutil.ReadDir(dirname)
+	if err != nil {
+		return nil, err
+	}
 
 	posts := BlogPosts{}
 
@@ -27,7 +29,7 @@ func LoadBlogPosts(path string) (BlogPosts, error) {
 			continue
 		}
 
-		post, err := LoadPost(dirname + file.Name())
+		post, err := LoadPost(file.Name(), postPath, commentPath)
 
 		if err != nil {
 			return nil, err

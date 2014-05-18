@@ -55,7 +55,8 @@ func prepareHandler() {
 
 	fmt.Printf("Listening on port %v\n", SharedConfig.Port)
 	fmt.Printf("Using theme \"%v\"\n", SharedConfig.Theme)
-	fmt.Printf("Post data stored in \"%v\"\n", SharedConfig.PostPath)
+	fmt.Printf("Posts in \"%v\"\n", SharedConfig.PostPath)
+	fmt.Printf("Comments in \"%v\"\n", SharedConfig.CommentPath)
 	fmt.Printf("Media stored in \"%v\"\n", SharedConfig.MediaPath)
 	fmt.Printf("Themes stored in \"%v\"\n", SharedConfig.ThemePath)
 	fmt.Printf("Files stored in \"%v\"\n", SharedConfig.StaticFilePath)
@@ -98,7 +99,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	blog, err = LoadBlog(SharedConfig.PostPath)
+	blog, err = LoadBlog(SharedConfig.PostPath, SharedConfig.CommentPath)
 
 	if err != nil {
 		log.Fatal(err)

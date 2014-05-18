@@ -17,6 +17,7 @@ type Config struct {
 	MediaPath           string
 	Port                int64
 	PostPath            string
+	CommentPath         string
 	Theme               string
 	ThemePath           string
 	AkismetAPIKey       string
@@ -95,6 +96,7 @@ func (c *Config) setDefaults() {
 	c.Description = "Blogging Engine"
 	c.Port = 8080
 	c.PostPath = "./posts"
+	c.CommentPath = "./comments"
 	c.MediaPath = "./media"
 	c.ThemePath = "./themes"
 	c.StaticFilePath = "./files"
