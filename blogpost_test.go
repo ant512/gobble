@@ -9,7 +9,7 @@ func createPost() *BlogPost {
 	p := new(BlogPost)
 	p.Title = "Test Post"
 	p.Id = 2
-	p.Path = "/test"
+	p.PostPath = "/test"
 	p.PublishDate = time.Now()
 	p.Body = "Test"
 	p.DisallowComments = true

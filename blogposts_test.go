@@ -11,7 +11,7 @@ func createTestBlogPosts() BlogPosts {
 	bp := new(BlogPost)
 	bp.Id = 6
 	bp.Title = "Test 1"
-	bp.Path = "/test1"
+	bp.PostPath = "/test1"
 	bp.PublishDate = time.Now()
 	bp.Tags = append(bp.Tags, "test")
 	bp.Tags = append(bp.Tags, "test1")
@@ -23,7 +23,7 @@ func createTestBlogPosts() BlogPosts {
 	bp = new(BlogPost)
 	bp.Id = 8
 	bp.Title = "Test 2"
-	bp.Path = "/test2"
+	bp.PostPath = "/test2"
 	bp.PublishDate = time.Now()
 	bp.Tags = append(bp.Tags, "test")
 	bp.Tags = append(bp.Tags, "test2")
