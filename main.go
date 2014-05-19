@@ -90,6 +90,7 @@ func main() {
 	printInfo()
 
 	configPath := flag.String("config", "./gobble.conf", "config file path")
+	disableWatcher := flag.Bool("disableWatcher", false, "disable filesystem change watching")
 	flag.Parse()
 
 	var err error
@@ -103,6 +104,10 @@ func main() {
 
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if *disableWatcher == false {
+		blog.WatchPosts()
 	}
 
 	repo = NewFileRepository(SharedConfig.PostPath)

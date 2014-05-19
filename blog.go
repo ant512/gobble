@@ -20,6 +20,10 @@ func LoadBlog(postPath, commentPath string) (*Blog, error) {
 	b.fetchPosts()
 	b.fetchTags()
 
+	return b, nil
+}
+
+func (b *Blog) WatchPosts() {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -42,8 +46,6 @@ func LoadBlog(postPath, commentPath string) (*Blog, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	return b, nil
 }
 
 func (b *Blog) AllPosts() BlogPosts {
