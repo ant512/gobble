@@ -29,7 +29,7 @@ This is a simple blogging engine written in Go.  Its features are:
 Writing Posts
 -------------
 
-All posts are stored in the gobble/posts directory.  All posts are written in
+All posts are stored in the `posts` directory.  All posts are written in
 Markdown, with metadata included at the top of the post giving the publish date,
 tags, etc.  The format is identical to that used by [Scriptogram][4].
 
@@ -49,6 +49,42 @@ like, but ensure it has the extension ".md".  Here's an example:
 Save the file and start Gobble.  Your post should now appear.  Clicking on the
 "Tags" link in the navigation menu will show the two tags, and the "Archives"
 page will show this new post's title and publish date.
+
+
+Tagging
+-------
+
+Tags are specified as a list of words in a post's metadata block, separated by
+commas.  They should be lower-case, but Gobble will automatically convert them
+to lower-case for you should you enter some with upper-case characters.
+
+Hash characters in tags are stripped out.  Tags are included in URLs, so hash
+characters would prevent the browser from accessing the correct page.
+
+
+Comments
+--------
+
+Comments are stored in a folder in the `comments` directory that has the same
+name as the post's Markdown file.  For example, a post called "my-first-post.md"
+will store its comments in a folder called "my-first-post".
+
+Comments can be disabled on a post-by-post basis by using the `DisallowComments`
+metadata tag:
+
+    DisallowComments: true
+
+Omitting the tag or using any value other than "true" will enable comments.
+This functionality is provided mainly as a way to stop spam bots that latch on
+to a particular post and repeatedly manage to bypass the other spam protections.
+
+Comments can also be disabled by setting a value for the "commentsOpenForDays"
+configuration property.  Setting this to a value other than `0` will cause
+comments to be disabled after the specified number of days.  This is useful both
+for blocking spam and for preventing discussion of ancient posts.
+
+Other spam protection is implemented via Akismet and reCAPTCHA.  Both services
+are enabled automatically if their keys are provided in the config file.
 
 
 Media Files
@@ -98,42 +134,6 @@ In the "staticFiles" dictionary, the key represents the URL of the file and the
 value represents the path to the file relative to the `staticFilePath` value.
 In this example, the URL `/favicon.ico` serves the file located at
 `./files/favicon.ico`.
-
-
-Tagging
--------
-
-Tags are specified as a list of words in a post's metadata block, separated by
-commas.  They should be lower-case, but Gobble will automatically convert them
-to lower-case for you should you enter some with upper-case characters.
-
-Hash characters in tags are stripped out.  Tags are included in URLs, so hash
-characters would prevent the browser from accessing the correct page.
-
-
-Comments
---------
-
-Comments are stored in a folder in the posts directory that has the same name
-as the post's Markdown file.  For example, a post called "my-first-post.md" will
-store its comments in a folder called "my-first-post/comments".
-
-Comments can be disabled on a post-by-post basis by using the `DisallowComments`
-metadata tag:
-
-    DisallowComments: true
-
-Omitting the tag or using any value other than "true" will enable comments.
-This functionality is provided mainly as a way to stop spam bots that latch on
-to a particular post and repeatedly manage to bypass the other spam protections.
-
-Comments can also be disabled by setting a value for the "commentsOpenForDays"
-configuration property.  Setting this to a value other than `0` will cause
-comments to be disabled after the specified number of days.  This is useful both
-for blocking spam and for preventing discussion of ancient posts.
-
-Other spam protection is implemented via Akismet and reCAPTCHA.  Both services
-are enabled automatically if their keys are provided in the config file.
 
 
 Theming
@@ -204,10 +204,16 @@ To stop Gobble:
 Startup Options
 ---------------
 
-The only command line argument currently available is `-config`, which allows
-you to specify a different config file for Gobble to load:
+The `-config` argument allows the config file to be specified:
 
     ./gobble -config ./gobble.conf
+
+The `-disableWatcher` argument can disable watching the posts directory for
+updates.  This is of most use on OSX which currently has difficulties with the
+`fsnotify` library.  Disabling the filesystem watcher means that Gobble will
+need to be restarted before it will load new posts.
+
+    ./gobble -disableWatcher true
 
 
 Configuration
@@ -225,6 +231,7 @@ The default config file looks like this:
         "address": "http://simianzombie.com",
         "port": 8080,
         "postPath": "./posts",
+        "commentPath": "./comments",
         "mediaPath": "./media",
         "themePath": "./themes",
         "theme": "grump",
@@ -247,6 +254,7 @@ The options are defined as follows:
                         sent to Akismet for comment validation.
  - port:                the port on which Gobble should listen.
  - postPath:            the path to the posts directory.
+ - commentPath:         the path to the comments directory.
  - mediaPath:           the path to the media directory.
  - themePath:           the path to the themes directory.
  - theme:               the theme to use.
