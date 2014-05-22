@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/howeyc/fsnotify"
+	"github.com/russross/blackfriday"
 	"log"
 	"sync"
 )
@@ -118,4 +119,15 @@ func (b *Blog) fetchTags() {
 	b.mutex.Lock()
 	b.tags = tags
 	b.mutex.Unlock()
+}
+
+func convertMarkdownToHtml(markdown *[]byte) string {
+	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
+	extensions := blackfriday.EXTENSION_AUTOLINK | blackfriday.EXTENSION_HARD_LINE_BREAK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
+
+	renderer := blackfriday.HtmlRenderer(htmlFlags, "", "")
+
+	output := blackfriday.Markdown(*markdown, renderer, extensions)
+
+	return string(output)
 }

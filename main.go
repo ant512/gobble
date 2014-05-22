@@ -14,7 +14,6 @@ const postsPerPage = 10
 const version = "2.0"
 
 var blog *Blog
-var repo *FileRepository
 var SharedConfig *Config
 
 func printInfo() {
@@ -109,8 +108,6 @@ func main() {
 	if *disableWatcher == false {
 		blog.WatchPosts()
 	}
-
-	repo = NewFileRepository(SharedConfig.PostPath)
 
 	prepareHandler()
 }
