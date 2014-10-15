@@ -12,6 +12,7 @@ import (
 type Config struct {
 	Name                string
 	CommentsOpenForDays int
+	PostsPerPage        int
 	Description         string
 	Address             string
 	MediaPath           string
@@ -93,6 +94,7 @@ func (c *Config) validateConfig() error {
 func (c *Config) setDefaults() {
 	c.Name = "Gobble"
 	c.CommentsOpenForDays = 0
+	c.PostsPerPage = 10
 	c.Description = "Blogging Engine"
 	c.Port = 8080
 	c.PostPath = "./posts"

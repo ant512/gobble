@@ -39,7 +39,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 	var previousURL string
 	var nextURL string
 
-	posts, count := blog.SearchPosts(term, int(pageNumber)*postsPerPage, postsPerPage)
+	posts, count := blog.SearchPosts(term, int(pageNumber)*SharedConfig.PostsPerPage, SharedConfig.PostsPerPage)
 
 	if pageNumber > 0 {
 		if len(term) > 0 {
@@ -49,7 +49,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if int(pageNumber+1) < count/postsPerPage {
+	if float64(pageNumber+1) < float64(count)/float64(SharedConfig.PostsPerPage) {
 		if len(term) > 0 {
 			previousURL = fmt.Sprintf("/?search=%v&page=%v", term, pageNumber+2)
 		} else {
@@ -104,13 +104,13 @@ func taggedPosts(w http.ResponseWriter, req *http.Request) {
 	var previousURL string
 	var nextURL string
 
-	posts, count := blog.PostsWithTag(tag, int(pageNumber)*postsPerPage, postsPerPage)
+	posts, count := blog.PostsWithTag(tag, int(pageNumber)*SharedConfig.PostsPerPage, SharedConfig.PostsPerPage)
 
 	if pageNumber > 0 {
 		nextURL = fmt.Sprintf("/tags/%v/%v", tag, pageNumber)
 	}
 
-	if int(pageNumber) < count/postsPerPage {
+	if float64(pageNumber+1) < float64(count)/float64(SharedConfig.PostsPerPage) {
 		previousURL = fmt.Sprintf("/tags/%v/%v", tag, pageNumber+2)
 	}
 
