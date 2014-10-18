@@ -10,7 +10,6 @@ import (
 	"strconv"
 )
 
-const postsPerPage = 10
 const version = "2.0"
 
 var blog *Blog
