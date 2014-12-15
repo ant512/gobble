@@ -296,13 +296,13 @@ Libraries
 Gobble uses a handful of libraries to do its thing:
 
  - [http://highlightjs.org][5]
- - [https://github.com/bmizerany/pat][6]
- - [https://github.com/dpapathanasiou/go-recaptcha][7]
- - [https://github.com/go-fsnotify/fsnotify][8]
- - [https://github.com/russross/blackfriday][9]
+ - [http://github.com/bmizerany/pat][6]
+ - [http://github.com/dpapathanasiou/go-recaptcha][7]
+ - [http://github.com/howeyc/fsnotify][8]
+ - [http://github.com/russross/blackfriday][9]
 
   [5]: http://highlightjs.org
-  [6]: https://github.com/bmizerany/pat
-  [7]: https://github.com/dpapathanasiou/go-recaptcha
-  [8]: https://github.com/go-fsnotify/fsnotify
-  [9]: https://github.com/russross/blackfriday
+  [6]: http://github.com/bmizerany/pat
+  [7]: http://github.com/dpapathanasiou/go-recaptcha
+  [8]: http://github.com/howeyc/fsnotify
+  [9]: http://github.com/russross/blackfriday
