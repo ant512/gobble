@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/howeyc/fsnotify"
+	"gopkg.in/fsnotify.v1"
 	"github.com/russross/blackfriday"
 	"log"
 	"sync"
@@ -33,17 +33,17 @@ func (b *Blog) WatchPosts() {
 	go func() {
 		for {
 			select {
-			case ev := <-watcher.Event:
+			case ev := <-watcher.Events:
 				b.fetchPosts()
 				b.fetchTags()
 				log.Println("Reloading posts due to event:", ev)
-			case err := <-watcher.Error:
+			case err := <-watcher.Errors:
 				log.Println("fswatcher error:", err)
 			}
 		}
 	}()
 
-	err = watcher.Watch(b.postPath)
+	err = watcher.Add(b.postPath)
 	if err != nil {
 		log.Fatal(err)
 	}
