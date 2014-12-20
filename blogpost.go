@@ -39,22 +39,52 @@ func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
 
 	fullPath := filepath.Join(postPath, filename)
 
-	file, err := ioutil.ReadFile(fullPath)
+	err := loadBlogFile(fullPath, func(key, value string) {
+		switch key {
+		case "title":
+			b.Title = value
+		case "id":
+			b.Id, _ = strconv.Atoi(value)
+		case "tags":
 
-	if err != nil {
-		return b, err
+			tags := strings.Split(value, ",")
+
+			formattedTags := []string{}
+
+			for j := range tags {
+				tags[j] = strings.Trim(tags[j], " ")
+				tags[j] = strings.Replace(tags[j], " ", "-", -1)
+				tags[j] = strings.Replace(tags[j], "/", "-", -1)
+				tags[j] = strings.Replace(tags[j], "#", "", -1)
+				tags[j] = strings.ToLower(tags[j])
+
+				if tags[j] != "" {
+					formattedTags = append(formattedTags, tags[j])
+				}
+			}
+
+			b.Tags = formattedTags
+		case "date":
+			b.PublishDate = stringToTime(value)
+		case "disallowcomments":
+			b.DisallowComments = value == "true"
+		default:
+		}
+	}, func(value string) {
+		bytes := []byte(value)
+
+		b.RawBody = value
+		b.Body = convertMarkdownToHtml(&bytes)
+	})
+
+	if (err == nil) {
+		b.Url = b.urlFromBlogPostProperties()
+		b.loadComments()
+	} else {
+		log.Println(err)
 	}
 
-	file = []byte(strings.Replace(string(file), "\r", "", -1))
-	file = []byte(b.extractHeader(string(file)))
-
-	b.RawBody = string(file)
-	b.Body = convertMarkdownToHtml(&file)
-	b.Url = b.urlFromTitle(b.Title)
-
-	b.loadComments()
-
-	return b, nil
+	return b, err
 }
 
 func (b *BlogPost) NonSpamComments() Comments {
@@ -144,46 +174,8 @@ func (b *BlogPost) SaveComment(akismetAPIKey, serverAddress, remoteAddress, user
 	}
 }
 
-func (b *BlogPost) extractHeader(text string) string {
-
-	headerSize := parseHeader(text, func(key, value string) {
-		switch key {
-		case "title":
-			b.Title = value
-		case "id":
-			b.Id, _ = strconv.Atoi(value)
-		case "tags":
-
-			tags := strings.Split(value, ",")
-
-			formattedTags := []string{}
-
-			for j := range tags {
-				tags[j] = strings.Trim(tags[j], " ")
-				tags[j] = strings.Replace(tags[j], " ", "-", -1)
-				tags[j] = strings.Replace(tags[j], "/", "-", -1)
-				tags[j] = strings.Replace(tags[j], "#", "", -1)
-				tags[j] = strings.ToLower(tags[j])
-
-				if tags[j] != "" {
-					formattedTags = append(formattedTags, tags[j])
-				}
-			}
-
-			b.Tags = formattedTags
-		case "date":
-			b.PublishDate = stringToTime(value)
-		case "disallowcomments":
-			b.DisallowComments = value == "true"
-		default:
-		}
-	})
-
-	return text[headerSize:]
-}
-
-func (b *BlogPost) urlFromTitle(title string) string {
-	title = strings.ToLower(title)
+func (b *BlogPost) urlFromBlogPostProperties() string {
+	title := strings.ToLower(b.Title)
 	title = strings.Replace(title, " ", "-", -1)
 	title = strings.Replace(title, ",", "", -1)
 	title = strings.Replace(title, "#", "", -1)

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"log"
 	"strings"
 	"time"
 )
@@ -25,19 +25,31 @@ type Comment struct {
 
 func LoadComment(path string) (*Comment, error) {
 	c := &Comment{}
-	file, err := ioutil.ReadFile(path)
 
-	if err != nil {
-		return c, err
+	err := loadBlogFile(path, func(key, value string) {
+		switch key {
+		case "author":
+			c.Metadata.Author = value
+		case "email":
+			c.Metadata.Email = value
+		case "date":
+			c.Metadata.Date = stringToTime(value)
+		case "spam":
+			c.Metadata.IsSpam = value == "true"
+		default:
+		}
+	}, func(text string) {
+		bytes := []byte(text)
+
+		c.Body.Markdown = text
+		c.Body.HTML = convertMarkdownToHtml(&bytes)
+	})
+
+	if (err != nil) {
+		log.Println(err)
 	}
 
-	file = []byte(strings.Replace(string(file), "\r", "", -1))
-	file = []byte(c.extractHeader(string(file)))
-
-	c.Body.Markdown = string(file)
-	c.Body.HTML = convertMarkdownToHtml(&file)
-
-	return c, nil
+	return c, err
 }
 
 func NewComment(author, email, body string, isSpam bool) *Comment {
@@ -109,23 +121,4 @@ func (m *CommentMetadata) String() string {
 	}
 
 	return content
-}
-
-func (c *Comment) extractHeader(text string) string {
-
-	headerSize := parseHeader(text, func(key, value string) {
-		switch key {
-		case "author":
-			c.Metadata.Author = value
-		case "email":
-			c.Metadata.Email = value
-		case "date":
-			c.Metadata.Date = stringToTime(value)
-		case "spam":
-			c.Metadata.IsSpam = value == "true"
-		default:
-		}
-	})
-
-	return text[headerSize:]
 }

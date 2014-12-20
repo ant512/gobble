@@ -46,10 +46,10 @@
 			{{range .}}
 			<article>
 				<header>
-					<h3>{{.Author}} on {{printf "%04d" .Date.Year}}-{{printf "%02d" .Date.Month}}-{{printf "%02d" .Date.Day}} at {{printf "%02d" .Date.Hour}}:{{printf "%02d" .Date.Minute}} said:</h3>
+					<h3>{{.Metadata.Author}} on {{printf "%04d" .Metadata.Date.Year}}-{{printf "%02d" .Metadata.Date.Month}}-{{printf "%02d" .Metadata.Date.Day}} at {{printf "%02d" .Metadata.Date.Hour}}:{{printf "%02d" .Metadata.Date.Minute}} said:</h3>
 				</header>
 				<div class="content">
-					{{.Body}}
+					{{.Body.HTML}}
 				</div>
 			</article>
 			{{end}}
