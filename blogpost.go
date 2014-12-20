@@ -14,17 +14,25 @@ import (
 	"time"
 )
 
-type BlogPost struct {
+type BlogPostMetadata struct {
 	Title            string
 	Id               int
-	PostPath         string
-	CommentPath      string
 	PublishDate      time.Time
 	Tags             []string
-	Body             string
-	RawBody          string
-	Comments         Comments
 	DisallowComments bool
+}
+
+type BlogPostBody struct {
+	Markdown string
+	HTML     string
+}
+
+type BlogPost struct {
+	Metadata         BlogPostMetadata
+	Body             BlogPostBody
+	Comments         Comments
+	PostPath         string
+	CommentPath      string
 	Url              string
 	Filename         string
 	mutex            sync.RWMutex
@@ -42,9 +50,9 @@ func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
 	err := loadBlogFile(fullPath, func(key, value string) {
 		switch key {
 		case "title":
-			b.Title = value
+			b.Metadata.Title = value
 		case "id":
-			b.Id, _ = strconv.Atoi(value)
+			b.Metadata.Id, _ = strconv.Atoi(value)
 		case "tags":
 
 			tags := strings.Split(value, ",")
@@ -63,21 +71,21 @@ func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
 				}
 			}
 
-			b.Tags = formattedTags
+			b.Metadata.Tags = formattedTags
 		case "date":
-			b.PublishDate = stringToTime(value)
+			b.Metadata.PublishDate = stringToTime(value)
 		case "disallowcomments":
-			b.DisallowComments = value == "true"
+			b.Metadata.DisallowComments = value == "true"
 		default:
 		}
 	}, func(value string) {
 		bytes := []byte(value)
 
-		b.RawBody = value
-		b.Body = convertMarkdownToHtml(&bytes)
+		b.Body.Markdown = value
+		b.Body.HTML = convertMarkdownToHtml(&bytes)
 	})
 
-	if (err == nil) {
+	if err == nil {
 		b.Url = b.urlFromBlogPostProperties()
 		b.loadComments()
 	} else {
@@ -100,7 +108,7 @@ func (b *BlogPost) NonSpamComments() Comments {
 }
 
 func (b *BlogPost) ContainsTag(tag string) bool {
-	for _, t := range b.Tags {
+	for _, t := range b.Metadata.Tags {
 		if t == strings.ToLower(tag) {
 			return true
 		}
@@ -122,8 +130,8 @@ func (b *BlogPost) ContainsTerm(term string) bool {
 	}
 
 	terms := strings.Split(term, " ")
-	body := strings.ToLower(b.RawBody)
-	title := strings.ToLower(b.Title)
+	body := strings.ToLower(b.Body.Markdown)
+	title := strings.ToLower(b.Metadata.Title)
 
 	for _, item := range terms {
 		if !strings.Contains(body, item) && !strings.Contains(title, item) {
@@ -135,7 +143,7 @@ func (b *BlogPost) ContainsTerm(term string) bool {
 }
 
 func (b *BlogPost) AllowsComments() bool {
-	if b.DisallowComments {
+	if b.Metadata.DisallowComments {
 		return false
 	}
 
@@ -143,7 +151,7 @@ func (b *BlogPost) AllowsComments() bool {
 		return true
 	}
 
-	var closeDate = b.PublishDate.Add(time.Hour * 24 * time.Duration(SharedConfig.CommentsOpenForDays))
+	var closeDate = b.Metadata.PublishDate.Add(time.Hour * 24 * time.Duration(SharedConfig.CommentsOpenForDays))
 
 	return time.Now().Before(closeDate)
 }
@@ -175,7 +183,7 @@ func (b *BlogPost) SaveComment(akismetAPIKey, serverAddress, remoteAddress, user
 }
 
 func (b *BlogPost) urlFromBlogPostProperties() string {
-	title := strings.ToLower(b.Title)
+	title := strings.ToLower(b.Metadata.Title)
 	title = strings.Replace(title, " ", "-", -1)
 	title = strings.Replace(title, ",", "", -1)
 	title = strings.Replace(title, "#", "", -1)
@@ -184,7 +192,7 @@ func (b *BlogPost) urlFromBlogPostProperties() string {
 	title = strings.Replace(title, "?", "", -1)
 	title = strings.Replace(title, "/", "", -1)
 
-	return fmt.Sprintf("%04d/%02d/%02d/%s", b.PublishDate.Year(), b.PublishDate.Month(), b.PublishDate.Day(), title)
+	return fmt.Sprintf("%04d/%02d/%02d/%s", b.Metadata.PublishDate.Year(), b.Metadata.PublishDate.Month(), b.Metadata.PublishDate.Day(), title)
 }
 
 func (b *BlogPost) loadComments() {

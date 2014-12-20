@@ -22,15 +22,15 @@
 			<article>
 				<div class="post">
 					<header>
-						<p>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}</p>
-						<h1><a href="/posts/{{.Url}}">{{.Title}}</a></h1>
+						<p>{{printf "%04d" .Metadata.PublishDate.Year}}-{{printf "%02d" .Metadata.PublishDate.Month}}-{{printf "%02d" .Metadata.PublishDate.Day}}</p>
+						<h1><a href="/posts/{{.Url}}">{{.Metadata.Title}}</a></h1>
 					</header>
 					<div class="content">
-						{{.Body}}
+						{{.Body.HTML}}
 					</div>
 					<p class="comments"><a href="/posts/{{.Url}}#comments">{{if eq .NonSpamComments.Len 1}}1 comment{{else if gt .NonSpamComments.Len 0}}{{.NonSpamComments.Len}} comments{{else if .AllowsComments}}Leave a comment{{end}}</a><p>
 					<footer>
-						{{range .Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
+						{{range .Metadata.Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
 					</footer>
 				</div>
 			</article>

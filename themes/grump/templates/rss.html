@@ -12,15 +12,15 @@
 	{{range .}}
 	<entry>
 		<id>{{$siteUrl}}/posts/{{.Url}}</id>
-		<title>{{.Title}}</title>
-		<published>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}T{{printf "%02d" .PublishDate.Hour}}:{{printf "%02d" .PublishDate.Minute}}:{{printf "%02d" .PublishDate.Second}}Z</published>
-		<updated>{{printf "%04d" .PublishDate.Year}}-{{printf "%02d" .PublishDate.Month}}-{{printf "%02d" .PublishDate.Day}}T{{printf "%02d" .PublishDate.Hour}}:{{printf "%02d" .PublishDate.Minute}}:{{printf "%02d" .PublishDate.Second}}Z</updated>
+		<title>{{.Metadata.Title}}</title>
+		<published>{{printf "%04d" .Metadata.PublishDate.Year}}-{{printf "%02d" .Metadata.PublishDate.Month}}-{{printf "%02d" .Metadata.PublishDate.Day}}T{{printf "%02d" .Metadata.PublishDate.Hour}}:{{printf "%02d" .Metadata.PublishDate.Minute}}:{{printf "%02d" .Metadata.PublishDate.Second}}Z</published>
+		<updated>{{printf "%04d" .Metadata.PublishDate.Year}}-{{printf "%02d" .Metadata.PublishDate.Month}}-{{printf "%02d" .Metadata.PublishDate.Day}}T{{printf "%02d" .Metadata.PublishDate.Hour}}:{{printf "%02d" .Metadata.PublishDate.Minute}}:{{printf "%02d" .Metadata.PublishDate.Second}}Z</updated>
 		<author>
 			<name>{{$siteName}}</name>
 			<uri>{{$siteUrl}}</uri>
 		</author>
 		<link rel="alternate" type="text/html" href="{{$siteUrl}}/posts/{{.Url}}" />
-		<content type="html"><![CDATA[{{.Body}}]]></content>
+		<content type="html"><![CDATA[{{.Body.HTML}}]]></content>
 	</entry>
 	{{end}}
 	{{end}}

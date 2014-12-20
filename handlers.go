@@ -170,7 +170,7 @@ func rss(w http.ResponseWriter, req *http.Request) {
 	var updated time.Time
 
 	if len(posts) > 0 {
-		updated = posts[0].PublishDate
+		updated = posts[0].Metadata.PublishDate
 	}
 
 	page := struct {

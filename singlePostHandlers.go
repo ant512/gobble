@@ -82,7 +82,7 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if post.DisallowComments {
+	if post.Metadata.DisallowComments {
 		return
 	}
 

@@ -107,7 +107,7 @@ func (b *Blog) fetchTags() {
 	b.mutex.RLock()
 
 	for _, post := range b.posts {
-		for _, tag := range post.Tags {
+		for _, tag := range post.Metadata.Tags {
 			value := tags[tag] + 1
 			tags[tag] = value
 		}

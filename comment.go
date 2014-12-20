@@ -7,20 +7,20 @@ import (
 )
 
 type CommentMetadata struct {
-	Author  string
-	Email   string
-	Date    time.Time
-	IsSpam  bool
+	Author string
+	Email  string
+	Date   time.Time
+	IsSpam bool
 }
 
 type CommentBody struct {
 	Markdown string
-	HTML    string
+	HTML     string
 }
 
 type Comment struct {
-	Metadata  CommentMetadata
-	Body CommentBody
+	Metadata CommentMetadata
+	Body     CommentBody
 }
 
 func LoadComment(path string) (*Comment, error) {
@@ -45,7 +45,7 @@ func LoadComment(path string) (*Comment, error) {
 		c.Body.HTML = convertMarkdownToHtml(&bytes)
 	})
 
-	if (err != nil) {
+	if err != nil {
 		log.Println(err)
 	}
 
