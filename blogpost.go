@@ -61,7 +61,7 @@ func (b *BlogPost) NonSpamComments() Comments {
 	comments := Comments{}
 
 	for _, comment := range b.Comments {
-		if !comment.IsSpam {
+		if !comment.Metadata.IsSpam {
 			comments = append(comments, comment)
 		}
 	}
@@ -129,7 +129,7 @@ func (b *BlogPost) SaveComment(akismetAPIKey, serverAddress, remoteAddress, user
 	b.mutex.Unlock()
 
 	commentPath := filepath.Join(b.CommentPath, b.Filename[:len(b.Filename)-3])
-	filename := timeToFilename(comment.Date)
+	filename := timeToFilename(comment.Metadata.Date)
 	fullPath := filepath.Join(commentPath, filename)
 
 	log.Println(commentPath)

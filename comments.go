@@ -47,7 +47,7 @@ func (c Comments) Swap(i, j int) {
 }
 
 func (c Comments) Less(i, j int) bool {
-	return c[i].Date.Before(c[j].Date)
+	return c[i].Metadata.Date.Before(c[j].Metadata.Date)
 }
 
 func (c Comments) ContainsTerm(term string) bool {

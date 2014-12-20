@@ -7,6 +7,9 @@ import (
 	"sort"
 )
 
+const validFilenameExtension = ".md"
+const couldNotFindPostErrorMessage = "Could not find post"
+
 type BlogPostFilter func(post *BlogPost, index int, stop *bool) bool
 type BlogPosts []*BlogPost
 
@@ -25,7 +28,7 @@ func LoadBlogPosts(postPath, commentPath string) (BlogPosts, error) {
 			continue
 		}
 
-		if filepath.Ext(file.Name()) != ".md" {
+		if filepath.Ext(file.Name()) != validFilenameExtension {
 			continue
 		}
 
@@ -105,7 +108,7 @@ func (b BlogPosts) PostWithUrl(url string) (*BlogPost, error) {
 		}
 	}
 
-	err := errors.New("Could not find post")
+	err := errors.New(couldNotFindPostErrorMessage)
 
 	return nil, err
 }
@@ -134,7 +137,7 @@ func (b BlogPosts) PostWithId(id int) (*BlogPost, error) {
 		}
 	}
 
-	err := errors.New("Could not find post")
+	err := errors.New(couldNotFindPostErrorMessage)
 
 	return nil, err
 }
