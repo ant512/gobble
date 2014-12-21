@@ -185,12 +185,9 @@ func (b *BlogPost) SaveComment(akismetAPIKey, serverAddress, remoteAddress, user
 func (b *BlogPost) urlFromBlogPostProperties() string {
 	title := strings.ToLower(b.Metadata.Title)
 	title = strings.Replace(title, " ", "-", -1)
-	title = strings.Replace(title, ",", "", -1)
-	title = strings.Replace(title, "#", "", -1)
-	title = strings.Replace(title, ":", "", -1)
-	title = strings.Replace(title, "\"", "", -1)
-	title = strings.Replace(title, "?", "", -1)
-	title = strings.Replace(title, "/", "", -1)
+
+	replacer := strings.NewReplacer(",", "#", ":", "\"", "?", "/")
+	title = replacer.Replace(title)
 
 	return fmt.Sprintf("%04d/%02d/%02d/%s", b.Metadata.PublishDate.Year(), b.Metadata.PublishDate.Month(), b.Metadata.PublishDate.Day(), title)
 }
