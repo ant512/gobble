@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"strings"
 	"time"
 )
@@ -19,14 +20,17 @@ type CommentBody struct {
 }
 
 type Comment struct {
-	Metadata CommentMetadata
-	Body     CommentBody
+	Metadata     CommentMetadata
+	Body         CommentBody
+	ModifiedDate time.Time
 }
 
 func LoadComment(path string) (*Comment, error) {
 	c := &Comment{}
 
-	err := loadBlogFile(path, func(key, value string) {
+	err := loadBlogFile(path, func(fileInfo os.FileInfo) {
+		c.ModifiedDate = fileInfo.ModTime()
+	}, func(key, value string) {
 		switch key {
 		case "author":
 			c.Metadata.Author = value

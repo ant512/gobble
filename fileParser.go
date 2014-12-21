@@ -3,13 +3,24 @@ package main
 import (
 	"github.com/russross/blackfriday"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
 type metadataParseHandler func(key, value string)
 type bodyParseHandler func(value string)
+type fileInfoParseHandler func(fileInfo os.FileInfo)
 
-func loadBlogFile(path string, metadataHandler metadataParseHandler, bodyHandler bodyParseHandler) error {
+func loadBlogFile(path string, fileInfoHandler fileInfoParseHandler, metadataHandler metadataParseHandler, bodyHandler bodyParseHandler) error {
+
+	info, err := os.Stat(path)
+
+	if err != nil {
+		return err
+	}
+
+	fileInfoHandler(info)
+
 	file, err := ioutil.ReadFile(path)
 
 	if err != nil {

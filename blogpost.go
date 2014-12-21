@@ -28,14 +28,15 @@ type BlogPostBody struct {
 }
 
 type BlogPost struct {
-	Metadata    BlogPostMetadata
-	Body        BlogPostBody
-	Comments    Comments
-	PostPath    string
-	CommentPath string
-	Url         string
-	Filename    string
-	mutex       sync.RWMutex
+	Metadata     BlogPostMetadata
+	Body         BlogPostBody
+	Comments     Comments
+	PostPath     string
+	CommentPath  string
+	Url          string
+	Filename     string
+	ModifiedDate time.Time
+	mutex        sync.RWMutex
 }
 
 func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
@@ -47,7 +48,9 @@ func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
 
 	fullPath := filepath.Join(postPath, filename)
 
-	err := loadBlogFile(fullPath, func(key, value string) {
+	err := loadBlogFile(fullPath, func(fileInfo os.FileInfo) {
+		b.ModifiedDate = fileInfo.ModTime()
+	}, func(key, value string) {
 		switch key {
 		case "title":
 			b.Metadata.Title = value
