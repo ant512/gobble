@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"io/ioutil"
+	"log"
+	"os"
 	"path/filepath"
 	"sort"
 )
@@ -23,12 +25,7 @@ func LoadBlogPosts(postPath, commentPath string) (BlogPosts, error) {
 	posts := BlogPosts{}
 
 	for _, file := range files {
-
-		if file.IsDir() {
-			continue
-		}
-
-		if filepath.Ext(file.Name()) != validFilenameExtension {
+		if !isValidBlogPostFile(file) {
 			continue
 		}
 
@@ -44,6 +41,87 @@ func LoadBlogPosts(postPath, commentPath string) (BlogPosts, error) {
 	sort.Sort(posts)
 
 	return posts, err
+}
+
+func (b *BlogPosts) RemoveBlogPost(filename string) error {
+	posts := *b
+
+	for i, p := range posts {
+		if p.Filename == filename {
+			log.Println("Removing post")
+			posts = append(posts[:i], posts[i+1:]...)
+			break
+		}
+	}
+
+	*b = posts
+
+	return nil
+}
+
+func (b *BlogPosts) AddBlogPost(postPath, commentPath, filename string) error {
+	// TODO: If it is valid, load the post, append it, then sort
+
+	fileInfo, err := os.Stat(filepath.Join(postPath, filename))
+
+	if err != nil {
+		return err
+	}
+
+	if !isValidBlogPostFile(fileInfo) {
+		return errors.New("Not a valid blogpost file")
+	}
+
+	post, err := LoadPost(fileInfo.Name(), postPath, commentPath)
+
+	if err != nil {
+		return err
+	}
+
+	posts := *b
+	posts = append(posts, post)
+	sort.Sort(posts)
+
+	*b = posts
+
+	return nil
+}
+
+func (b BlogPosts) ReloadBlogPost(postPath, commentPath, filename string) error {
+	fileInfo, err := os.Stat(filepath.Join(postPath, filename))
+
+	if err != nil {
+		return err
+	}
+
+	if !isValidBlogPostFile(fileInfo) {
+		return errors.New("Not a valid blogpost file")
+	}
+
+	post, err := LoadPost(fileInfo.Name(), postPath, commentPath)
+
+	if err != nil {
+		return err
+	}
+
+	replaced := false
+
+	for i, p := range b {
+		if p.Filename == filename {
+			log.Println("Replacing old post")
+			b[i] = post
+			replaced = true
+			break
+		}
+	}
+
+	if replaced {
+		sort.Sort(b)
+	} else {
+		err = errors.New("Could not find existing blogpost to replace")
+	}
+
+	return err
 }
 
 func (b BlogPosts) Len() int {
@@ -140,4 +218,16 @@ func (b BlogPosts) PostWithId(id int) (*BlogPost, error) {
 	err := errors.New(couldNotFindPostErrorMessage)
 
 	return nil, err
+}
+
+func isValidBlogPostFile(fileInfo os.FileInfo) bool {
+	if fileInfo.IsDir() {
+		return false
+	}
+
+	if filepath.Ext(fileInfo.Name()) != validFilenameExtension {
+		return false
+	}
+
+	return true
 }

@@ -2,7 +2,9 @@ package main
 
 import (
 	"gopkg.in/fsnotify.v1"
+	"io/ioutil"
 	"log"
+	"path/filepath"
 	"sync"
 )
 
@@ -33,9 +35,25 @@ func (b *Blog) WatchPosts() {
 		for {
 			select {
 			case ev := <-watcher.Events:
-				b.fetchPosts()
-				b.fetchTags()
-				log.Println("Reloading posts due to event:", ev)
+				switch ev.Op {
+
+				// TODO: Need to move the reload/add/remove funcs into this
+				// object and handle mutexes.  Or maybe move the mutex into the
+				// blogpost object.  That makes more sense.  Maybe this should
+				// go in there too, along with all of the paths.
+				case fsnotify.Create:
+					log.Println("File ", ev.Name, " created")
+					b.posts.AddBlogPost(b.postPath, b.commentPath, filepath.Base(ev.Name))
+				case fsnotify.Write:
+					log.Println("File ", ev.Name, " modified")
+					b.posts.ReloadBlogPost(b.postPath, b.commentPath, filepath.Base(ev.Name))
+					b.fetchTags()
+				case fsnotify.Remove:
+					fallthrough
+				case fsnotify.Rename:
+					log.Println("File ", ev.Name, " deleted")
+					b.posts.RemoveBlogPost(filepath.Base(ev.Name))
+				}
 			case err := <-watcher.Errors:
 				log.Println("fswatcher error:", err)
 			}
@@ -118,4 +136,11 @@ func (b *Blog) fetchTags() {
 	b.mutex.Lock()
 	b.tags = tags
 	b.mutex.Unlock()
+}
+
+func (b *Blog) fetchChangedPosts() {
+	files, err := ioutil.ReadDir(b.postPath)
+	log.Println(b.postPath)
+	log.Println(err)
+	log.Println(files)
 }
