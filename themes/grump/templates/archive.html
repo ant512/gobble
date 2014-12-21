@@ -23,7 +23,7 @@
 						<ul id="archive">
 							{{with .Posts}}
 							{{range .}}
-							<li><a href="/posts/{{.Url}}">{{.Metadata.Title}}</a> <span class="archiveTime">{{printf "%04d" .Metadata.PublishDate.Year}}-{{printf "%02d" .Metadata.PublishDate.Month}}-{{printf "%02d" .Metadata.PublishDate.Day}}</span></li>
+							<li><a href="/posts/{{.Url}}">{{.Metadata.Title}}</a> <span class="archiveTime">{{printf "%04d" .Metadata.Date.Year}}-{{printf "%02d" .Metadata.Date.Month}}-{{printf "%02d" .Metadata.Date.Day}}</span></li>
 							{{end}}
 							{{end}}
 						</ul>

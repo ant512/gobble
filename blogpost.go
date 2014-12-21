@@ -17,7 +17,7 @@ import (
 type BlogPostMetadata struct {
 	Title            string
 	Id               int
-	PublishDate      time.Time
+	Date             time.Time
 	Tags             []string
 	DisallowComments bool
 }
@@ -28,14 +28,14 @@ type BlogPostBody struct {
 }
 
 type BlogPost struct {
-	Metadata         BlogPostMetadata
-	Body             BlogPostBody
-	Comments         Comments
-	PostPath         string
-	CommentPath      string
-	Url              string
-	Filename         string
-	mutex            sync.RWMutex
+	Metadata    BlogPostMetadata
+	Body        BlogPostBody
+	Comments    Comments
+	PostPath    string
+	CommentPath string
+	Url         string
+	Filename    string
+	mutex       sync.RWMutex
 }
 
 func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
@@ -60,11 +60,11 @@ func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
 			formattedTags := []string{}
 
 			for j := range tags {
-				tags[j] = strings.Trim(tags[j], " ")
 				tags[j] = strings.Replace(tags[j], " ", "-", -1)
 				tags[j] = strings.Replace(tags[j], "/", "-", -1)
 				tags[j] = strings.Replace(tags[j], "#", "", -1)
 				tags[j] = strings.ToLower(tags[j])
+				tags[j] = strings.Trim(tags[j], " ")
 
 				if tags[j] != "" {
 					formattedTags = append(formattedTags, tags[j])
@@ -73,7 +73,7 @@ func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
 
 			b.Metadata.Tags = formattedTags
 		case "date":
-			b.Metadata.PublishDate = stringToTime(value)
+			b.Metadata.Date = stringToTime(value)
 		case "disallowcomments":
 			b.Metadata.DisallowComments = value == "true"
 		default:
@@ -151,7 +151,7 @@ func (b *BlogPost) AllowsComments() bool {
 		return true
 	}
 
-	var closeDate = b.Metadata.PublishDate.Add(time.Hour * 24 * time.Duration(SharedConfig.CommentsOpenForDays))
+	var closeDate = b.Metadata.Date.Add(time.Hour * 24 * time.Duration(SharedConfig.CommentsOpenForDays))
 
 	return time.Now().Before(closeDate)
 }
@@ -189,7 +189,7 @@ func (b *BlogPost) urlFromBlogPostProperties() string {
 	replacer := strings.NewReplacer(",", "#", ":", "\"", "?", "/")
 	title = replacer.Replace(title)
 
-	return fmt.Sprintf("%04d/%02d/%02d/%s", b.Metadata.PublishDate.Year(), b.Metadata.PublishDate.Month(), b.Metadata.PublishDate.Day(), title)
+	return fmt.Sprintf("%04d/%02d/%02d/%s", b.Metadata.Date.Year(), b.Metadata.Date.Month(), b.Metadata.Date.Day(), title)
 }
 
 func (b *BlogPost) loadComments() {

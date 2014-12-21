@@ -9,26 +9,26 @@ func createTestBlogPosts() BlogPosts {
 	b := BlogPosts{}
 
 	bp := new(BlogPost)
-	bp.Id = 6
-	bp.Title = "Test 1"
-	bp.PostPath = "/test1"
-	bp.PublishDate = time.Now()
-	bp.Tags = append(bp.Tags, "test")
-	bp.Tags = append(bp.Tags, "test1")
-	bp.Body = "This is some text"
-	bp.DisallowComments = true
 	bp.Url = "/test1"
+	bp.Metadata.Id = 6
+	bp.Metadata.Title = "Test 1"
+	bp.PostPath = "/test1"
+	bp.Metadata.Date = time.Now()
+	bp.Metadata.Tags = append(bp.Metadata.Tags, "test")
+	bp.Metadata.Tags = append(bp.Metadata.Tags, "test1")
+	bp.Body.Markdown = "This is some text"
+	bp.Metadata.DisallowComments = true
 	b = append(b, bp)
 
 	bp = new(BlogPost)
-	bp.Id = 8
-	bp.Title = "Test 2"
+	bp.Metadata.Id = 8
+	bp.Metadata.Title = "Test 2"
 	bp.PostPath = "/test2"
-	bp.PublishDate = time.Now()
-	bp.Tags = append(bp.Tags, "test")
-	bp.Tags = append(bp.Tags, "test2")
-	bp.Body = "This is some more text"
-	bp.DisallowComments = false
+	bp.Metadata.Date = time.Now()
+	bp.Metadata.Tags = append(bp.Metadata.Tags, "test")
+	bp.Metadata.Tags = append(bp.Metadata.Tags, "test2")
+	bp.Body.Markdown = "This is some more text"
+	bp.Metadata.DisallowComments = false
 	bp.Url = "/test2"
 	b = append(b, bp)
 
@@ -39,12 +39,12 @@ func TestFilteredPosts(t *testing.T) {
 	b := createTestBlogPosts()
 
 	found, _ := b.PostWithId(6)
-	if found == nil || found.Title != "Test 1" {
+	if found == nil || found.Metadata.Title != "Test 1" {
 		t.Error("Could not find post by ID")
 	}
 
 	found, _ = b.PostWithId(8)
-	if found == nil || found.Title != "Test 2" {
+	if found == nil || found.Metadata.Title != "Test 2" {
 		t.Error("Could not find post by ID")
 	}
 
@@ -58,12 +58,12 @@ func TestPostWithUrl(t *testing.T) {
 	b := createTestBlogPosts()
 
 	found, _ := b.PostWithUrl("/test1")
-	if found == nil || found.Title != "Test 1" {
+	if found == nil || found.Metadata.Title != "Test 1" {
 		t.Error("Could not find post with URL")
 	}
 
 	found, _ = b.PostWithUrl("/test2")
-	if found == nil || found.Title != "Test 2" {
+	if found == nil || found.Metadata.Title != "Test 2" {
 		t.Error("Could not find post with URL")
 	}
 
@@ -96,14 +96,14 @@ func TestFilter(t *testing.T) {
 	b := createTestBlogPosts()
 
 	bf := b.Filter(func(post *BlogPost, index int, stop *bool) bool {
-		return post.DisallowComments
+		return post.Metadata.DisallowComments
 	})
 
 	if len(bf) > 1 {
 		t.Error("Found posts with incorrect disallow comments status")
 	}
 
-	if bf[0].Id != 6 {
+	if bf[0].Metadata.Id != 6 {
 		t.Error("Found posts with incorrect disallow comments status")
 	}
 }

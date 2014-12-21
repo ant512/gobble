@@ -13,8 +13,8 @@
 	<entry>
 		<id>{{$siteUrl}}/posts/{{.Url}}</id>
 		<title>{{.Metadata.Title}}</title>
-		<published>{{printf "%04d" .Metadata.PublishDate.Year}}-{{printf "%02d" .Metadata.PublishDate.Month}}-{{printf "%02d" .Metadata.PublishDate.Day}}T{{printf "%02d" .Metadata.PublishDate.Hour}}:{{printf "%02d" .Metadata.PublishDate.Minute}}:{{printf "%02d" .Metadata.PublishDate.Second}}Z</published>
-		<updated>{{printf "%04d" .Metadata.PublishDate.Year}}-{{printf "%02d" .Metadata.PublishDate.Month}}-{{printf "%02d" .Metadata.PublishDate.Day}}T{{printf "%02d" .Metadata.PublishDate.Hour}}:{{printf "%02d" .Metadata.PublishDate.Minute}}:{{printf "%02d" .Metadata.PublishDate.Second}}Z</updated>
+		<published>{{printf "%04d" .Metadata.Date.Year}}-{{printf "%02d" .Metadata.Date.Month}}-{{printf "%02d" .Metadata.Date.Day}}T{{printf "%02d" .Metadata.Date.Hour}}:{{printf "%02d" .Metadata.Date.Minute}}:{{printf "%02d" .Metadata.Date.Second}}Z</published>
+		<updated>{{printf "%04d" .Metadata.Date.Year}}-{{printf "%02d" .Metadata.Date.Month}}-{{printf "%02d" .Metadata.Date.Day}}T{{printf "%02d" .Metadata.Date.Hour}}:{{printf "%02d" .Metadata.Date.Minute}}:{{printf "%02d" .Metadata.Date.Second}}Z</updated>
 		<author>
 			<name>{{$siteName}}</name>
 			<uri>{{$siteUrl}}</uri>

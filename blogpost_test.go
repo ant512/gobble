@@ -7,14 +7,14 @@ import (
 
 func createPost() *BlogPost {
 	p := new(BlogPost)
-	p.Title = "Test Post"
-	p.Id = 2
 	p.PostPath = "/test"
-	p.PublishDate = time.Now()
-	p.Body = "Test"
-	p.DisallowComments = true
-	p.Tags = append(p.Tags, "test")
-	p.Tags = append(p.Tags, "test1")
+	p.Metadata.Id = 2
+	p.Metadata.Title = "Test Post"
+	p.Metadata.Date = time.Now()
+	p.Metadata.DisallowComments = true
+	p.Body.Markdown = "Test"
+	p.Metadata.Tags = append(p.Metadata.Tags, "test")
+	p.Metadata.Tags = append(p.Metadata.Tags, "test1")
 
 	c := NewComment("Joe", "joe@example.com", "This is a test", false)
 	p.Comments = append(p.Comments, c)

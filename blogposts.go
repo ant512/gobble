@@ -57,7 +57,7 @@ func (b BlogPosts) Swap(i, j int) {
 func (b BlogPosts) Less(i, j int) bool {
 
 	// We use "After" instead of "Before" to get posts in descending order
-	return b[i].Metadata.PublishDate.After(b[j].Metadata.PublishDate)
+	return b[i].Metadata.Date.After(b[j].Metadata.Date)
 }
 
 func (b BlogPosts) Filter(filter BlogPostFilter) BlogPosts {
