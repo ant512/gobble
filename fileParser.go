@@ -48,9 +48,9 @@ func parseBlogFileHeader(text string, handler metadataParseHandler) int {
 	for _, line := range lines {
 		if strings.Contains(line, ":") {
 			components := strings.Split(line, ":")
-			key := strings.ToLower(strings.Trim(components[0], " "))
+			key := strings.ToLower(strings.TrimSpace(components[0]))
 			separatorIndex := strings.Index(line, ":") + 1
-			value := strings.Trim(line[separatorIndex:], " ")
+			value := strings.TrimSpace(line[separatorIndex:])
 
 			headerSize += len(line) + 1
 

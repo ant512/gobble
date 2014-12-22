@@ -15,19 +15,18 @@ type Blog struct {
 	postPath    string
 	commentPath string
 	posts       BlogPosts
-	tags        map[string]int
+	tags        Tags
 	mutex       sync.RWMutex
 }
 
 func LoadBlog(postPath, commentPath string) (*Blog, error) {
 	b := &Blog{postPath: postPath, commentPath: commentPath}
+	b.tags = NewTags()
 
 	err := b.loadBlogPosts()
 
 	if err != nil {
 		log.Println("Error fetching posts:", err)
-	} else {
-		b.fetchTags()
 	}
 
 	return b, err
@@ -50,7 +49,6 @@ func (b *Blog) WatchPosts() {
 				case fsnotify.Write:
 					log.Println("File", ev.Name, "modified")
 					b.reloadBlogPost(filepath.Base(ev.Name))
-					b.fetchTags()
 				case fsnotify.Remove:
 					fallthrough
 				case fsnotify.Rename:
@@ -74,7 +72,7 @@ func (b *Blog) AllPosts() BlogPosts {
 }
 
 func (b *Blog) AllTags() map[string]int {
-	return b.tags
+	return b.tags.AllTags()
 }
 
 func (b *Blog) PostWithUrl(url string) (*BlogPost, error) {
@@ -109,31 +107,16 @@ func (b *Blog) SearchPosts(term string, start int, count int) (BlogPosts, int) {
 	return b.posts.FilteredPosts(term, start, count)
 }
 
-func (b *Blog) fetchTags() {
-
-	tags := make(map[string]int)
-
-	b.mutex.RLock()
-
-	for _, post := range b.posts {
-		for _, tag := range post.Metadata.Tags {
-			value := tags[tag] + 1
-			tags[tag] = value
-		}
-	}
-
-	b.mutex.RUnlock()
-
+func (b *Blog) addTags(tags []string) {
 	b.mutex.Lock()
-	b.tags = tags
+	b.tags.AddTags(tags)
 	b.mutex.Unlock()
 }
 
-func (b *Blog) fetchChangedPosts() {
-	files, err := ioutil.ReadDir(b.postPath)
-	log.Println(b.postPath)
-	log.Println(err)
-	log.Println(files)
+func (b *Blog) removeTags(tags []string) {
+	b.mutex.Lock()
+	b.tags.RemoveTags(tags)
+	b.mutex.Unlock()
 }
 
 func (b *Blog) loadBlogPosts() error {
@@ -144,6 +127,7 @@ func (b *Blog) loadBlogPosts() error {
 	}
 
 	posts := BlogPosts{}
+	tags := []string{}
 
 	for _, file := range files {
 		if !isValidBlogPostFile(file) {
@@ -157,12 +141,14 @@ func (b *Blog) loadBlogPosts() error {
 		}
 
 		posts = append(posts, post)
+		tags = append(tags, post.Metadata.Tags[:]...)
 	}
 
 	sort.Sort(posts)
 
 	b.mutex.Lock()
 	b.posts = posts
+	b.tags.AddTags(tags)
 	b.mutex.Unlock()
 
 	return err
@@ -173,28 +159,29 @@ func (b *Blog) removeBlogPost(filename string) error {
 
 	posts := b.posts
 
-	removed := false
+	var removed *BlogPost = nil
 
 	b.mutex.Lock()
 	for i, p := range posts {
 		if p.Filename == filename {
 			posts = append(posts[:i], posts[i+1:]...)
-			removed = true
+			removed = p
 			break
 		}
 	}
 
+	b.posts = posts
+	b.mutex.Unlock()
+
 	var err error = nil
 
-	if !removed {
+	if removed == nil {
 		log.Println("Failed to remove post: post not found")
 		err = errors.New("Failed to remove post: post not found")
 	} else {
+		b.removeTags(removed.Metadata.Tags)
 		log.Println("Post removed")
 	}
-
-	b.posts = posts
-	b.mutex.Unlock()
 
 	return err
 }
@@ -224,6 +211,7 @@ func (b *Blog) addBlogPost(filename string) error {
 	sort.Sort(posts)
 
 	b.posts = posts
+	b.tags.AddTags(post.Metadata.Tags)
 	b.mutex.Unlock()
 
 	log.Println("Post added")
@@ -250,20 +238,22 @@ func (b *Blog) reloadBlogPost(filename string) error {
 		return err
 	}
 
-	replaced := false
+	var removed *BlogPost = nil
 
 	b.mutex.Lock()
 	for i, p := range b.posts {
 		if p.Filename == filename {
 			b.posts[i] = post
-			replaced = true
+			removed = p
 			break
 		}
 	}
 
-	if replaced {
+	if removed != nil {
 		log.Println("Post reloaded")
 		sort.Sort(b.posts)
+		b.tags.RemoveTags(removed.Metadata.Tags)
+		b.tags.AddTags(post.Metadata.Tags)
 	} else {
 		log.Println("Failed to reload post: existing post not found")
 		err = errors.New("Could not find existing blogpost to replace")

@@ -86,9 +86,9 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	author := strings.Trim(req.FormValue("name"), " ")
-	email := strings.Trim(req.FormValue("email"), " ")
-	body := strings.Trim(req.FormValue("comment"), " ")
+	author := strings.TrimSpace(req.FormValue("name"))
+	email := strings.TrimSpace(req.FormValue("email"))
+	body := strings.TrimSpace(req.FormValue("comment"))
 
 	hasErrors := false
 	commentNameError := ""

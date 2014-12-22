@@ -63,11 +63,11 @@ func LoadPost(filename, postPath, commentPath string) (*BlogPost, error) {
 			formattedTags := []string{}
 
 			for j := range tags {
+				tags[j] = strings.TrimSpace(tags[j])
 				tags[j] = strings.Replace(tags[j], " ", "-", -1)
 				tags[j] = strings.Replace(tags[j], "/", "-", -1)
 				tags[j] = strings.Replace(tags[j], "#", "", -1)
 				tags[j] = strings.ToLower(tags[j])
-				tags[j] = strings.Trim(tags[j], " ")
 
 				if tags[j] != "" {
 					formattedTags = append(formattedTags, tags[j])
