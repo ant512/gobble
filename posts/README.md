@@ -159,7 +159,7 @@ sound a little excessive, but simianzombie.com consists of 280,000 words spread
 over 480 posts and 912 comments, and uses just 2MB of disk space.  Storing the
 posts in RAM makes retrieving and searching them extremely fast.
 
-The cache is reloaded whenever the content of the posts directory changes.
+The cache is updated whenever the content of the posts directory changes.
 
 
 Installation
