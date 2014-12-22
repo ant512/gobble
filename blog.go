@@ -19,7 +19,7 @@ type Blog struct {
 	mutex       sync.RWMutex
 }
 
-func LoadBlog(postPath, commentPath string) (*Blog, error) {
+func LoadBlog(postPath, commentPath string, disableWatcher bool) (*Blog, error) {
 	b := &Blog{postPath: postPath, commentPath: commentPath}
 	b.tags = NewTags()
 
@@ -27,44 +27,11 @@ func LoadBlog(postPath, commentPath string) (*Blog, error) {
 
 	if err != nil {
 		log.Println("Error fetching posts:", err)
+	} else if !disableWatcher {
+		b.watchPosts()
 	}
 
 	return b, err
-}
-
-func (b *Blog) WatchPosts() {
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	go func() {
-		for {
-			select {
-			case ev := <-watcher.Events:
-				switch ev.Op {
-				case fsnotify.Create:
-					log.Println("File", ev.Name, "created")
-					b.addBlogPost(filepath.Base(ev.Name))
-				case fsnotify.Write:
-					log.Println("File", ev.Name, "modified")
-					b.reloadBlogPost(filepath.Base(ev.Name))
-				case fsnotify.Remove:
-					fallthrough
-				case fsnotify.Rename:
-					log.Println("File", ev.Name, "deleted")
-					b.removeBlogPost(filepath.Base(ev.Name))
-				}
-			case err := <-watcher.Errors:
-				log.Println("fswatcher error:", err)
-			}
-		}
-	}()
-
-	err = watcher.Add(b.postPath)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func (b *Blog) AllPosts() BlogPosts {
@@ -72,11 +39,12 @@ func (b *Blog) AllPosts() BlogPosts {
 }
 
 func (b *Blog) AllTags() map[string]int {
+	b.mutex.RLock()
+	defer b.mutex.RUnlock()
 	return b.tags.AllTags()
 }
 
 func (b *Blog) PostWithUrl(url string) (*BlogPost, error) {
-
 	b.mutex.RLock()
 	defer b.mutex.RUnlock()
 
@@ -84,7 +52,6 @@ func (b *Blog) PostWithUrl(url string) (*BlogPost, error) {
 }
 
 func (b *Blog) PostWithId(id int) (*BlogPost, error) {
-
 	b.mutex.RLock()
 	defer b.mutex.RUnlock()
 
@@ -92,7 +59,6 @@ func (b *Blog) PostWithId(id int) (*BlogPost, error) {
 }
 
 func (b *Blog) PostsWithTag(tag string, start int, count int) (BlogPosts, int) {
-
 	b.mutex.RLock()
 	defer b.mutex.RUnlock()
 
@@ -100,7 +66,6 @@ func (b *Blog) PostsWithTag(tag string, start int, count int) (BlogPosts, int) {
 }
 
 func (b *Blog) SearchPosts(term string, start int, count int) (BlogPosts, int) {
-
 	b.mutex.RLock()
 	defer b.mutex.RUnlock()
 
@@ -152,6 +117,41 @@ func (b *Blog) loadBlogPosts() error {
 	b.mutex.Unlock()
 
 	return err
+}
+
+func (b *Blog) watchPosts() {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	go func() {
+		for {
+			select {
+			case ev := <-watcher.Events:
+				switch ev.Op {
+				case fsnotify.Create:
+					log.Println("File", ev.Name, "created")
+					b.addBlogPost(filepath.Base(ev.Name))
+				case fsnotify.Write:
+					log.Println("File", ev.Name, "modified")
+					b.reloadBlogPost(filepath.Base(ev.Name))
+				case fsnotify.Remove:
+					fallthrough
+				case fsnotify.Rename:
+					log.Println("File", ev.Name, "deleted")
+					b.removeBlogPost(filepath.Base(ev.Name))
+				}
+			case err := <-watcher.Errors:
+				log.Println("fswatcher error:", err)
+			}
+		}
+	}()
+
+	err = watcher.Add(b.postPath)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (b *Blog) removeBlogPost(filename string) error {

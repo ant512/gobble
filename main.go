@@ -98,14 +98,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	blog, err = LoadBlog(SharedConfig.PostPath, SharedConfig.CommentPath)
+	blog, err = LoadBlog(SharedConfig.PostPath, SharedConfig.CommentPath, *disableWatcher)
 
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	if *disableWatcher == false {
-		blog.WatchPosts()
 	}
 
 	prepareHandler()
