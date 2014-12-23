@@ -22,14 +22,9 @@ type BlogPostMetadata struct {
 	DisallowComments bool
 }
 
-type BlogPostBody struct {
-	Markdown string
-	HTML     string
-}
-
 type BlogPost struct {
 	Metadata     BlogPostMetadata
-	Body         BlogPostBody
+	Body         BlogItemBody
 	Comments     Comments
 	PostPath     string
 	CommentPath  string
@@ -132,12 +127,15 @@ func (b *BlogPost) ContainsTerm(term string) bool {
 		return true
 	}
 
+	if b.Body.ContainsTerm(term) {
+		return true
+	}
+
 	terms := strings.Split(term, " ")
-	body := strings.ToLower(b.Body.Markdown)
 	title := strings.ToLower(b.Metadata.Title)
 
 	for _, item := range terms {
-		if !strings.Contains(body, item) && !strings.Contains(title, item) {
+		if !strings.Contains(title, item) {
 			return false
 		}
 	}

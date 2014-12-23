@@ -14,14 +14,9 @@ type CommentMetadata struct {
 	IsSpam bool
 }
 
-type CommentBody struct {
-	Markdown string
-	HTML     string
-}
-
 type Comment struct {
 	Metadata     CommentMetadata
-	Body         CommentBody
+	Body         BlogItemBody
 	ModifiedDate time.Time
 }
 
@@ -71,20 +66,6 @@ func NewComment(author, email, body string, isSpam bool) *Comment {
 	return c
 }
 
-func (b *CommentBody) ContainsTerm(term string) bool {
-	term = strings.ToLower(term)
-	terms := strings.Split(term, " ")
-	body := strings.ToLower(b.Markdown)
-
-	for _, item := range terms {
-		if !strings.Contains(body, item) {
-			return false
-		}
-	}
-
-	return true
-}
-
 func (m *CommentMetadata) ContainsTerm(term string) bool {
 	term = strings.ToLower(term)
 	terms := strings.Split(term, " ")
@@ -109,10 +90,6 @@ func (c *Comment) String() string {
 	content += c.Body.String()
 
 	return content
-}
-
-func (b *CommentBody) String() string {
-	return b.Markdown
 }
 
 func (m *CommentMetadata) String() string {
