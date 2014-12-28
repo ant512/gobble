@@ -27,15 +27,14 @@ func (b BlogPosts) Less(i, j int) bool {
 func (b BlogPosts) Filter(filter BlogPostFilter) BlogPosts {
 	filteredPosts := BlogPosts{}
 
-	stop := new(bool)
-	*stop = false
+	stop := false
 
 	for index, post := range b {
-		if filter(post, index, stop) {
+		if filter(post, index, &stop) {
 			filteredPosts = append(filteredPosts, post)
 		}
 
-		if *stop {
+		if stop {
 			break
 		}
 	}
