@@ -72,18 +72,6 @@ func (b *Blog) SearchPosts(term string, start int, count int) (BlogPosts, int) {
 	return b.posts.FilteredPosts(term, start, count)
 }
 
-func (b *Blog) addTags(tags []string) {
-	b.mutex.Lock()
-	b.tags.AddTags(tags)
-	b.mutex.Unlock()
-}
-
-func (b *Blog) removeTags(tags []string) {
-	b.mutex.Lock()
-	b.tags.RemoveTags(tags)
-	b.mutex.Unlock()
-}
-
 func (b *Blog) loadBlogPosts() error {
 	files, err := ioutil.ReadDir(b.postPath)
 
@@ -171,7 +159,6 @@ func (b *Blog) removeBlogPost(filename string) error {
 	}
 
 	b.posts = posts
-	b.mutex.Unlock()
 
 	var err error = nil
 
@@ -179,9 +166,11 @@ func (b *Blog) removeBlogPost(filename string) error {
 		log.Println("Failed to remove post: post not found")
 		err = errors.New("Failed to remove post: post not found")
 	} else {
-		b.removeTags(removed.Metadata.Tags)
+		b.tags.RemoveTags(removed.Metadata.Tags)
 		log.Println("Post removed")
 	}
+
+	b.mutex.Unlock()
 
 	return err
 }
