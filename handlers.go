@@ -8,20 +8,8 @@ import (
 	"time"
 )
 
-func home(w http.ResponseWriter, req *http.Request) {
-
-	id, err := strconv.Atoi(req.URL.Query().Get("p"))
-
-	if err == nil {
-
-		post, _ := blog.PostWithId(id)
-		showSinglePost(post, w, req)
-
-		return
-	}
-
-	term := req.URL.Query().Get("search")
-	pageNumber, err := strconv.ParseInt(req.URL.Query().Get("page"), 10, 32)
+func pageNumberFromRequest(req *http.Request, query string) int64 {
+	pageNumber, err := strconv.ParseInt(req.URL.Query().Get(query), 10, 32)
 
 	if err != nil {
 		pageNumber = 0
@@ -35,6 +23,24 @@ func home(w http.ResponseWriter, req *http.Request) {
 			pageNumber = 0
 		}
 	}
+
+	return pageNumber
+}
+
+func home(w http.ResponseWriter, req *http.Request) {
+
+	id, err := strconv.Atoi(req.URL.Query().Get("p"))
+
+	if err == nil {
+
+		post, _ := blog.PostWithId(id)
+		showSinglePost(post, w, req)
+
+		return
+	}
+
+	term := req.URL.Query().Get("search")
+	pageNumber := pageNumberFromRequest(req, "page")
 
 	var previousURL string
 	var nextURL string
@@ -86,20 +92,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 func taggedPosts(w http.ResponseWriter, req *http.Request) {
 
 	tag := req.URL.Query().Get(":tag")
-	pageNumber, err := strconv.ParseInt(req.URL.Query().Get(":page"), 10, 32)
-
-	if err != nil {
-		pageNumber = 0
-	} else {
-
-		// We want to use 0-based page numbers internally, but expose them as
-		// 1-based.
-		pageNumber -= 1
-
-		if pageNumber < 0 {
-			pageNumber = 0
-		}
-	}
+	pageNumber := pageNumberFromRequest(req, ":page")
 
 	var previousURL string
 	var nextURL string
