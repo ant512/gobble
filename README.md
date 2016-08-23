@@ -186,8 +186,8 @@ and earlier):
 
  - cd /etc/init
  - sudo nano gobble.conf
- - Insert the following text:
 
+Insert the following text:
 
     description     "gobble web server"
 
@@ -195,7 +195,6 @@ and earlier):
 
     chdir path_to_gobble/gobble
     exec ./gobble
-
 
  - sudo service gobble start
 
@@ -207,8 +206,8 @@ Here's how to set up a systemd service (Ubuntu 16.04 and later):
 
  - cd /lib/systemd/system
  - sudo nano gobble.service
- - Insert the following text:
 
+Insert the following text:
 
     [Unit]
     Description=Gobble
@@ -219,7 +218,6 @@ Here's how to set up a systemd service (Ubuntu 16.04 and later):
 
     [Install]
     WantedBy=multi-user.target
-
 
  - sudo systemctl daemon-reload
  - sudo systemctl start gobble.service
