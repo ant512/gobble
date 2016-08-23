@@ -181,7 +181,8 @@ Ubuntu Gobble Service
 ---------------------
 
 If you are deploying to an Ubuntu server, you can set up Gobble as a service to
-run at system startup:
+run at system startup.  Here's how to set up an Upstart service (Ubuntu 15.10
+and earlier):
 
  - cd /etc/init
  - sudo nano gobble.conf
@@ -199,6 +200,29 @@ run at system startup:
 To stop Gobble:
 
  - sudo service gobble stop
+
+Here's how to set up a systemd service (Ubuntu 16.04 and later):
+
+ - cd /lib/systemd/system
+ - sudo nano gobble.service
+ - Insert the following text:
+
+    [Unit]
+    Description=Gobble
+
+    [Service]
+    WorkingDirectory=path_to_gobble/gobble
+    ExecStart=path_to_gobble
+
+    [Install]
+    WantedBy=multi-user.target
+
+ - sudo systemctl daemon-reload
+ - sudo systemctl start gobble.service
+
+To stop Gobble:
+
+ - sudo systemctl stop gobble.service
 
 
 Startup Options
