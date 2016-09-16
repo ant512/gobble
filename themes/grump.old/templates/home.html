@@ -10,14 +10,17 @@
 		<title>{{.Config.Name}}</title>
 	</head>
 	<body>
+
 		<header id="header">
 			<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
 		</header>
-		<section id="content">
+
+		<section id="posts">
+
 			{{with .Posts}}
 			{{range .}}
-			<div class="item">
-				<article>
+			<article>
+				<div class="post">
 					<header>
 						<p>{{printf "%04d" .Metadata.Date.Year}}-{{printf "%02d" .Metadata.Date.Month}}-{{printf "%02d" .Metadata.Date.Day}}</p>
 						<h1><a href="/posts/{{.Url}}">{{.Metadata.Title}}</a></h1>
@@ -25,17 +28,17 @@
 					<div class="content">
 						{{.Body.HTML}}
 					</div>
-					<div class="comments"><a href="/posts/{{.Url}}#comments">{{if eq .NonSpamComments.Len 1}}1 comment{{else if gt .NonSpamComments.Len 0}}{{.NonSpamComments.Len}} comments{{else if .AllowsComments}}Leave a comment{{end}}</a></div>
+					<p class="comments"><a href="/posts/{{.Url}}#comments">{{if eq .NonSpamComments.Len 1}}1 comment{{else if gt .NonSpamComments.Len 0}}{{.NonSpamComments.Len}} comments{{else if .AllowsComments}}Leave a comment{{end}}</a><p>
 					<footer>
-						<ul>
-							{{range .Metadata.Tags}}<li><a href="/tags/{{.}}">{{.}}</a></li>{{end}}
-						</ul>
+						{{range .Metadata.Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
 					</footer>
-				</article>
-			</div>
+				</div>
+			</article>
 			{{end}}
 			{{end}}
+
 		</section>
+
 		<nav id="paging">
 			{{if .PreviousURL}}
 			<div class="previous"><a href="{{.PreviousURL}}">&larr; Older posts</a></div>
@@ -44,6 +47,7 @@
 			<div class="next"><a href="{{.NextURL}}">Newer posts &rarr;</a></div>
 			{{end}}
 		</nav>
+
 		<footer id="footer">
 			<form method="get" id="searchForm" action="/">
 				<input type="text" name="search" id="search" placeholder="{{.SearchPlaceholder}}">

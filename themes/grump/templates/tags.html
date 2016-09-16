@@ -7,15 +7,12 @@
 		<title>{{.Config.Name}}: Tags</title>
 	</head>
 	<body>
-
 		<header id="header">
 			<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
 		</header>
-
-		<section id="posts">
-
-			<article>
-				<div class="post">
+        <section id="content">
+            <div class="item">
+                <article>
 					<header>
 						<h1>Tags</h1>
 					</header>
@@ -28,11 +25,9 @@
 							{{end}}
 						</ul>
 					</div>
-				</div>
-			</article>
-
-		</section>
-
+                </article>
+            </div>
+        </section>
 		<footer id="footer">
 			<form method="get" id="searchForm" action="/">
 				<input type="text" name="search" id="search" placeholder="Search">

@@ -10,13 +10,15 @@
 		<title>{{.Config.Name}}: {{.Post.Metadata.Title}}</title>
 	</head>
 	<body>
+
 		<header id="header">
 			<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
 		</header>
-		<section id="content">
+
+		<section id="posts">
 			{{with .Post}}
-			<div class="item">
-				<article>
+			<article>
+				<div class="post">
 					<header>
 						<p>{{printf "%04d" .Metadata.Date.Year}}-{{printf "%02d" .Metadata.Date.Month}}-{{printf "%02d" .Metadata.Date.Day}}</p>
 						<h1><a href="/posts/{{.Url}}">{{.Metadata.Title}}</a></h1>
@@ -25,13 +27,12 @@
 						{{.Body.HTML}}
 					</div>
 					<footer>
-						<ul>
-							{{range .Metadata.Tags}}<li><a href="/tags/{{.}}">{{.}}</a></li>{{end}}
-						</ul>
+						{{range .Metadata.Tags}} <a href="/tags/{{.}}">{{.}}</a> {{end}}
 					</footer>
-				</article>
-			</div>
+				</div>
+			</article>
 			{{end}}
+
 		</section>
 
 		{{$hasComments := gt .Post.NonSpamComments.Len 0}}
@@ -78,6 +79,7 @@
 				</form>
 			</article>
 			{{end}}
+			
 		</section>
 		{{end}}
 

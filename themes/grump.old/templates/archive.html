@@ -7,12 +7,15 @@
 		<title>{{.Config.Name}}: Archive</title>
 	</head>
 	<body>
+
 		<header id="header">
 			<a href="/"><img src="/theme/img/header.png" width="100%" alt=""></a>
 		</header>
-		<section id="content">
-			<div class="item">
-				<article>
+
+		<section id="posts">
+
+			<article>
+				<div class="post">
 					<header>
 						<h1>Archive</h1>
 					</header>
@@ -25,9 +28,11 @@
 							{{end}}
 						</ul>
 					</div>
-				</article>
-			</div>
+				</div>
+			</article>
+
 		</section>
+		
 		<footer id="footer">
 			<form method="get" id="searchForm" action="/">
 				<input type="text" name="search" id="search" placeholder="Search">
