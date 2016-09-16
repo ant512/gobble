@@ -314,12 +314,16 @@ Nginx can be used as a proxy to redirect traffic to the Gobble server.  Here's
 an example server block:
 
     server {
-            listen 80;
-            server_name example.com;
-            access_log /var/log/nginx/example.com.access.log;
-            location / {
-                proxy_pass http://127.0.0.1:8080;
-            }
+        listen 80;
+        server_name example.com;
+        access_log /var/log/nginx/example.com.access.log;
+        location / {
+            proxy_pass http://127.0.0.1:8080;
+        }
+        location ~*  \.(jpg|jpeg|png|gif|ico|css|js)$ {
+            proxy_pass http://127.0.0.1:8080;
+            expires 365d;
+        }
     }
 
 
