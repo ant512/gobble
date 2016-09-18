@@ -352,4 +352,9 @@ img {
 	#comments {
 		width: 90%;
 	}
+
+	#searchForm {
+		display: block;
+		position: relative;
+	}
 }
