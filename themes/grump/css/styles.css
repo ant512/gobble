@@ -339,3 +339,17 @@ img {
 .archiveTime {
 	padding-left: 20px;
 }
+
+@media only screen and (max-device-width: 480px) {
+	#content > .item > article {
+		width: 90%;
+	}
+
+	#paging {
+		width: 90%;
+	}
+
+	#comments {
+		width: 90%;
+	}
+}
