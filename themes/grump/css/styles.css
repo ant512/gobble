@@ -60,6 +60,10 @@ img {
 	border: 0px;
 }
 
+p {
+	color: #333;
+}
+
 /* Header */
 
 #header {
@@ -118,7 +122,7 @@ img {
 }
 
 #content > .item > article > header a {
-	color: black;
+	color: #333;
 }
 
 #content > .item > article > header a:hover {
@@ -201,13 +205,16 @@ img {
 
 #footer {
 	background: #333333;
-	color: #666;
 	font-size: 0.8em;
 	line-height: 2.2em;
 	padding: 3em;
 	text-align: center;
 	font-weight: bold;
 	margin-top: auto;
+}
+
+#footer > p {
+	color: #666;
 }
 
 #footer a {
