@@ -12,6 +12,7 @@
 		<link rel="manifest" href="/manifest.json">
 		<script src="/highlight/highlight.pack.js"></script>
 		<script>hljs.initHighlightingOnLoad();</script>
+		<script src='https://www.google.com/recaptcha/api.js'></script>
 		<title>{{.Config.Name}}: {{.Post.Metadata.Title}}</title>
 	</head>
 	<body>
@@ -70,12 +71,7 @@
 					<p class="error">{{.CommentBodyError}}</p>
 
 					{{if .Config.RecaptchaPublicKey}}
-					<script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k={{.Config.RecaptchaPublicKey}}"></script>
-					<noscript>
-						<iframe src="http://www.google.com/recaptcha/api/noscript?k={{.Config.RecaptchaPublicKey}}" height="300" width="500" frameborder="0"></iframe><br>
-						<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-						<input type="hidden" name="recaptcha_response_field" value="manual_challenge">
-					</noscript>
+					<div class="g-recaptcha" data-sitekey="{{.Config.RecaptchaPublicKey}}"></div>
 					<p class="error">{{.CommentRecaptchaError}}</p>
 					{{end}}
 
