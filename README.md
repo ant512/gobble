@@ -213,8 +213,8 @@ Insert the following text:
     Description=Gobble
 
     [Service]
-    WorkingDirectory=path_to_gobble/gobble
-    ExecStart=path_to_gobble
+    WorkingDirectory=path_to_gobble
+    ExecStart=path_to_gobble/gobble
 
     [Install]
     WantedBy=multi-user.target
