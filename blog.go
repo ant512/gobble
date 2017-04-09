@@ -176,7 +176,7 @@ func (b *Blog) removeBlogPost(filename string) error {
 }
 
 func (b *Blog) addBlogPost(filename string) error {
-	log.Println("Attempting to add post with filename" ,filename)
+	log.Println("Attempting to add post with filename", filename)
 
 	fileInfo, err := os.Stat(filepath.Join(b.postPath, filename))
 
