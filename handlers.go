@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"strconv"
 	"text/template"
@@ -66,7 +67,7 @@ func home(w http.ResponseWriter, req *http.Request) {
 	var searchPlaceholder string
 
 	if len(term) > 0 {
-		searchPlaceholder = term
+		searchPlaceholder = html.EscapeString(term)
 	} else {
 		searchPlaceholder = "Search"
 	}
