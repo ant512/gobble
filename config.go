@@ -63,7 +63,7 @@ func (c *Config) validateConfig() error {
 	_, err := os.Stat(c.FullThemePath())
 
 	if err != nil {
-		msg := fmt.Sprintf("Could not load theme %v", c.FullThemePath)
+		msg := fmt.Sprintf("Could not load theme %v", c.FullThemePath())
 		return errors.New(msg)
 	}
 
