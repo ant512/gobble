@@ -130,7 +130,10 @@ func createComment(w http.ResponseWriter, req *http.Request) {
 	if len(SharedConfig.RecaptchaPrivateKey) > 0 {
 		recaptcha.Init(SharedConfig.RecaptchaPrivateKey)
 		ip := strings.Split(req.RemoteAddr, ":")[0]
-		if !recaptcha.Confirm(ip, req.FormValue("g-recaptcha-response")) {
+
+		success, _ := recaptcha.Confirm(ip, req.FormValue("g-recaptcha-response"))
+
+		if (!success) {
 			hasErrors = true
 			commentRecaptchaError = "Incorrect reCAPTCHA entered"
 		}
