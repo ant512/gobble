@@ -65,7 +65,7 @@ func parseBlogFileHeader(text string, handler metadataParseHandler) int {
 
 func convertMarkdownToHtml(markdown *[]byte) string {
 	htmlFlags := blackfriday.HTML_USE_SMARTYPANTS
-	extensions := blackfriday.EXTENSION_AUTOLINK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS
+	extensions := blackfriday.EXTENSION_AUTOLINK | blackfriday.EXTENSION_FENCED_CODE | blackfriday.EXTENSION_NO_INTRA_EMPHASIS | blackfriday.EXTENSION_STRIKETHROUGH
 
 	renderer := blackfriday.HtmlRenderer(htmlFlags, "", "")
 
