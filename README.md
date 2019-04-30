@@ -333,11 +333,11 @@ Gobble uses a handful of libraries to do its thing:
  - [http://highlightjs.org][4]
  - [https://github.com/bmizerany/pat][5]
  - [https://github.com/dpapathanasiou/go-recaptcha][6]
- - [https://github.com/go-fsnotify/fsnotify][7]
+ - [https://github.com/fsnotify/fsnotify][7]
  - [https://github.com/russross/blackfriday][8]
 
   [4]: http://highlightjs.org
   [5]: https://github.com/bmizerany/pat
   [6]: https://github.com/dpapathanasiou/go-recaptcha
-  [7]: https://github.com/go-fsnotify/fsnotify
+  [7]: https://github.com/fsnotify/fsnotify
   [8]: https://github.com/russross/blackfriday
