@@ -89,6 +89,13 @@ func (c *Config) validateConfig() error {
 		return errors.New(msg)
 	}
 
+	_, err = os.Stat(c.HighlightPath)
+
+	if err != nil {
+		msg := fmt.Sprintf("Could not access highlight from %v", c.HighlightPath)
+		return errors.New(msg)
+	}
+
 	return nil
 }
 
