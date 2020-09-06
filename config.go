@@ -21,6 +21,7 @@ type Config struct {
 	CommentPath         string
 	Theme               string
 	ThemePath           string
+	HighlightPath       string
 	AkismetAPIKey       string
 	RecaptchaPublicKey  string
 	RecaptchaPrivateKey string
@@ -102,5 +103,6 @@ func (c *Config) setDefaults() {
 	c.MediaPath = "./media"
 	c.ThemePath = "./themes"
 	c.StaticFilePath = "./files"
+	c.HighlightPath = "./highlight"
 	c.Theme = "grump"
 }

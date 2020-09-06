@@ -48,7 +48,7 @@ func prepareHandler() {
 
 	http.Handle("/", m)
 	http.Handle("/theme/", http.StripPrefix("/theme/", http.FileServer(http.Dir(SharedConfig.FullThemePath()))))
-	http.Handle("/highlight/", http.StripPrefix("/highlight/", http.FileServer(http.Dir("highlight"))))
+	http.Handle("/highlight/", http.StripPrefix("/highlight/", http.FileServer(http.Dir(SharedConfig.HighlightPath))))
 	http.Handle("/media/", http.StripPrefix("/media/", http.FileServer(http.Dir(SharedConfig.MediaPath))))
 
 	fmt.Printf("Listening on port %v\n", SharedConfig.Port)
@@ -58,6 +58,7 @@ func prepareHandler() {
 	fmt.Printf("Media stored in \"%v\"\n", SharedConfig.MediaPath)
 	fmt.Printf("Themes stored in \"%v\"\n", SharedConfig.ThemePath)
 	fmt.Printf("Files stored in \"%v\"\n", SharedConfig.StaticFilePath)
+	fmt.Printf("Highlight stored in \"%v\"\n", SharedConfig.HighlightPath)
 
 	postCount := len(blog.posts)
 
